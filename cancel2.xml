@@ -1,0 +1,344 @@
+<Cancellations Description="Cancellations for two movements">
+    <Cancellation Source="F z&apos;" Target="b"/>
+    <Cancellation Source="z&apos; F" Target="b"/>
+    <Cancellation Source="b S" Target="B"/>
+    <Cancellation Source="S b" Target="B"/>
+    <Cancellation Source="f z&apos;" Target="B"/>
+    <Cancellation Source="z&apos; f" Target="B"/>
+    <Cancellation Source="f b" Target="B F"/>
+    <Cancellation Source="b f" Target="B F"/>
+    <Cancellation Source="F S" Target="B z"/>
+    <Cancellation Source="S F" Target="B z"/>
+    <Cancellation Source="B2 f&apos;" Target="B z&apos;"/>
+    <Cancellation Source="f&apos; B2" Target="B z&apos;"/>
+    <Cancellation Source="f z2" Target="B z&apos;"/>
+    <Cancellation Source="z2 f" Target="B z&apos;"/>
+    <Cancellation Source="B&apos; f2" Target="B z2"/>
+    <Cancellation Source="f2 B&apos;" Target="B z2"/>
+    <Cancellation Source="f z" Target="B z2"/>
+    <Cancellation Source="z f" Target="B z2"/>
+    <Cancellation Source="F&apos; z" Target="b&apos;"/>
+    <Cancellation Source="z F&apos;" Target="b&apos;"/>
+    <Cancellation Source="b&apos; S&apos;" Target="B&apos;"/>
+    <Cancellation Source="S&apos; b&apos;" Target="B&apos;"/>
+    <Cancellation Source="f&apos; z" Target="B&apos;"/>
+    <Cancellation Source="z f&apos;" Target="B&apos;"/>
+    <Cancellation Source="f&apos; b&apos;" Target="B&apos; F&apos;"/>
+    <Cancellation Source="b&apos; f&apos;" Target="B&apos; F&apos;"/>
+    <Cancellation Source="B2 f" Target="B&apos; z"/>
+    <Cancellation Source="f B2" Target="B&apos; z"/>
+    <Cancellation Source="f&apos; z2" Target="B&apos; z"/>
+    <Cancellation Source="z2 f&apos;" Target="B&apos; z"/>
+    <Cancellation Source="F&apos; S&apos;" Target="B&apos; z&apos;"/>
+    <Cancellation Source="S&apos; F&apos;" Target="B&apos; z&apos;"/>
+    <Cancellation Source="B f2" Target="B&apos; z2"/>
+    <Cancellation Source="f2 B" Target="B&apos; z2"/>
+    <Cancellation Source="f&apos; z&apos;" Target="B&apos; z2"/>
+    <Cancellation Source="z&apos; f&apos;" Target="B&apos; z2"/>
+    <Cancellation Source="F2 z2" Target="b2"/>
+    <Cancellation Source="z2 F2" Target="b2"/>
+    <Cancellation Source="b2 S2" Target="B2"/>
+    <Cancellation Source="S2 b2" Target="B2"/>
+    <Cancellation Source="f2 z2" Target="B2"/>
+    <Cancellation Source="z2 f2" Target="B2"/>
+    <Cancellation Source="f2 b2" Target="B2 F2"/>
+    <Cancellation Source="b2 f2" Target="B2 F2"/>
+    <Cancellation Source="B f" Target="B2 z"/>
+    <Cancellation Source="f B" Target="B2 z"/>
+    <Cancellation Source="f2 z&apos;" Target="B2 z"/>
+    <Cancellation Source="z&apos; f2" Target="B2 z"/>
+    <Cancellation Source="B&apos; f&apos;" Target="B2 z&apos;"/>
+    <Cancellation Source="f&apos; B&apos;" Target="B2 z&apos;"/>
+    <Cancellation Source="f2 z" Target="B2 z&apos;"/>
+    <Cancellation Source="z f2" Target="B2 z&apos;"/>
+    <Cancellation Source="F2 S2" Target="B2 z2"/>
+    <Cancellation Source="S2 F2" Target="B2 z2"/>
+    <Cancellation Source="U y&apos;" Target="d"/>
+    <Cancellation Source="y&apos; U" Target="d"/>
+    <Cancellation Source="d E&apos;" Target="D"/>
+    <Cancellation Source="E&apos; d" Target="D"/>
+    <Cancellation Source="u y&apos;" Target="D"/>
+    <Cancellation Source="y&apos; u" Target="D"/>
+    <Cancellation Source="u d" Target="D U"/>
+    <Cancellation Source="d u" Target="D U"/>
+    <Cancellation Source="E&apos; U" Target="D y"/>
+    <Cancellation Source="U E&apos;" Target="D y"/>
+    <Cancellation Source="D2 u&apos;" Target="D y&apos;"/>
+    <Cancellation Source="u&apos; D2" Target="D y&apos;"/>
+    <Cancellation Source="u y2" Target="D y&apos;"/>
+    <Cancellation Source="y2 u" Target="D y&apos;"/>
+    <Cancellation Source="D&apos; u2" Target="D y2"/>
+    <Cancellation Source="u2 D&apos;" Target="D y2"/>
+    <Cancellation Source="u y" Target="D y2"/>
+    <Cancellation Source="y u" Target="D y2"/>
+    <Cancellation Source="U&apos; y" Target="d&apos;"/>
+    <Cancellation Source="y U&apos;" Target="d&apos;"/>
+    <Cancellation Source="d&apos; E" Target="D&apos;"/>
+    <Cancellation Source="E d&apos;" Target="D&apos;"/>
+    <Cancellation Source="u&apos; y" Target="D&apos;"/>
+    <Cancellation Source="y u&apos;" Target="D&apos;"/>
+    <Cancellation Source="u&apos; d&apos;" Target="D&apos; U&apos;"/>
+    <Cancellation Source="d&apos; u&apos;" Target="D&apos; U&apos;"/>
+    <Cancellation Source="D2 u" Target="D&apos; y"/>
+    <Cancellation Source="u D2" Target="D&apos; y"/>
+    <Cancellation Source="u&apos; y2" Target="D&apos; y"/>
+    <Cancellation Source="y2 u&apos;" Target="D&apos; y"/>
+    <Cancellation Source="E U&apos;" Target="D&apos; y&apos;"/>
+    <Cancellation Source="U&apos; E" Target="D&apos; y&apos;"/>
+    <Cancellation Source="D u2" Target="D&apos; y2"/>
+    <Cancellation Source="u2 D" Target="D&apos; y2"/>
+    <Cancellation Source="u&apos; y&apos;" Target="D&apos; y2"/>
+    <Cancellation Source="y&apos; u&apos;" Target="D&apos; y2"/>
+    <Cancellation Source="U2 y2" Target="d2"/>
+    <Cancellation Source="y2 U2" Target="d2"/>
+    <Cancellation Source="d2 E2" Target="D2"/>
+    <Cancellation Source="E2 d2" Target="D2"/>
+    <Cancellation Source="u2 y2" Target="D2"/>
+    <Cancellation Source="y2 u2" Target="D2"/>
+    <Cancellation Source="u2 d2" Target="D2 U2"/>
+    <Cancellation Source="d2 u2" Target="D2 U2"/>
+    <Cancellation Source="D u" Target="D2 y"/>
+    <Cancellation Source="u D" Target="D2 y"/>
+    <Cancellation Source="u2 y&apos;" Target="D2 y"/>
+    <Cancellation Source="y&apos; u2" Target="D2 y"/>
+    <Cancellation Source="D&apos; u&apos;" Target="D2 y&apos;"/>
+    <Cancellation Source="u&apos; D&apos;" Target="D2 y&apos;"/>
+    <Cancellation Source="u2 y" Target="D2 y&apos;"/>
+    <Cancellation Source="y u2" Target="D2 y&apos;"/>
+    <Cancellation Source="E2 U2" Target="D2 y2"/>
+    <Cancellation Source="U2 E2" Target="D2 y2"/>
+    <Cancellation Source="U D&apos;" Target="E y"/>
+    <Cancellation Source="D&apos; U" Target="E y"/>
+    <Cancellation Source="U&apos; D" Target="E&apos; y&apos;"/>
+    <Cancellation Source="D U&apos;" Target="E&apos; y&apos;"/>
+    <Cancellation Source="U2 D2" Target="E2 y2"/>
+    <Cancellation Source="D2 U2" Target="E2 y2"/>
+    <Cancellation Source="b z" Target="F"/>
+    <Cancellation Source="z b" Target="F"/>
+    <Cancellation Source="f S&apos;" Target="F"/>
+    <Cancellation Source="S&apos; f" Target="F"/>
+    <Cancellation Source="b z2" Target="F z"/>
+    <Cancellation Source="z2 b" Target="F z"/>
+    <Cancellation Source="b&apos; F2" Target="F z"/>
+    <Cancellation Source="F2 b&apos;" Target="F z"/>
+    <Cancellation Source="B S&apos;" Target="F z&apos;"/>
+    <Cancellation Source="S&apos; B" Target="F z&apos;"/>
+    <Cancellation Source="b z&apos;" Target="F z2"/>
+    <Cancellation Source="z&apos; b" Target="F z2"/>
+    <Cancellation Source="b2 F&apos;" Target="F z2"/>
+    <Cancellation Source="F&apos; b2" Target="F z2"/>
+    <Cancellation Source="b&apos; z&apos;" Target="F&apos;"/>
+    <Cancellation Source="z&apos; b&apos;" Target="F&apos;"/>
+    <Cancellation Source="f&apos; S" Target="F&apos;"/>
+    <Cancellation Source="S f&apos;" Target="F&apos;"/>
+    <Cancellation Source="B&apos; S" Target="F&apos; z"/>
+    <Cancellation Source="S B&apos;" Target="F&apos; z"/>
+    <Cancellation Source="b F2" Target="F&apos; z&apos;"/>
+    <Cancellation Source="F2 b" Target="F&apos; z&apos;"/>
+    <Cancellation Source="b&apos; z2" Target="F&apos; z&apos;"/>
+    <Cancellation Source="z2 b&apos;" Target="F&apos; z&apos;"/>
+    <Cancellation Source="b&apos; z" Target="F&apos; z2"/>
+    <Cancellation Source="z b&apos;" Target="F&apos; z2"/>
+    <Cancellation Source="b2 F" Target="F&apos; z2"/>
+    <Cancellation Source="F b2" Target="F&apos; z2"/>
+    <Cancellation Source="b2 z2" Target="F2"/>
+    <Cancellation Source="z2 b2" Target="F2"/>
+    <Cancellation Source="f2 S2" Target="F2"/>
+    <Cancellation Source="S2 f2" Target="F2"/>
+    <Cancellation Source="b&apos; F&apos;" Target="F2 z"/>
+    <Cancellation Source="F&apos; b&apos;" Target="F2 z"/>
+    <Cancellation Source="b2 z&apos;" Target="F2 z"/>
+    <Cancellation Source="z&apos; b2" Target="F2 z"/>
+    <Cancellation Source="b F" Target="F2 z&apos;"/>
+    <Cancellation Source="F b" Target="F2 z&apos;"/>
+    <Cancellation Source="b2 z" Target="F2 z&apos;"/>
+    <Cancellation Source="z b2" Target="F2 z&apos;"/>
+    <Cancellation Source="B2 S2" Target="F2 z2"/>
+    <Cancellation Source="S2 B2" Target="F2 z2"/>
+    <Cancellation Source="R x&apos;" Target="l"/>
+    <Cancellation Source="x&apos; R" Target="l"/>
+    <Cancellation Source="l M&apos;" Target="L"/>
+    <Cancellation Source="M&apos; l" Target="L"/>
+    <Cancellation Source="r x&apos;" Target="L"/>
+    <Cancellation Source="x&apos; r" Target="L"/>
+    <Cancellation Source="r l" Target="L R"/>
+    <Cancellation Source="l r" Target="L R"/>
+    <Cancellation Source="M&apos; R" Target="L x"/>
+    <Cancellation Source="R M&apos;" Target="L x"/>
+    <Cancellation Source="L2 r&apos;" Target="L x&apos;"/>
+    <Cancellation Source="r&apos; L2" Target="L x&apos;"/>
+    <Cancellation Source="r x2" Target="L x&apos;"/>
+    <Cancellation Source="x2 r" Target="L x&apos;"/>
+    <Cancellation Source="L&apos; r2" Target="L x2"/>
+    <Cancellation Source="r2 L&apos;" Target="L x2"/>
+    <Cancellation Source="r x" Target="L x2"/>
+    <Cancellation Source="x r" Target="L x2"/>
+    <Cancellation Source="R&apos; x" Target="l&apos;"/>
+    <Cancellation Source="x R&apos;" Target="l&apos;"/>
+    <Cancellation Source="l&apos; M" Target="L&apos;"/>
+    <Cancellation Source="M l&apos;" Target="L&apos;"/>
+    <Cancellation Source="r&apos; x" Target="L&apos;"/>
+    <Cancellation Source="x r&apos;" Target="L&apos;"/>
+    <Cancellation Source="r&apos; l&apos;" Target="L&apos; R&apos;"/>
+    <Cancellation Source="l&apos; r&apos;" Target="L&apos; R&apos;"/>
+    <Cancellation Source="L2 r" Target="L&apos; x"/>
+    <Cancellation Source="r L2" Target="L&apos; x"/>
+    <Cancellation Source="r&apos; x2" Target="L&apos; x"/>
+    <Cancellation Source="x2 r&apos;" Target="L&apos; x"/>
+    <Cancellation Source="M R&apos;" Target="L&apos; x&apos;"/>
+    <Cancellation Source="R&apos; M" Target="L&apos; x&apos;"/>
+    <Cancellation Source="L r2" Target="L&apos; x2"/>
+    <Cancellation Source="r2 L" Target="L&apos; x2"/>
+    <Cancellation Source="r&apos; x&apos;" Target="L&apos; x2"/>
+    <Cancellation Source="x&apos; r&apos;" Target="L&apos; x2"/>
+    <Cancellation Source="R2 x2" Target="l2"/>
+    <Cancellation Source="x2 R2" Target="l2"/>
+    <Cancellation Source="l2 M2" Target="L2"/>
+    <Cancellation Source="M2 l2" Target="L2"/>
+    <Cancellation Source="r2 x2" Target="L2"/>
+    <Cancellation Source="x2 r2" Target="L2"/>
+    <Cancellation Source="r2 l2" Target="L2 R2"/>
+    <Cancellation Source="l2 r2" Target="L2 R2"/>
+    <Cancellation Source="L r" Target="L2 x"/>
+    <Cancellation Source="r L" Target="L2 x"/>
+    <Cancellation Source="r2 x&apos;" Target="L2 x"/>
+    <Cancellation Source="x&apos; r2" Target="L2 x"/>
+    <Cancellation Source="L&apos; r&apos;" Target="L2 x&apos;"/>
+    <Cancellation Source="r&apos; L&apos;" Target="L2 x&apos;"/>
+    <Cancellation Source="r2 x" Target="L2 x&apos;"/>
+    <Cancellation Source="x r2" Target="L2 x&apos;"/>
+    <Cancellation Source="M2 R2" Target="L2 x2"/>
+    <Cancellation Source="R2 M2" Target="L2 x2"/>
+    <Cancellation Source="R L&apos;" Target="M x"/>
+    <Cancellation Source="L&apos; R" Target="M x"/>
+    <Cancellation Source="R&apos; L" Target="M&apos; x&apos;"/>
+    <Cancellation Source="L R&apos;" Target="M&apos; x&apos;"/>
+    <Cancellation Source="R2 L2" Target="M2 x2"/>
+    <Cancellation Source="L2 R2" Target="M2 x2"/>
+    <Cancellation Source="l x" Target="R"/>
+    <Cancellation Source="x l" Target="R"/>
+    <Cancellation Source="M r" Target="R"/>
+    <Cancellation Source="r M" Target="R"/>
+    <Cancellation Source="l x2" Target="R x"/>
+    <Cancellation Source="x2 l" Target="R x"/>
+    <Cancellation Source="l&apos; R2" Target="R x"/>
+    <Cancellation Source="R2 l&apos;" Target="R x"/>
+    <Cancellation Source="L M" Target="R x&apos;"/>
+    <Cancellation Source="M L" Target="R x&apos;"/>
+    <Cancellation Source="l x&apos;" Target="R x2"/>
+    <Cancellation Source="x&apos; l" Target="R x2"/>
+    <Cancellation Source="l2 R&apos;" Target="R x2"/>
+    <Cancellation Source="R&apos; l2" Target="R x2"/>
+    <Cancellation Source="l&apos; x&apos;" Target="R&apos;"/>
+    <Cancellation Source="x&apos; l&apos;" Target="R&apos;"/>
+    <Cancellation Source="M&apos; r&apos;" Target="R&apos;"/>
+    <Cancellation Source="r&apos; M&apos;" Target="R&apos;"/>
+    <Cancellation Source="L&apos; M&apos;" Target="R&apos; x"/>
+    <Cancellation Source="M&apos; L&apos;" Target="R&apos; x"/>
+    <Cancellation Source="l R2" Target="R&apos; x&apos;"/>
+    <Cancellation Source="R2 l" Target="R&apos; x&apos;"/>
+    <Cancellation Source="l&apos; x2" Target="R&apos; x&apos;"/>
+    <Cancellation Source="x2 l&apos;" Target="R&apos; x&apos;"/>
+    <Cancellation Source="l&apos; x" Target="R&apos; x2"/>
+    <Cancellation Source="x l&apos;" Target="R&apos; x2"/>
+    <Cancellation Source="l2 R" Target="R&apos; x2"/>
+    <Cancellation Source="R l2" Target="R&apos; x2"/>
+    <Cancellation Source="l2 x2" Target="R2"/>
+    <Cancellation Source="x2 l2" Target="R2"/>
+    <Cancellation Source="M2 r2" Target="R2"/>
+    <Cancellation Source="r2 M2" Target="R2"/>
+    <Cancellation Source="l&apos; R&apos;" Target="R2 x"/>
+    <Cancellation Source="R&apos; l&apos;" Target="R2 x"/>
+    <Cancellation Source="l2 x&apos;" Target="R2 x"/>
+    <Cancellation Source="x&apos; l2" Target="R2 x"/>
+    <Cancellation Source="l R" Target="R2 x&apos;"/>
+    <Cancellation Source="R l" Target="R2 x&apos;"/>
+    <Cancellation Source="l2 x" Target="R2 x&apos;"/>
+    <Cancellation Source="x l2" Target="R2 x&apos;"/>
+    <Cancellation Source="L2 M2" Target="R2 x2"/>
+    <Cancellation Source="M2 L2" Target="R2 x2"/>
+    <Cancellation Source="F&apos; B" Target="S z&apos;"/>
+    <Cancellation Source="B F&apos;" Target="S z&apos;"/>
+    <Cancellation Source="F B&apos;" Target="S&apos; z"/>
+    <Cancellation Source="B&apos; F" Target="S&apos; z"/>
+    <Cancellation Source="F2 B2" Target="S2 z2"/>
+    <Cancellation Source="B2 F2" Target="S2 z2"/>
+    <Cancellation Source="d y" Target="U"/>
+    <Cancellation Source="y d" Target="U"/>
+    <Cancellation Source="E u" Target="U"/>
+    <Cancellation Source="u E" Target="U"/>
+    <Cancellation Source="d y2" Target="U y"/>
+    <Cancellation Source="y2 d" Target="U y"/>
+    <Cancellation Source="d&apos; U2" Target="U y"/>
+    <Cancellation Source="U2 d&apos;" Target="U y"/>
+    <Cancellation Source="D E" Target="U y&apos;"/>
+    <Cancellation Source="E D" Target="U y&apos;"/>
+    <Cancellation Source="d y&apos;" Target="U y2"/>
+    <Cancellation Source="y&apos; d" Target="U y2"/>
+    <Cancellation Source="d2 U&apos;" Target="U y2"/>
+    <Cancellation Source="U&apos; d2" Target="U y2"/>
+    <Cancellation Source="d&apos; y&apos;" Target="U&apos;"/>
+    <Cancellation Source="y&apos; d&apos;" Target="U&apos;"/>
+    <Cancellation Source="E&apos; u&apos;" Target="U&apos;"/>
+    <Cancellation Source="u&apos; E&apos;" Target="U&apos;"/>
+    <Cancellation Source="D&apos; E&apos;" Target="U&apos; y"/>
+    <Cancellation Source="E&apos; D&apos;" Target="U&apos; y"/>
+    <Cancellation Source="d U2" Target="U&apos; y&apos;"/>
+    <Cancellation Source="U2 d" Target="U&apos; y&apos;"/>
+    <Cancellation Source="d&apos; y2" Target="U&apos; y&apos;"/>
+    <Cancellation Source="y2 d&apos;" Target="U&apos; y&apos;"/>
+    <Cancellation Source="d&apos; y" Target="U&apos; y2"/>
+    <Cancellation Source="y d&apos;" Target="U&apos; y2"/>
+    <Cancellation Source="d2 U" Target="U&apos; y2"/>
+    <Cancellation Source="U d2" Target="U&apos; y2"/>
+    <Cancellation Source="d2 y2" Target="U2"/>
+    <Cancellation Source="y2 d2" Target="U2"/>
+    <Cancellation Source="E2 u2" Target="U2"/>
+    <Cancellation Source="u2 E2" Target="U2"/>
+    <Cancellation Source="d&apos; U&apos;" Target="U2 y"/>
+    <Cancellation Source="U&apos; d&apos;" Target="U2 y"/>
+    <Cancellation Source="d2 y&apos;" Target="U2 y"/>
+    <Cancellation Source="y&apos; d2" Target="U2 y"/>
+    <Cancellation Source="d U" Target="U2 y&apos;"/>
+    <Cancellation Source="U d" Target="U2 y&apos;"/>
+    <Cancellation Source="d2 y" Target="U2 y&apos;"/>
+    <Cancellation Source="y d2" Target="U2 y&apos;"/>
+    <Cancellation Source="D2 E2" Target="U2 y2"/>
+    <Cancellation Source="E2 D2" Target="U2 y2"/>
+    <Cancellation Source="l&apos; R" Target="x"/>
+    <Cancellation Source="R l&apos;" Target="x"/>
+    <Cancellation Source="L&apos; r" Target="x"/>
+    <Cancellation Source="r L&apos;" Target="x"/>
+    <Cancellation Source="l R&apos;" Target="x&apos;"/>
+    <Cancellation Source="R&apos; l" Target="x&apos;"/>
+    <Cancellation Source="L r&apos;" Target="x&apos;"/>
+    <Cancellation Source="r&apos; L" Target="x&apos;"/>
+    <Cancellation Source="l2 R2" Target="x2"/>
+    <Cancellation Source="R2 l2" Target="x2"/>
+    <Cancellation Source="L2 r2" Target="x2"/>
+    <Cancellation Source="r2 L2" Target="x2"/>
+    <Cancellation Source="d&apos; U" Target="y"/>
+    <Cancellation Source="U d&apos;" Target="y"/>
+    <Cancellation Source="D&apos; u" Target="y"/>
+    <Cancellation Source="u D&apos;" Target="y"/>
+    <Cancellation Source="d U&apos;" Target="y&apos;"/>
+    <Cancellation Source="U&apos; d" Target="y&apos;"/>
+    <Cancellation Source="D u&apos;" Target="y&apos;"/>
+    <Cancellation Source="u&apos; D" Target="y&apos;"/>
+    <Cancellation Source="d2 U2" Target="y2"/>
+    <Cancellation Source="U2 d2" Target="y2"/>
+    <Cancellation Source="D2 u2" Target="y2"/>
+    <Cancellation Source="u2 D2" Target="y2"/>
+    <Cancellation Source="b&apos; F" Target="z"/>
+    <Cancellation Source="F b&apos;" Target="z"/>
+    <Cancellation Source="B&apos; f" Target="z"/>
+    <Cancellation Source="f B&apos;" Target="z"/>
+    <Cancellation Source="b F&apos;" Target="z&apos;"/>
+    <Cancellation Source="F&apos; b" Target="z&apos;"/>
+    <Cancellation Source="B f&apos;" Target="z&apos;"/>
+    <Cancellation Source="f&apos; B" Target="z&apos;"/>
+    <Cancellation Source="b2 F2" Target="z2"/>
+    <Cancellation Source="F2 b2" Target="z2"/>
+    <Cancellation Source="B2 f2" Target="z2"/>
+    <Cancellation Source="f2 B2" Target="z2"/>
+</Cancellations>

@@ -1,0 +1,83 @@
+
+
+Orientation (called 'cross layer' in CFOP and 'first layer' in LBL):
+
+	Choose here the cube orientation for the required solves. Selections with many
+	orientations (All, U & D, etc.) requires more processing time than specific 
+	orientations (U, UF, etc.)
+
+	The orientations refer to the position of the cube when you perform the scramble.
+	For example, if you perform the scramble with the white face up and the green face
+	in the front, the DR (down-right) orientation will be with yellow face up and red
+	face in the front.
+
+
+Max. Inspections:
+
+	Is the maximum number of solves that will be analyzed for each orientation.
+
+	It's possible not to reach the required number of inspections, as not all 
+	orientations provide the same amount of solves, or even not solves at all.
+
+
+Cancellations:
+
+	If the cancellation option is enabled, cancellation of movements will be applyed to
+	each solution in order to get the lower STM (single turn metric). Cancellations STM
+	will be shown surrounded by parentheses at the begining of each solve, near the 
+	regular STM. This STM will be used for evaluate the best solve, if the best solve
+	option is enabled.
+
+
+Best Solve:
+	
+	If this option is enabled, the best solve (with lower STM) will be shown in detail.
+
+
+Regrips:
+
+	If regrips are enabled, turns will be added to the solutions to get more comfortable
+	movements.
+
+
+Search depth:
+
+	With the depth(s) parameter(s) you control how deep is the search of the solves. With a 
+	value of 6 you should obtain some solves (not always). A value of 7 gives you more 
+	solves and a value of 8 should give you at least one solve in each orientation (usually
+	many more). Take care, as the search time increases exponentially with this value, for 
+	example, in my computer a value of 6 lasts around 1-2 seconds, a value of 8 around 
+	15-20 seconds, with a depth of 8 a few minutes, and with 9 (the maximum allowed) can be
+	an hour or more. This times are relative, as many factors have influence.
+
+
+Cache:
+
+	If you enable the cache, the first step of the selected method (cross for CFOP, first
+	block for Roux, etc.) will be calculated 10-15% slower, as a generic search will be done
+	and it will be stored in memory. If you perform a new search changing the method or some
+	paramaters, but you use the same scramble and the same search depth, it will be much faster,
+	as the first step, usually the longer, will be taken from cache. This is very useful if you
+	want to analyze the same scramble using different methods.
+
+	If cache is disabled, each search will always perform all the steps.
+
+	So, if you plan to analyze the same scramble several times with a search depth of 7 or 8,
+	enable cache. If you plan to evaluate a new scramble each time, or you have a search depth
+	lower than 7, disable it.
+
+	Cache requires a high use of memory, so depths higher than 8 are not allowed.
+
+	Make sure the depth have the same value that when you perform the search for first time, or
+	the cache won't work (Roux second block depth and Petrus F2L depth don't affect to cache).
+
+
+Cores
+
+	This parameter specifies the amount of CPU cores used in the search. A '0' value means all
+	available cores will be used.
+
+History
+
+	Each time you get a search result, the report will be saved in the history, so you can
+	perform several searches without losing your results.

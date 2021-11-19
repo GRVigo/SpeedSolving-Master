@@ -1,0 +1,118 @@
+<Collection Name="OLL" Description="Algorithms collection" CasesNumber="58">
+    <Case Index="0">SKIP<Algorithm></Algorithm>
+    </Case>
+    <Case Index="1">OCLL1<Algorithm>(R U2 R') (U' R U R') (U' R U' R')</Algorithm>
+    </Case>
+    <Case Index="2">OCLL2<Algorithm>R U2 R2 U' R2 U' R2 U2 R</Algorithm>
+    </Case>
+    <Case Index="3">OCLL3<Algorithm>R2 D (R' U2 R) D' (R' U2 R')</Algorithm>
+    </Case>
+    <Case Index="4">OCLL4<Algorithm>(r U R' U') (r' F R F')</Algorithm>
+    </Case>
+    <Case Index="5">OCLL5<Algorithm>F' (r U R' U') r' F R</Algorithm>
+    </Case>
+    <Case Index="6">OCLL6<Algorithm>R U2 R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="7">OCLL7<Algorithm>R U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="8">T1<Algorithm>(R U R' U') (R' F R F')</Algorithm>
+    </Case>
+    <Case Index="9">T2<Algorithm>F (R U R' U') F'</Algorithm>
+    </Case>
+    <Case Index="10">S1<Algorithm>(r' U2 R U R' U r)</Algorithm>
+    </Case>
+    <Case Index="11">S2<Algorithm>(r U2 R' U' R U' r')</Algorithm>
+    </Case>
+    <Case Index="12">C1<Algorithm>(R U R2 U') (R' F R U) R U' F'</Algorithm>
+    </Case>
+    <Case Index="13">C2<Algorithm>R' U' (R' F R F') U R</Algorithm>
+    </Case>
+    <Case Index="14">W1<Algorithm>(R' U' R U') (R' U R U) l U' R' U x</Algorithm>
+    </Case>
+    <Case Index="15">W2<Algorithm>(R U R' U) (R U' R' U') (R' F R F')</Algorithm>
+    </Case>
+    <Case Index="16">E1<Algorithm>(r U R' U') M (U R U' R')</Algorithm>
+    </Case>
+    <Case Index="17">E2<Algorithm>(R U R' U') M' (U R U' r')</Algorithm>
+    </Case>
+    <Case Index="18">P1<Algorithm>(R' U' F) (U R U' R') F' R</Algorithm>
+    </Case>
+    <Case Index="19">P2<Algorithm>R U B' (U' R' U) (R B R')</Algorithm>
+    </Case>
+    <Case Index="20">P3<Algorithm>R' U' F' U F R</Algorithm>
+    </Case>
+    <Case Index="21">P4<Algorithm>f (R U R' U') f'</Algorithm>
+    </Case>
+    <Case Index="22">I1<Algorithm>f (R U R' U') (R U R' U') f'</Algorithm>
+    </Case>
+    <Case Index="23">I2<Algorithm>(R' U' R U' R' U) y' (R' U R) B</Algorithm>
+    </Case>
+    <Case Index="24">I3<Algorithm>(R' F R U) (R U' R2 F') R2 U' R' (U R U R')</Algorithm>
+    </Case>
+    <Case Index="25">I4<Algorithm>r' U' r (U' R' U R) (U' R' U R) r' U r</Algorithm>
+    </Case>
+    <Case Index="26">F1<Algorithm>(R U R' U') R' F (R2 U R' U') F'</Algorithm>
+    </Case>
+    <Case Index="27">F2<Algorithm>(R U R' U) (R' F R F') (R U2 R')</Algorithm>
+    </Case>
+    <Case Index="28">F3<Algorithm>(R U2) (R2 F R F') (R U2 R')</Algorithm>
+    </Case>
+    <Case Index="29">F4<Algorithm>F (R U' R' U') (R U R' F')</Algorithm>
+    </Case>
+    <Case Index="30">K1<Algorithm>(r U' r') (U' r U r') y' (R' U R)</Algorithm>
+    </Case>
+    <Case Index="31">K2<Algorithm>(R' F R) (U R' F' R) (F U' F')</Algorithm>
+    </Case>
+    <Case Index="32">K3<Algorithm>(r' U' r) (R' U' R U) (r' U r)</Algorithm>
+    </Case>
+    <Case Index="33">K4<Algorithm>(r U r') (R U R' U') (r U' r')</Algorithm>
+    </Case>
+    <Case Index="34">A1<Algorithm>(R U R' U') (R U' R') (F' U' F) (R U R')</Algorithm>
+    </Case>
+    <Case Index="35">A2<Algorithm>F U (R U2 R' U') (R U2 R' U') F'</Algorithm>
+    </Case>
+    <Case Index="36">A3<Algorithm>(R U R' U R U2 R') F (R U R' U') F'</Algorithm>
+    </Case>
+    <Case Index="37">A4<Algorithm>(R' U' R U' R' U2 R) F (R U R' U') F'</Algorithm>
+    </Case>
+    <Case Index="38">L1<Algorithm>F' (L' U' L U) (L' U' L U) F</Algorithm>
+    </Case>
+    <Case Index="39">L2<Algorithm>F (R U R' U') (R U R' U') F'</Algorithm>
+    </Case>
+    <Case Index="40">L3<Algorithm>r U' r2 U r2 U r2 U' r</Algorithm>
+    </Case>
+    <Case Index="41">L4<Algorithm>r' U r2 U' r2 U' r2 U r'</Algorithm>
+    </Case>
+    <Case Index="42">L5<Algorithm>(r' U' R U') (R' U R U') R' U2 r</Algorithm>
+    </Case>
+    <Case Index="43">L6<Algorithm>(r U R' U) (R U' R' U) R U2 r'</Algorithm>
+    </Case>
+    <Case Index="44">B1<Algorithm>(r U R' U R U2 r')</Algorithm>
+    </Case>
+    <Case Index="45">B2<Algorithm>(r' U' R U' R' U2 r)</Algorithm>
+    </Case>
+    <Case Index="46">B3<Algorithm>r' (R2 U R' U R U2 R') U M'</Algorithm>
+    </Case>
+    <Case Index="47">B4<Algorithm>M' (R' U' R U' R' U2 R) U' M</Algorithm>
+    </Case>
+    <Case Index="48">B5<Algorithm>(L F') (L' U' L U) F U' L'</Algorithm>
+    </Case>
+    <Case Index="49">B6<Algorithm>(R' F) (R U R' U') F' U R</Algorithm>
+    </Case>
+    <Case Index="50">O1<Algorithm>(R U2) (R2 F R F') U2 (R' F R F')</Algorithm>
+    </Case>
+    <Case Index="51">O2<Algorithm>F (R U R' U') F' f (R U R' U') f'</Algorithm>
+    </Case>
+    <Case Index="52">O3<Algorithm>f (R U R' U') f' U' F (R U R' U') F'</Algorithm>
+    </Case>
+    <Case Index="53">O4<Algorithm>f (R U R' U') f' U F (R U R' U') F'</Algorithm>
+    </Case>
+    <Case Index="54">O5<Algorithm>(R U R' U) (R' F R F') U2 (R' F R F')</Algorithm>
+    </Case>
+    <Case Index="55">O6<Algorithm>R U2 (R2 F R F') U2 M' (U R U' r')</Algorithm>
+    </Case>
+    <Case Index="56">O7<Algorithm>M U (R U R' U') M' (R' F R F')</Algorithm>
+    </Case>
+    <Case Index="57">O8<Algorithm>M U (R U R' U') M2 (U R U' r')</Algorithm>
+    </Case>
+</Collection>

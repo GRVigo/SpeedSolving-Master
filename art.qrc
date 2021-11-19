@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/new/icons"/>
+    <qresource prefix="/new/logo">
+        <file>CFOP.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>Cube.ico</file>
+    </qresource>
+</RCC>

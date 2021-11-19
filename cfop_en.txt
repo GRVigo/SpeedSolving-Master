@@ -1,0 +1,17 @@
+CFOP method:
+
+	The cross is searched on each of the specified orientations, with the specified
+	number of moves (search depth). If this parameter is very low (less than 6) 
+	solutions will hardly be found. With a value of 6 or 7, results should appear and
+	with 8 it is very likely that an "XCross" will be found. The solution of the 
+	cross is chosen among all the possible ones evaluating its number of movements,
+	but also taking into account that the arrangement of the pieces for F2L is as
+	favorable as possible.
+
+	First two layers (F2L) search is fast, about 2 or 3 seconds per inspection on a
+	modern processor, and it will try to get the shortest possible solution for each solve.
+
+	The next step is to get the appropriate algorithms for OLL and PLL. These algorithms
+	are predefined and their search is very fast. It is also possible to complete the last
+	layer in a single algorithm (1LLL), or even with edges orientation and ZBLL algorithms
+	(EO+ZBLL) -edges orientation search lasts a bit more time-.

@@ -1,0 +1,88 @@
+<Collection Name="CMLL" Description="Removed U-slice movements from the start (for Roux)" CasesNumber="43">
+    <Case Index="0">Skip<Algorithm></Algorithm>
+    </Case>
+    <Case Index="1">Solved Adjacent<Algorithm>R U R' F' R U R' U' R' F R2 U' R'</Algorithm>
+    </Case>
+    <Case Index="2">Solved Diagonal<Algorithm>F R U' R' U' R U R' F' R U R' U' R' F R F'</Algorithm>
+    </Case>
+    <Case Index="3">H Columns<Algorithm>R U R' U R U' R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="4">H Rows<Algorithm>F R U R' U' R U R' U' R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="5">H Column<Algorithm>R U2 R2 F R F' U2 R' F R F'</Algorithm>
+    </Case>
+    <Case Index="6">H Row<Algorithm>r U' r2 D' r U' r' D r2 U r'</Algorithm>
+    </Case>
+    <Case Index="7">Pi Right Bar<Algorithm>F R U R' U' R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="8">Pi Down Slash<Algorithm>F R' F' R U2 R U' R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="9">Pi X<Algorithm>R' F2 D R2 U' R2 D' F2 R</Algorithm>
+    </Case>
+    <Case Index="10">Pi Up Slash<Algorithm>R U2 R' U' R U R' U2 R' F R F'</Algorithm>
+    </Case>
+    <Case Index="11">Pi Columns<Algorithm>r U' r2 D' r U r' D r2 U r'</Algorithm>
+    </Case>
+    <Case Index="12">Pi Left Bar<Algorithm>R' U' R' F R F' R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="13">U Up Slash<Algorithm>R2 D R' U2 R D' R' U2 R'</Algorithm>
+    </Case>
+    <Case Index="14">U Down Slash<Algorithm>R2 D' R U2 R' D R U2 R</Algorithm>
+    </Case>
+    <Case Index="15">U Bottom Row<Algorithm>R' U' R U' R' U2 R2 U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="16">U Rows<Algorithm>F R2 D R' U R D' R2 U' F'</Algorithm>
+    </Case>
+    <Case Index="17">U X<Algorithm>r U' r' U r' D' r U' r' D r</Algorithm>
+    </Case>
+    <Case Index="18">U Upper Row<Algorithm>F R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="19">T Left Bar<Algorithm>R U R' U' R' F R F'</Algorithm>
+    </Case>
+    <Case Index="20">T Right Bar<Algorithm>r' F' r U r U' r' F</Algorithm>
+    </Case>
+    <Case Index="21">T Rows<Algorithm>F R' F R2 U' R' U' R U R' F2</Algorithm>
+    </Case>
+    <Case Index="22">T Bottom Row<Algorithm>r' U r U2 R2 F R F' R</Algorithm>
+    </Case>
+    <Case Index="23">T Top Row<Algorithm>r' D' r U r' D r U' r U r'</Algorithm>
+    </Case>
+    <Case Index="24">T Columns<Algorithm>r U' r2 D' r U2 r' D r2 U r'</Algorithm>
+    </Case>
+    <Case Index="25">Sune Left Bar<Algorithm>R U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="26">Sune X<Algorithm>L' U2 L U2 r U' r' F</Algorithm>
+    </Case>
+    <Case Index="27">Sune Up Slash<Algorithm>F R' F' R U2 R U2 R'</Algorithm>
+    </Case>
+    <Case Index="28">Sune Columns<Algorithm>R U R' U R U' R D R' U' R D' R2</Algorithm>
+    </Case>
+    <Case Index="29">Sune Right Bar<Algorithm>R U R' U R' F R F' R U2 R'</Algorithm>
+    </Case>
+    <Case Index="30">Sune Down Slash<Algorithm>r U' r' F R' F' R</Algorithm>
+    </Case>
+    <Case Index="31">Anti Sune Right Bar<Algorithm>R' U' R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="32">Anti Sune Columns<Algorithm>R2 D R' U R D' R' U R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="33">Anti Sune Down Slash<Algorithm>F' L F L' U2 L' U2 L</Algorithm>
+    </Case>
+    <Case Index="34">Anti Sune X<Algorithm>R U2 R' U2 R' F R F'</Algorithm>
+    </Case>
+    <Case Index="35">Anti Sune Up Slash<Algorithm>R' F R F' r U r'</Algorithm>
+    </Case>
+    <Case Index="36">Anti Sune Left Bar<Algorithm>R U2 R' F R' F' R U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="37">L Best<Algorithm>F R U' R' U' R U R' F'</Algorithm>
+    </Case>
+    <Case Index="38">L Good<Algorithm>F R' F' R U R U' R'</Algorithm>
+    </Case>
+    <Case Index="39">L Pure<Algorithm>R U R' U R U' R' U R U' R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="40">L Front Commutator<Algorithm>R U2 R D R' U2 R D' R2</Algorithm>
+    </Case>
+    <Case Index="41">L Diagonal<Algorithm>R U2 R2 F R F' R U2 R'</Algorithm>
+    </Case>
+    <Case Index="42">L Back Commutator<Algorithm>R' U2 R' D' R U2 R' D R2</Algorithm>
+    </Case>
+</Collection>
