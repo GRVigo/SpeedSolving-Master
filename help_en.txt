@@ -23,15 +23,15 @@ Max. Inspections:
 Cancellations:
 
 	If the cancellation option is enabled, cancellation of movements will be applyed to
-	each solution in order to get the lower STM (single turn metric). Cancellations STM
+	each solution in order to get the lower metric (STM by default). Cancellations metric
 	will be shown surrounded by parentheses at the begining of each solve, near the 
-	regular STM. This STM will be used for evaluate the best solve, if the best solve
+	regular metric. This metric will be used for evaluate the best solve, if the best solve
 	option is enabled.
 
 
 Best Solve:
 	
-	If this option is enabled, the best solve (with lower STM) will be shown in detail.
+	If this option is enabled, the best solve (with lower metric) will be shown in detail.
 
 
 Regrips:
@@ -72,12 +72,12 @@ Cache:
 	the cache won't work (Roux second block depth and Petrus F2L depth don't affect to cache).
 
 
-Cores
+Cores:
 
 	This parameter specifies the amount of CPU cores used in the search. A '0' value means all
 	available cores will be used.
 
-History
+History:
 
 	Each time you get a search result, the report will be saved in the history, so you can
 	perform several searches without losing your results.

@@ -44,15 +44,17 @@ namespace grcube3
             AlgCOLL[i].clear();
             AlgEPLL[i].clear();
 			
-			CaseZBLL[i].clear();
-			CaseOCLL[i].clear();
-			CasePLL[i].clear();
-			CaseCOLL[i].clear();
-			CaseEPLL[i].clear();
+            CasesZBLL[i].clear();
+            CasesOCLL[i].clear();
+            CasesPLL[i].clear();
+            CasesCOLL[i].clear();
+            CasesEPLL[i].clear();
         }
 		
         MaxDepthBlock = MaxDepthF2L = 0u;
         TimeBlock = TimeExpBlock = TimeEO = TimeF2L = TimeZBLL = TimeOCLL = TimePLL = TimeCOLL = TimeEPLL = 0.0;
+		
+		Metric = Metrics::Movements; // Default metric
 	}
 
     // Search the best block solve algorithm with the given search deep
@@ -644,12 +646,12 @@ namespace grcube3
 			int sp = static_cast<int>(spin);
 
 			AlgZBLL[sp].clear();
-			CaseZBLL[sp].clear();
+            CasesZBLL[sp].clear();
 
 			for (uint n = 0u; n < Blocks[sp].size(); n++)
 			{
 				AlgZBLL[sp].push_back(Algorithm(""));
-				CaseZBLL[sp].push_back("");
+                CasesZBLL[sp].push_back("");
 
 				Algorithm Alg = Inspections[sp][n];
 				Alg += Blocks[sp][n];
@@ -662,7 +664,7 @@ namespace grcube3
 
 				Stp AUFStep;
 
-				Cube::SolveLL(AlgZBLL[sp][n], CaseZBLL[sp][n], AUFStep, AlgSets::ZBLL, CubeZBLL);
+                Cube::SolveLL(AlgZBLL[sp][n], CasesZBLL[sp][n], AUFStep, AlgSets::ZBLL, CubeZBLL);
 
 				AlgZBLL[sp][n].Append(AUFStep);
 			}
@@ -682,12 +684,12 @@ namespace grcube3
 			int sp = static_cast<int>(spin);
 
 			AlgOCLL[sp].clear();
-			CaseOCLL[sp].clear();
+            CasesOCLL[sp].clear();
 
 			for (uint n = 0u; n < Blocks[sp].size(); n++)
 			{
 				AlgOCLL[sp].push_back(Algorithm(""));
-				CaseOCLL[sp].push_back("");
+                CasesOCLL[sp].push_back("");
 
 				Algorithm Alg = Inspections[sp][n];
 				Alg += Blocks[sp][n];
@@ -698,7 +700,7 @@ namespace grcube3
 				Cube CubeF2L = CubeBase;
 				CubeF2L.ApplyAlgorithm(Alg);
 
-				Cube::OrientateLL(AlgOCLL[sp][n], CaseOCLL[sp][n], AlgSets::OCLL, CubeF2L);
+                Cube::OrientateLL(AlgOCLL[sp][n], CasesOCLL[sp][n], AlgSets::OCLL, CubeF2L);
 			}
 		}
 
@@ -716,12 +718,12 @@ namespace grcube3
 			int sp = static_cast<int>(spin);
 
 			AlgPLL[sp].clear();
-			CasePLL[sp].clear();
+            CasesPLL[sp].clear();
 
 			for (uint n = 0u; n < Blocks[sp].size(); n++)
 			{
 				AlgPLL[sp].push_back(Algorithm(""));
-				CasePLL[sp].push_back("");
+                CasesPLL[sp].push_back("");
 
 				Algorithm Alg = Inspections[sp][n];
 				Alg += Blocks[sp][n];
@@ -735,7 +737,7 @@ namespace grcube3
 
 				Stp AUFStep;
 
-				Cube::SolveLL(AlgPLL[sp][n], CasePLL[sp][n], AUFStep, AlgSets::PLL, CubeOCLL);
+                Cube::SolveLL(AlgPLL[sp][n], CasesPLL[sp][n], AUFStep, AlgSets::PLL, CubeOCLL);
 
 				AlgPLL[sp][n].Append(AUFStep);
 			}
@@ -755,12 +757,12 @@ namespace grcube3
 			int sp = static_cast<int>(spin);
 
 			AlgCOLL[sp].clear();
-			CaseCOLL[sp].clear();
+            CasesCOLL[sp].clear();
 
 			for (uint n = 0u; n < Blocks[sp].size(); n++)
 			{
 				AlgCOLL[sp].push_back(Algorithm(""));
-				CaseCOLL[sp].push_back("");
+                CasesCOLL[sp].push_back("");
 
 				Algorithm Alg = Inspections[sp][n];
 				Alg += Blocks[sp][n];
@@ -773,7 +775,7 @@ namespace grcube3
 
                 Stp LastStep;
 
-                Cube::CornersLL(AlgCOLL[sp][n], CaseCOLL[sp][n], LastStep, AlgSets::COLL, CubeF2L);
+                Cube::CornersLL(AlgCOLL[sp][n], CasesCOLL[sp][n], LastStep, AlgSets::COLL, CubeF2L);
 
                 AlgCOLL[sp][n].Append(LastStep);
 			}
@@ -793,12 +795,12 @@ namespace grcube3
 			int sp = static_cast<int>(spin);
 
 			AlgEPLL[sp].clear();
-			CaseEPLL[sp].clear();
+            CasesEPLL[sp].clear();
 
 			for (uint n = 0u; n < Blocks[sp].size(); n++)
 			{
 				AlgEPLL[sp].push_back(Algorithm(""));
-				CaseEPLL[sp].push_back("");
+                CasesEPLL[sp].push_back("");
 
 				Algorithm Alg = Inspections[sp][n];
 				Alg += Blocks[sp][n];
@@ -812,7 +814,7 @@ namespace grcube3
 
 				Stp AUFStep;
 
-				Cube::SolveLL(AlgEPLL[sp][n], CaseEPLL[sp][n], AUFStep, AlgSets::EPLL, CubeCOLL);
+                Cube::SolveLL(AlgEPLL[sp][n], CasesEPLL[sp][n], AUFStep, AlgSets::EPLL, CubeCOLL);
 
 				AlgEPLL[sp][n].Append(AUFStep);
 			}
@@ -843,7 +845,6 @@ namespace grcube3
 				}
 			}
 		}
-
 	}
 	
 	// Check if Petrus block is built
@@ -1087,9 +1088,9 @@ namespace grcube3
 
 				if (IsBlockBuilt(C))
 				{
-					ReportLine += "[" + C.GetSpinText() + "|" + std::to_string(GetSolveSTM(C.GetSpin(), n));
-					if (cancellations) ReportLine += "(" + std::to_string(GetCancellationsSTM(spin, n)) + ")";
-					ReportLine += " STM]: ";
+					ReportLine += "[" + C.GetSpinText() + "|" + Algorithm::GetMetricValue(GetMetricSolve(C.GetSpin(), n));
+					if (cancellations) ReportLine += "(" + Algorithm::GetMetricValue(GetMetricCancellations(spin, n)) + ")";
+					ReportLine += " " + Algorithm::GetMetricString(Metric) +  "]: ";
 					if (!Inspections[sp][n].Empty()) ReportLine += "(" + Inspections[sp][n].ToString() + ") ";
 					ReportLine += "(" + Blocks[sp][n].ToString() + ")";
 				}
@@ -1098,9 +1099,9 @@ namespace grcube3
 					if (debug)
 					{
 						ReportLine += "[" + C.GetSpinText() + "]: ";
-						if (Inspections[sp][n].GetSize() > 0u) ReportLine += "(" + Inspections[sp][n].ToString() + ") ";
+                        if (!Inspections[sp][n].Empty()) ReportLine += "(" + Inspections[sp][n].ToString() + ") ";
 						ReportLine += "Block not built in " + std::to_string(MaxDepthBlock) + " steps";
-						if (Blocks[sp][n].GetSize() > 0u) ReportLine += ": (" + Blocks[sp][n].ToString() + ")\n";
+                        if (!Blocks[sp][n].Empty()) ReportLine += ": (" + Blocks[sp][n].ToString() + ")\n";
 						else ReportLine.push_back('\n');
 						Report += ReportLine;
 					}
@@ -1111,7 +1112,7 @@ namespace grcube3
 
 				if (IsExpandedBlockBuilt(C))
 				{
-					if (ExpandedBlocks[sp][n].GetSize() > 0u) ReportLine += " (" + ExpandedBlocks[sp][n].ToString() + ")";
+                    if (!ExpandedBlocks[sp][n].Empty()) ReportLine += " (" + ExpandedBlocks[sp][n].ToString() + ")";
 				}
 				else
 				{
@@ -1127,7 +1128,7 @@ namespace grcube3
 
 				if (IsExpandedBlockBuilt(C) && C.EO())
 				{
-					if (EO[sp][n].GetSize() > 0u) ReportLine += " (" + EO[sp][n].ToString() + ")";
+                    if (!EO[sp][n].Empty()) ReportLine += " (" + EO[sp][n].ToString() + ")";
 				}
 				else
 				{
@@ -1145,7 +1146,7 @@ namespace grcube3
 					C.IsSolved(Cube::AdjacentLayer(Cube::GetDownSliceLayer(spin))) &&
 					C.EO())
 				{
-					if (F2L[sp][n].GetSize() > 0) ReportLine += " (" + F2L[sp][n].ToString() + ")";
+                    if (!F2L[sp][n].Empty()) ReportLine += " (" + F2L[sp][n].ToString() + ")";
 				}
 				else
 				{
@@ -1160,34 +1161,34 @@ namespace grcube3
 				if (!AlgZBLL[sp].empty())
 				{
 					C.ApplyAlgorithm(AlgZBLL[sp][n]);
-					if (debug) ReportLine += " {ZBLL: " + CaseZBLL[sp][n] + "}";
-					if (AlgZBLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgZBLL[sp][n].ToString() + ")";
+                    if (debug) ReportLine += " {ZBLL: " + CasesZBLL[sp][n] + "}";
+                    if (!AlgZBLL[sp][n].Empty()) ReportLine += " (" + AlgZBLL[sp][n].ToString() + ")";
 				}
 
 				if (!AlgOCLL[sp].empty())
 				{
 					C.ApplyAlgorithm(AlgOCLL[sp][n]);
-					if (debug) ReportLine += " {OCLL: " + CaseOCLL[sp][n] + "}";
-					if (AlgOCLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgOCLL[sp][n].ToString() + ")";
+                    if (debug) ReportLine += " {OCLL: " + CasesOCLL[sp][n] + "}";
+                    if (!AlgOCLL[sp][n].Empty()) ReportLine += " (" + AlgOCLL[sp][n].ToString() + ")";
 				}
 				if (!AlgPLL[sp].empty())
 				{
 					C.ApplyAlgorithm(AlgPLL[sp][n]);
-					if (debug) ReportLine += " {PLL: " + CasePLL[sp][n] + "}";
-					if (AlgPLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgPLL[sp][n].ToString() + ")";
+                    if (debug) ReportLine += " {PLL: " + CasesPLL[sp][n] + "}";
+                    if (!AlgPLL[sp][n].Empty()) ReportLine += " (" + AlgPLL[sp][n].ToString() + ")";
 				}
 
 				if (!AlgCOLL[sp].empty())
 				{
 					C.ApplyAlgorithm(AlgCOLL[sp][n]);
-					if (debug) ReportLine += " {COLL: " + CaseCOLL[sp][n] + "}";
-					if (AlgCOLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgCOLL[sp][n].ToString() + ")";
+                    if (debug) ReportLine += " {COLL: " + CasesCOLL[sp][n] + "}";
+                    if (!AlgCOLL[sp][n].Empty()) ReportLine += " (" + AlgCOLL[sp][n].ToString() + ")";
 				}
 				if (!AlgEPLL[sp].empty())
 				{
 					C.ApplyAlgorithm(AlgEPLL[sp][n]);
-					if (debug) ReportLine += " {EPLL: " + CaseEPLL[sp][n] + "}";
-					if (AlgEPLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgEPLL[sp][n].ToString() + ")";
+                    if (debug) ReportLine += " {EPLL: " + CasesEPLL[sp][n] + "}";
+                    if (!AlgEPLL[sp][n].Empty()) ReportLine += " (" + AlgEPLL[sp][n].ToString() + ")";
 				}
 
 				if (debug)
@@ -1209,12 +1210,12 @@ namespace grcube3
     {
         std::string Report;
 
-        Report += "Total search time: " + std::to_string(GetFullTime()) + " s\n";
+        Report += "Total search time: " + std::to_string(GetTime()) + " s\n";
         Report += "Blocks search time: " + std::to_string(GetTimeBlock()) + " s\n";
         Report += "Expanded blocks search time: " + std::to_string(GetTimeExpBlock()) + " s\n";
         Report += "Edges orientation search time: " + std::to_string(GetTimeEO()) + " s\n";
         Report += "F2L search time: " + std::to_string(GetTimeF2L()) + " s\n";
-        Report += "Last layer search time: " + std::to_string(GetTimeLastLayer()) + " s\n";
+        Report += "Last layer search time: " + std::to_string(GetTimeLL()) + " s\n";
         Report += "Threads used: " + std::to_string(GetUsedCores() > 0 ? GetUsedCores() : 0) +
                   " of " + std::to_string(DeepSearch::GetSystemCores()) + "\n";
 
@@ -1240,7 +1241,7 @@ namespace grcube3
 
 		Cube C = CubeBase;
 		C.ApplyAlgorithm(Inspections[si][n]);
-        if (Inspections[si][n].GetSize() > 0u) Report += "Inspection [" + C.GetSpinText() + "]: " + Inspections[si][n].ToString() + "\n\n";
+        if (!Inspections[si][n].Empty()) Report += "Inspection [" + C.GetSpinText() + "]: " + Inspections[si][n].ToString() + "\n\n";
 
 		C.ApplyAlgorithm(Blocks[si][n]);
 		if (!IsBlockBuilt(C))
@@ -1248,7 +1249,7 @@ namespace grcube3
 			Report += "Block not built in " + std::to_string(MaxDepthBlock) + " movements\n";
 			return Report;
 		}
-        Report += "Block (" + std::to_string(GetLengthBlock(sp, n)) + "): " + Blocks[si][n].ToString() + "\n";
+        Report += "Block (" + Algorithm::GetMetricValue(GetMetricBlock(sp, n)) + "): " + Blocks[si][n].ToString() + "\n";
 
 		C.ApplyAlgorithm(ExpandedBlocks[si][n]);
 		if (!IsExpandedBlockBuilt(C))
@@ -1256,8 +1257,8 @@ namespace grcube3
 			Report += "Expanded block not built!\n";
 			return Report;
 		}
-        if (ExpandedBlocks[si][n].GetSize() > 0u) Report += "Expanded block (" + std::to_string(GetLengthExpandedBlock(sp, n)) + "): " +
-                                                              ExpandedBlocks[si][n].ToString() + "\n";
+        if (!ExpandedBlocks[si][n].Empty()) Report += "Expanded block (" + Algorithm::GetMetricValue(GetMetricExpandedBlock(sp, n)) + "): " +
+                                                      ExpandedBlocks[si][n].ToString() + "\n";
 
 		C.ApplyAlgorithm(EO[si][n]);
 		if (!IsExpandedBlockBuilt(C) || !C.EO())
@@ -1265,7 +1266,7 @@ namespace grcube3
 			Report += "Edges not oriented!\n";
 			return Report;
 		}
-        if (EO[si][n].GetSize() > 0u) Report += "EO (" + std::to_string(GetLengthEO(sp, n)) + "): " + EO[si][n].ToString() + "\n";
+        if (!EO[si][n].Empty()) Report += "EO (" + Algorithm::GetMetricValue(GetMetricEO(sp, n)) + "): " + EO[si][n].ToString() + "\n";
 
 		C.ApplyAlgorithm(F2L[si][n]);
 		if (!CFOP::IsF2LBuilt(C, Cube::GetDownSliceLayer(C.GetSpin())))
@@ -1273,28 +1274,28 @@ namespace grcube3
 			Report += "F2L not built!\n";
 			return Report;
 		}
-        if (F2L[si][n].GetSize() > 0u) Report += "F2L (" + std::to_string(GetLengthF2L(sp, n)) + "): " + F2L[si][n].ToString() + "\n";
+        if (!F2L[si][n].Empty()) Report += "F2L (" + Algorithm::GetMetricValue(GetMetricF2L(sp, n)) + "): " + F2L[si][n].ToString() + "\n";
 
 		if (!AlgZBLL[si].empty())
 		{
 			C.ApplyAlgorithm(AlgZBLL[si][n]);
-            Report += "ZBLL (" + std::to_string(GetLengthZBLL(sp, n)) + "): " + AlgZBLL[si][n].ToString() + "\n";
+            if (!AlgZBLL[si][n].Empty()) Report += "ZBLL (" + Algorithm::GetMetricValue(GetMetricZBLL(sp, n)) + "): " + AlgZBLL[si][n].ToString() + "\n";
 		}
 		else if (!AlgOCLL[si].empty() && !AlgPLL[si].empty())
 		{
 			C.ApplyAlgorithm(AlgOCLL[si][n]);
-            if (AlgOCLL[si][n].GetSize() > 0u) Report += "OCLL (" + std::to_string(GetLengthOCLL(sp, n)) + "): " + AlgOCLL[si][n].ToString() + "\n";
+            if (!AlgOCLL[si][n].Empty()) Report += "OCLL (" + Algorithm::GetMetricValue(GetMetricOCLL(sp, n)) + "): " + AlgOCLL[si][n].ToString() + "\n";
 
 			C.ApplyAlgorithm(AlgPLL[si][n]);
-            if (AlgPLL[si][n].GetSize() > 0u) Report += "PLL (" + std::to_string(GetLengthPLL(sp, n)) + "): " + AlgPLL[si][n].ToString() + "\n";
+            if (!AlgPLL[si][n].Empty()) Report += "PLL (" + Algorithm::GetMetricValue(GetMetricPLL(sp, n)) + "): " + AlgPLL[si][n].ToString() + "\n";
 		}
 		else if (!AlgCOLL[si].empty() && !AlgEPLL[si].empty())
 		{
 			C.ApplyAlgorithm(AlgCOLL[si][n]);
-            if (AlgCOLL[si][n].GetSize() > 0u) Report += "COLL (" + std::to_string(GetLengthCOLL(sp, n)) + "): " + AlgCOLL[si][n].ToString() + "\n";
+            if (!AlgCOLL[si][n].Empty()) Report += "COLL (" + Algorithm::GetMetricValue(GetMetricCOLL(sp, n)) + "): " + AlgCOLL[si][n].ToString() + "\n";
 
 			C.ApplyAlgorithm(AlgEPLL[si][n]);
-            if (AlgEPLL[si][n].GetSize() > 0u) Report += "EPLL (" + std::to_string(GetLengthEPLL(sp, n)) + "): " + AlgEPLL[si][n].ToString() + "\n";
+            if (!AlgEPLL[si][n].Empty()) Report += "EPLL (" + Algorithm::GetMetricValue(GetMetricEPLL(sp, n)) + "): " + AlgEPLL[si][n].ToString() + "\n";
 		}
 		else
 		{
@@ -1303,15 +1304,15 @@ namespace grcube3
 		}
 
         // Show summary
-        Report += "\nSolve movements: " + std::to_string(GetSolveSTM(sp, n)) + " STM\n";
-		if (!CaseOCLL[si].empty() && !CasePLL[si].empty()) // OCLL + PLL
+        Report += "\nSolve metric: " + Algorithm::GetMetricValue(GetMetricSolve(sp, n)) + " " + Algorithm::GetMetricString(Metric) + "\n";
+        if (!CasesOCLL[si].empty() && !CasesPLL[si].empty()) // OCLL + PLL
 		{
 			Report += "OCLL case: " + GetTextOCLLCase(sp, n) + "\n";
 			Report += "PLL case: " + GetTextPLLCase(sp, n) + "\n";
 		}
-		else if (!CaseZBLL[si].empty()) // ZBLL
+        else if (!CasesZBLL[si].empty()) // ZBLL
 			Report += "ZBLL case: " + GetTextZBLLCase(sp, n) + "\n";
-		else if (!CaseCOLL[si].empty() && !CaseEPLL[si].empty()) // COLL + EPLL
+        else if (!CasesCOLL[si].empty() && !CasesEPLL[si].empty()) // COLL + EPLL
 		{
 			Report += "COLL case: " + GetTextCOLLCase(sp, n) + "\n";
 			Report += "EPLL case: " + GetTextEPLLCase(sp, n) + "\n";
@@ -1353,10 +1354,11 @@ namespace grcube3
         return C.IsSolved();
     }
 
-	// Get the solve STM metric
-	uint Petrus::GetSolveSTM(const Spn spin, const uint n) const
+	// Get the solve metric
+    float Petrus::GetMetricSolve(const Spn spin, const uint n) const
 	{
 		const int si = static_cast<int>(spin); // Spin index
+		
 		Algorithm A = Blocks[si][n];
 		A += ExpandedBlocks[si][n];
 		A += EO[si][n];
@@ -1366,7 +1368,8 @@ namespace grcube3
 		if (!AlgPLL[si].empty()) A += AlgPLL[si][n];
 		if (!AlgCOLL[si].empty()) A += AlgCOLL[si][n];
 		if (!AlgEPLL[si].empty()) A += AlgEPLL[si][n];
-		return A.GetSTM();
+		
+		return A.GetMetric(Metric);
 	}
 
 	// Get the full solve with cancellations
@@ -1399,7 +1402,8 @@ namespace grcube3
     // Get the best solve report
     std::string Petrus::GetBestReport(const bool Cancellations) const
     {
-		uint STM, min_STM = 0u, Bestn;
+		float M, min_M = 0.0f;
+		uint Bestn;
 		Spn BestSpin;
 
 		for (int sp = 0; sp < 24; sp++)
@@ -1412,26 +1416,24 @@ namespace grcube3
 			{
 				if (!IsSolved(Spin, n)) continue;
 
-				if (Cancellations)
+				if (Cancellations) M = GetMetricCancellations(Spin, n);
+                else M = GetMetricSolve(Spin, n);
+				
+				if (min_M == 0.0f || M < min_M)
 				{
-					Algorithm C = GetCancellations(Spin, n);
-					STM = C.GetSTM();
-				}
-				else STM = GetSolveSTM(Spin, n);
-				if (min_STM == 0u || STM < min_STM)
-				{
-					min_STM = STM;
+					min_M = M;
 					BestSpin = Spin;
 					Bestn = n;
 				}
 			}
 		}
-		if (min_STM == 0u) return "No Petrus solves!\n";
+		if (min_M == 0.0f) return "No Petrus solves!\n";
 
 		if (Cancellations)
 		{
 			Algorithm C = GetCancellations(BestSpin, Bestn);
-			return GetReport(BestSpin, Bestn) + "\nCancellations (" + std::to_string(C.GetSTM()) + " STM): " + C.ToString() + "\n";
+			return GetReport(BestSpin, Bestn) + "\nCancellations (" + Algorithm::GetMetricValue(C.GetMetric(Metric)) + " " + 
+			       Algorithm::GetMetricString(Metric) + "): " + C.ToString() + "\n";
 		}
 
 		return GetReport(BestSpin, Bestn);

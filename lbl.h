@@ -39,127 +39,147 @@ namespace grcube3
 
 		// Reset the search results
 		void Reset();
-	
-		// Search the best first layer cross solve algorithms
-		// Return false if no cross found
-		bool SearchFLCross(const Lyr);
-        
-        // Search the first layer (four corners)
-        bool SearchFL();
 
-		// Search the second layer
-        bool SearchSL();
+		bool SearchFLCross(const Lyr); // Search the best first layer cross solves
+        bool SearchFLCorners(); // Search the first layer (four corners)
+        bool SearchSLEdges(); // Search the second layer
+		void SearchLLCross1(); // Search the last layer cross (only orientation)
+		void SearchLLCross2(); // Search the last layer cross (permutation)
+		void SearchLLCorners1(); // Search the last layer corners (only permutation)
+		void SearchLLCorners2(); // Search the last layer corners (orientation)
 		
-		// Search the last layer cross (only orientation)
-		void SearchLLCross1();
+		// Set the metric for evaluations
+		void SetMetric(const Metrics m) { Metric = m; }
 		
-		// Search the last layer cross (permutation)
-		void SearchLLCross2();
-		
-		// Search the last layer corners (only permutation)
-		void SearchLLCorners1();
-		
-		// Search the last layer corners (orientation)
-		void SearchLLCorners2();
-
-		// Check if the first layer cross is solved
-        bool IsFLCrossSolved() const;
-		
-		// Check if first layer is solved
-        bool IsFLSolved() const;
-
-		// Check if second layer is solved
-        bool IsSLSolved() const;
+        bool IsFLCrossSolved() const; // Check if the first layer cross is solved	
+        bool IsFLSolved() const; // Check if first layer is solved
+        bool IsSLSolved() const; // Check if second layer is solved
 
 		// Get search algorithms texts
         std::string GetTextScramble() const { return Scramble.ToString(); }
         std::string GetTextInspection() const { return Inspections[FLi].ToString(); }
  
-        std::string GetTextFLCrossFirstSolve() const { return FLCross.size() > 0 ? FLCross[0].ToString() : ""; }
-        std::string GetTextFLCrossSecondSolve() const { return FLCross.size() > 1 ? FLCross[1].ToString() : ""; }
-        std::string GetTextFLCrossThirdSolve() const { return FLCross.size() > 2 ? FLCross[2].ToString() : ""; }
-		std::string GetTextFLCrossFourthSolve() const { return FLCross.size() > 3 ? FLCross[3].ToString() : ""; }
+        std::string GetTextFLEdge_1() const { return FLCross.size() > 0 ? FLCross[0].ToString() : ""; }
+        std::string GetTextFLEdge_2() const { return FLCross.size() > 1 ? FLCross[1].ToString() : ""; }
+        std::string GetTextFLEdge_3() const { return FLCross.size() > 2 ? FLCross[2].ToString() : ""; }
+		std::string GetTextFLEdge_4() const { return FLCross.size() > 3 ? FLCross[3].ToString() : ""; }
 		
-        std::string GetTextFLFirstSolve() const { return FL.size() > 0 ? FL[0].ToString() : ""; }
-        std::string GetTextFLSecondSolve() const { return FL.size() > 1 ? FL[1].ToString() : ""; }
-        std::string GetTextFLThirdSolve() const { return FL.size() > 2 ? FL[2].ToString() : ""; }
-		std::string GetTextFLFourthSolve() const { return FL.size() > 3 ? FL[3].ToString() : ""; }
+        std::string GetTextFLCorner_1() const { return FLCorners.size() > 0 ? FLCorners[0].ToString() : ""; }
+        std::string GetTextFLCorner_2() const { return FLCorners.size() > 1 ? FLCorners[1].ToString() : ""; }
+        std::string GetTextFLCorner_3() const { return FLCorners.size() > 2 ? FLCorners[2].ToString() : ""; }
+		std::string GetTextFLCorner_4() const { return FLCorners.size() > 3 ? FLCorners[3].ToString() : ""; }
 		
-		std::string GetTextSLFirstSolve() const { return SL.size() > 0 ? SL[0].ToString() : ""; }
-        std::string GetTextSLSecondSolve() const { return SL.size() > 1 ? SL[1].ToString() : ""; }
-        std::string GetTextSLThirdSolve() const { return SL.size() > 2 ? SL[2].ToString() : ""; }
-		std::string GetTextSLFourthSolve() const { return SL.size() > 3 ? SL[3].ToString() : ""; }
+		std::string GetTextSLEdge_1() const { return SLEdges.size() > 0 ? SLEdges[0].ToString() : ""; }
+        std::string GetTextSLEdge_2() const { return SLEdges.size() > 1 ? SLEdges[1].ToString() : ""; }
+        std::string GetTextSLEdge_3() const { return SLEdges.size() > 2 ? SLEdges[2].ToString() : ""; }
+		std::string GetTextSLEdge_4() const { return SLEdges.size() > 3 ? SLEdges[3].ToString() : ""; }
 
-        std::string GetTextLLCross1Solve(bool = false) const;
-		std::string GetTextLLCross2Solve(bool = false) const;
-		std::string GetTextLLCorners1Solve(bool = false) const;
-		std::string GetTextLLCorners2Solve(bool = false) const;
+        std::string GetTextLLCross_1(bool = false) const;
+		std::string GetTextLLCross_2(bool = false) const;
+		std::string GetTextLLCorners_1(bool = false) const;
+		std::string GetTextLLCorners_2(bool = false) const;
 
         // Get search algorithms lengths
         uint GetLengthScramble() const { return Scramble.GetNumSteps(); }
         uint GetLengthInspection() const { return Inspections[FLi].GetNumSteps(); }
 		
-		uint GetLengthFLCrossFirstSolve() const { return FLCross.size() > 0 ? FLCross[0].GetNumSteps() : 0u; }
-        uint GetLengthFLCrossSecondSolve() const { return FLCross.size() > 1 ? FLCross[1].GetNumSteps() : 0u; }
-        uint GetLengthFLCrossThirdSolve() const { return FLCross.size() > 2 ? FLCross[2].GetNumSteps() : 0u; }
-        uint GetLengthFLCrossFourthSolve() const { return FLCross.size() > 3 ? FLCross[3].GetNumSteps() : 0u; }
-		uint GetLengthFLCrossSolve() const
+		uint GetLengthFLEdge_1() const { return FLCross.size() > 0 ? FLCross[0].GetNumSteps() : 0u; }
+        uint GetLengthFLEdge_2() const { return FLCross.size() > 1 ? FLCross[1].GetNumSteps() : 0u; }
+        uint GetLengthFLEdge_3() const { return FLCross.size() > 2 ? FLCross[2].GetNumSteps() : 0u; }
+        uint GetLengthFLEdge_4() const { return FLCross.size() > 3 ? FLCross[3].GetNumSteps() : 0u; }
+		uint GetLengthFLCross() const
 		{
-			return GetLengthFLCrossFirstSolve() + GetLengthFLCrossSecondSolve() + 
-			       GetLengthFLCrossThirdSolve() + GetLengthFLCrossFourthSolve();
+			return GetLengthFLEdge_1() + GetLengthFLEdge_2() + 
+			       GetLengthFLEdge_3() + GetLengthFLEdge_4();
 		}
 		
-        uint GetLengthFLFirstSolve() const { return FL.size() > 0 ? FL[0].GetNumSteps() : 0u; }
-        uint GetLengthFLSecondSolve() const { return FL.size() > 1 ? FL[1].GetNumSteps() : 0u; }
-        uint GetLengthFLThirdSolve() const { return FL.size() > 2 ? FL[2].GetNumSteps() : 0u; }
-        uint GetLengthFLFourthSolve() const	{ return FL.size() > 3 ? FL[3].GetNumSteps() : 0u; }
-		uint GetLengthFirstLayer() const
+        uint GetLengthFLCorner_1() const { return FLCorners.size() > 0 ? FLCorners[0].GetNumSteps() : 0u; }
+        uint GetLengthFLCorner_2() const { return FLCorners.size() > 1 ? FLCorners[1].GetNumSteps() : 0u; }
+        uint GetLengthFLCorner_3() const { return FLCorners.size() > 2 ? FLCorners[2].GetNumSteps() : 0u; }
+        uint GetLengthFLCorner_4() const { return FLCorners.size() > 3 ? FLCorners[3].GetNumSteps() : 0u; }
+		uint GetLengthFLCorners() const
 		{
-			return GetLengthFLFirstSolve() + GetLengthFLSecondSolve() + 
-			       GetLengthFLThirdSolve() + GetLengthFLFourthSolve();
+			return GetLengthFLCorner_1() + GetLengthFLCorner_2() + 
+			       GetLengthFLCorner_3() + GetLengthFLCorner_4();
 		}
 		
-		uint GetLengthSLFirstSolve() const { return SL.size() > 0 ? SL[0].GetNumSteps() : 0u; }
-        uint GetLengthSLSecondSolve() const { return SL.size() > 1 ? SL[1].GetNumSteps() : 0u; }
-        uint GetLengthSLThirdSolve() const { return SL.size() > 2 ? SL[2].GetNumSteps() : 0u; }
-        uint GetLengthSLFourthSolve() const { return SL.size() > 3 ? SL[3].GetNumSteps() : 0u; }
-		uint GetLengthSecondLayer() const
+		uint GetLengthSLEdge_1() const { return SLEdges.size() > 0 ? SLEdges[0].GetNumSteps() : 0u; }
+        uint GetLengthSLEdge_2() const { return SLEdges.size() > 1 ? SLEdges[1].GetNumSteps() : 0u; }
+        uint GetLengthSLEdge_3() const { return SLEdges.size() > 2 ? SLEdges[2].GetNumSteps() : 0u; }
+        uint GetLengthSLEdge_4() const { return SLEdges.size() > 3 ? SLEdges[3].GetNumSteps() : 0u; }
+		uint GetLengthSL() const
 		{
-			return GetLengthSLFirstSolve() + GetLengthSLSecondSolve() + 
-			       GetLengthSLThirdSolve() + GetLengthSLFourthSolve();
+			return GetLengthSLEdge_1() + GetLengthSLEdge_2() + 
+			       GetLengthSLEdge_3() + GetLengthSLEdge_4();
 		}
 		
-        uint GetLengthLLCross1Solve() const { return LLCross1.GetNumSteps(); }
-		uint GetLengthLLCross2Solve() const { return LLCross2.GetNumSteps(); }
-		uint GetLengthLLCorners1Solve() const { return LLCorners1.GetNumSteps(); }
-		uint GetLengthLLCorners2Solve() const { return LLCorners2.GetNumSteps(); }
-		uint GetLengthLastLayer() const
+        uint GetLengthLLCross1() const { return LLCross1.GetNumSteps(); }
+		uint GetLengthLLCross2() const { return LLCross2.GetNumSteps(); }
+		uint GetLengthLLCorners1() const { return LLCorners1.GetNumSteps(); }
+		uint GetLengthLLCorners2() const { return LLCorners2.GetNumSteps(); }
+		uint GetLengthLL() const
 		{
-			return GetLengthLLCross1Solve() + GetLengthLLCross2Solve() +
-				   GetLengthLLCorners1Solve() + GetLengthLLCorners2Solve();
+			return GetLengthLLCross1() + GetLengthLLCross2() +
+				   GetLengthLLCorners1() + GetLengthLLCorners2();
 		}
 
-        // Get the full solve lengh (total number of movements) - inspection is not included
-        uint GetLengthSolve() const
-        {
-            return GetLengthFLCrossSolve() + GetLengthFirstLayer() + 
-                   GetLengthSecondLayer() + GetLengthLastLayer();
-        }
+        // Get metric values
+        float GetMetricSolve() const; // Get the full solve metric
+		float GetMetricScramble() const { return Scramble.GetMetric(Metric); }
+        float GetMetricInspection() const { return Inspections[FLi].GetMetric(Metric); }
+		
+		float GetMetricFLEdge_1() const { return FLCross.size() > 0 ? FLCross[0].GetMetric(Metric) : 0.0f; }
+        float GetMetricFLEdge_2() const { return FLCross.size() > 1 ? FLCross[1].GetMetric(Metric) : 0.0f; }
+        float GetMetricFLEdge_3() const { return FLCross.size() > 2 ? FLCross[2].GetMetric(Metric) : 0.0f; }
+        float GetMetricFLEdge_4() const { return FLCross.size() > 3 ? FLCross[3].GetMetric(Metric) : 0.0f; }
+		float GetMetricFLCross() const
+		{
+			return GetMetricFLEdge_1() + GetMetricFLEdge_2() + 
+			       GetMetricFLEdge_3() + GetMetricFLEdge_4();
+		}
+		
+        float GetMetricFLCorner_1() const { return FLCorners.size() > 0 ? FLCorners[0].GetMetric(Metric) : 0.0f; }
+        float GetMetricFLCorner_2() const { return FLCorners.size() > 1 ? FLCorners[1].GetMetric(Metric) : 0.0f; }
+        float GetMetricFLCorner_3() const { return FLCorners.size() > 2 ? FLCorners[2].GetMetric(Metric) : 0.0f; }
+        float GetMetricFLCorner_4() const { return FLCorners.size() > 3 ? FLCorners[3].GetMetric(Metric) : 0.0f; }
+		float GetMetricFLCorners() const
+		{
+			return GetMetricFLCorner_1() + GetMetricFLCorner_2() + 
+			       GetMetricFLCorner_3() + GetMetricFLCorner_4();
+		}
+		
+		float GetMetricSLEdge_1() const { return SLEdges.size() > 0 ? SLEdges[0].GetMetric(Metric) : 0.0f; }
+        float GetMetricSLEdge_2() const { return SLEdges.size() > 1 ? SLEdges[1].GetMetric(Metric) : 0.0f; }
+        float GetMetricSLEdge_3() const { return SLEdges.size() > 2 ? SLEdges[2].GetMetric(Metric) : 0.0f; }
+        float GetMetricSLEdge_4() const { return SLEdges.size() > 3 ? SLEdges[3].GetMetric(Metric) : 0.0f; }
+		float GetMetricSL() const
+		{
+			return GetMetricSLEdge_1() + GetMetricSLEdge_2() + 
+			       GetMetricSLEdge_3() + GetMetricSLEdge_4();
+		}
+		
+        float GetMetricLLCross1() const { return LLCross1.GetMetric(Metric); }
+		float GetMetricLLCross2() const { return LLCross2.GetMetric(Metric); }
+		float GetMetricLLCorners1() const { return LLCorners1.GetMetric(Metric); }
+		float GetMetricLLCorners2() const { return LLCorners2.GetMetric(Metric); }
+		float GetMetricLL() const
+		{
+			return GetMetricLLCross1() + GetMetricLLCross2() +
+				   GetMetricLLCorners1() + GetMetricLLCorners2();
+		}
 
         // Get the times elapsed searching
-        double GetFLCrossTime() const { return TimeFLCross; }
-        double GetFLTime() const { return TimeFL; }
-        double GetSLTime() const { return TimeSL; }
-        double GetLLCross1Time() const { return TimeLLCross1; }
-		double GetLLCross2Time() const { return TimeLLCross2; }
-		double GetLLCorners1Time() const { return TimeLLCorners1; }
-		double GetLLCorners2Time() const { return TimeLLCorners2; }
-        double GetLastLayerTime() const { return GetLLCross1Time() + GetLLCross2Time() +
-                                                 GetLLCorners1Time() + GetLLCorners2Time(); }
+        double GetTimeFLCross() const { return TimeFLCross; }
+        double GetTimeFLCorners() const { return TimeFLCorners; }
+        double GetTimeSL() const { return TimeSL; }
+        double GetTimeLLCross1() const { return TimeLLCross1; }
+		double GetTimeLLCross2() const { return TimeLLCross2; }
+		double GetTimeLLCorners1() const { return TimeLLCorners1; }
+		double GetTimeLLCorners2() const { return TimeLLCorners2; }
+        double GetTimeLL() const { return GetTimeLLCross1() + GetTimeLLCross2() + GetTimeLLCorners1() + GetTimeLLCorners2(); }
 												 
         // Get the time for the full search
-        double GetFullTime() const { return GetFLCrossTime() + GetFLTime() +
-                                            GetSLTime() + GetLastLayerTime(); }
+        double GetTime() const { return GetTimeFLCross() + GetTimeFLCorners() + GetTimeSL() + GetTimeLL(); }
 
         // Get a solve report
         std::string GetReport() const;
@@ -178,17 +198,21 @@ namespace grcube3
 		Algorithm Scramble, // Cube scramble
 				  LLCross1, LLCross2, // Orientation and permutation for last layer crosses
 				  LLCorners1, LLCorners2; // Permutation and orientation for last layer corners
+				  
 		std::vector<Algorithm> FLCross, // Algorithms vector for first layer cross
-							   FL, // Algorithms vector for first layer (four corners)
-							   SL; // Algorithms vector for second layer (four edges)
+							   FLCorners, // Algorithms vector for first layer (four corners)
+							   SLEdges; // Algorithms vector for second layer (four edges)
 
 		Lyr FirstLayer; // First layer
 		Fce FLFace; // First layer face
 		int FLi; // First layer/face index
+		
         Cube CubeBase; // Cube base
+		
+		Metrics Metric; // Metric for measures
 
         // Times
-        double TimeFLCross, TimeFL, TimeSL, TimeLLCross1, TimeLLCross2, TimeLLCorners1, TimeLLCorners2;
+        double TimeFLCross, TimeFLCorners, TimeSL, TimeLLCross1, TimeLLCross2, TimeLLCorners1, TimeLLCorners2;
 
 		int Cores; // Cores to use in the search: -1 = no multithreading, 0 = all avaliable cores, other = use this amount of cores
 

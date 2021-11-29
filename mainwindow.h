@@ -85,6 +85,10 @@ private slots:
 
     void on_pushButton_ZZ_Help_clicked();
 
+    void on_pushButton_ZoomPlus_clicked();
+
+    void on_pushButton_ZoomMinus_clicked();
+
 private:
     Ui::MainWindow *ui;
 

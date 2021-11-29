@@ -50,8 +50,8 @@ namespace grcube3
         CubeBase = Cube(Scramble);
 		
 		FLCross.clear();
-		FL.clear();
-		SL.clear();
+		FLCorners.clear();
+		SLEdges.clear();
 		LLCross1.Clear();
 		LLCross2.Clear();
 		LLCorners1.Clear();
@@ -61,7 +61,9 @@ namespace grcube3
 		FLFace = Cube::LayerToFace(FirstLayer);
 		FLi = static_cast<int>(FLFace); // First layer/face index
 		
-		TimeFLCross = TimeFL = TimeSL = TimeLLCross1 = TimeLLCross2 = TimeLLCorners1 = TimeLLCorners2 = 0.0f;
+		TimeFLCross = TimeFLCorners = TimeSL = TimeLLCross1 = TimeLLCross2 = TimeLLCorners1 = TimeLLCorners2 = 0.0f;
+		
+		Metric = Metrics::Movements; // Default metric
 	}
 	
 	// Search the best first layer cross solve algorithm
@@ -70,7 +72,7 @@ namespace grcube3
 	{
 		if (!Cube::IsExternalLayer(FstLayer)) return false;
 			
-		const auto time_Cross_start = std::chrono::system_clock::now();
+		const auto time_cross_start = std::chrono::system_clock::now();
 		
         FirstLayer = FstLayer;
         FLFace = Cube::LayerToFace(FirstLayer);
@@ -199,16 +201,16 @@ namespace grcube3
 
         } while (Cross_Found);
 
-		const std::chrono::duration<double> Cross_elapsed_seconds = std::chrono::system_clock::now() - time_Cross_start;
-        TimeFLCross = Cross_elapsed_seconds.count();
+		const std::chrono::duration<double> cross_elapsed_seconds = std::chrono::system_clock::now() - time_cross_start;
+        TimeFLCross = cross_elapsed_seconds.count();
 
         return IsFLCrossSolved();
 	}
 
 	// Search the first layer (four corners)
-	bool LBL::SearchFL()
+	bool LBL::SearchFLCorners()
 	{
-		const auto time_FL_start = std::chrono::system_clock::now();
+		const auto time_fl_start = std::chrono::system_clock::now();
 		
 		bool FL_Found = false; // First layer found flag
 
@@ -225,7 +227,7 @@ namespace grcube3
         SearchLevel L_FL_End(SearchCheck::CHECK);
         L_FL_End.Add(U_Lat);
 
-        FL.clear();
+        FLCorners.clear();
 		
 		Pgr CROSS;
 		Pcp FL_1, FL_2, FL_3, FL_4; // Corners to complete the first layer
@@ -281,7 +283,7 @@ namespace grcube3
 		{
 			FL_Aux = Scramble + Inspections[FLi];
 			for (const auto& Cross_Alg : FLCross) FL_Aux += Cross_Alg;
-			for (const auto& FL_Alg : FL) FL_Aux += FL_Alg;
+			for (const auto& FL_Alg : FLCorners) FL_Aux += FL_Alg;
 
 			Cube CubeFL(FL_Aux);
 
@@ -326,40 +328,40 @@ namespace grcube3
 			if (!FL_1_IsSolved && CubeFL.IsSolved(FL_1))
 			{
 				A1_FL = FL_Aux;
-				FL.push_back(A1_FL);
+				FLCorners.push_back(A1_FL);
 				FL_Found = true;
 			}
             else if (!FL_2_IsSolved && CubeFL.IsSolved(FL_2))
 			{
 				A2_FL = FL_Aux;
-				FL.push_back(A2_FL);
+				FLCorners.push_back(A2_FL);
 				FL_Found = true;
 			}
             else if (!FL_3_IsSolved && CubeFL.IsSolved(FL_3))
 			{
 				A3_FL = FL_Aux;
-				FL.push_back(A3_FL);
+				FLCorners.push_back(A3_FL);
 				FL_Found = true;
 			}
             else if (!FL_4_IsSolved && CubeFL.IsSolved(FL_4))
 			{
 				A4_FL = FL_Aux;
-				FL.push_back(A4_FL);
+				FLCorners.push_back(A4_FL);
 				FL_Found = true;
 			}
 
 		} while (FL_Found);
 
-		const std::chrono::duration<double> FL_elapsed_seconds = std::chrono::system_clock::now() - time_FL_start;
-        TimeFL = FL_elapsed_seconds.count();
+		const std::chrono::duration<double> fl_elapsed_seconds = std::chrono::system_clock::now() - time_fl_start;
+        TimeFLCorners = fl_elapsed_seconds.count();
 
         return IsFLSolved();
 	}
 
     // Search the best second layer algorithms
-    bool LBL::SearchSL()
+    bool LBL::SearchSLEdges()
     {
-        const auto time_SL_start = std::chrono::system_clock::now();
+        const auto time_sl_start = std::chrono::system_clock::now();
 
         bool SL_Found = false; // SL found flag
 
@@ -376,7 +378,7 @@ namespace grcube3
         SearchLevel L_SL_End(SearchCheck::CHECK);
         L_SL_End.Add(U_Lat);
 
-        SL.clear();
+        SLEdges.clear();
 
         Pgr SL_1, SL_2, SL_3, SL_4, CROSS;
 		
@@ -431,8 +433,8 @@ namespace grcube3
 		{
 			SL_Aux = Scramble + Inspections[FLi];
 			for (const auto& Cross_Alg : FLCross) SL_Aux += Cross_Alg;
-			for (const auto& FL_Alg : FL) SL_Aux += FL_Alg;
-			for (const auto& SL_Alg : SL) SL_Aux += SL_Alg;
+			for (const auto& FL_Alg : FLCorners) SL_Aux += FL_Alg;
+			for (const auto& SL_Alg : SLEdges) SL_Aux += SL_Alg;
 
 			Cube CubeSL(SL_Aux);
 
@@ -480,31 +482,31 @@ namespace grcube3
 			if (!SL_1_IsSolved && CubeSL.IsSolved(SL_1))
 			{
 				A1_SL = SLSolves[0];
-				SL.push_back(A1_SL);
+				SLEdges.push_back(A1_SL);
 				SL_Found = true;
 			}
             else if (!SL_2_IsSolved && CubeSL.IsSolved(SL_2))
 			{
 				A2_SL = SLSolves[0];
-				SL.push_back(A2_SL);
+				SLEdges.push_back(A2_SL);
 				SL_Found = true;
 			}
             else if (!SL_3_IsSolved && CubeSL.IsSolved(SL_3))
 			{
 				A3_SL = SLSolves[0];
-				SL.push_back(A3_SL);
+				SLEdges.push_back(A3_SL);
 				SL_Found = true;
 			}
             else if (!SL_4_IsSolved && CubeSL.IsSolved(SL_4))
 			{
 				A4_SL = SLSolves[0];
-				SL.push_back(A4_SL);
+				SLEdges.push_back(A4_SL);
 				SL_Found = true;
 			}
 		} while (SL_Found);
 
-        const std::chrono::duration<double> SL_elapsed_seconds = std::chrono::system_clock::now() - time_SL_start;
-        TimeSL = SL_elapsed_seconds.count();
+        const std::chrono::duration<double> sl_elapsed_seconds = std::chrono::system_clock::now() - time_sl_start;
+        TimeSL = sl_elapsed_seconds.count();
 
         return IsSLSolved();
     }
@@ -512,12 +514,12 @@ namespace grcube3
 	// Search the last layer cross (only orientation)
 	void LBL::SearchLLCross1()
 	{
-		const auto time_LLcross1_start = std::chrono::system_clock::now();
+		const auto time_llcross1_start = std::chrono::system_clock::now();
 		
 		Algorithm AlgStart = Scramble + Inspections[FLi];
 		for (const auto& Cross_Alg : FLCross) AlgStart += Cross_Alg;
-		for (const auto& FL_Alg : FL) AlgStart += FL_Alg;
-		for (const auto& SL_Alg : SL) AlgStart += SL_Alg;
+		for (const auto& FL_Alg : FLCorners) AlgStart += FL_Alg;
+		for (const auto& SL_Alg : SLEdges) AlgStart += SL_Alg;
 		
 		const Cube C(AlgStart);
 
@@ -580,19 +582,19 @@ namespace grcube3
 		
 		DSLLCross1.EvaluateShortestResult(LLCross1, true);
 		
-		const std::chrono::duration<double> LLcross1_elapsed_seconds = std::chrono::system_clock::now() - time_LLcross1_start;
-        TimeLLCross1 = LLcross1_elapsed_seconds.count();
+		const std::chrono::duration<double> llcross1_elapsed_seconds = std::chrono::system_clock::now() - time_llcross1_start;
+        TimeLLCross1 = llcross1_elapsed_seconds.count();
 	}
 		
 	// Search the last layer (permutation)
 	void LBL::SearchLLCross2()
 	{
-		const auto time_LLcross2_start = std::chrono::system_clock::now();
+		const auto time_llcross2_start = std::chrono::system_clock::now();
 		
 		Algorithm AlgStart = Scramble + Inspections[FLi];
 		for (const auto& Cross_Alg : FLCross) AlgStart += Cross_Alg;
-		for (const auto& FL_Alg : FL) AlgStart += FL_Alg;
-		for (const auto& SL_Alg : SL) AlgStart += SL_Alg;
+		for (const auto& FL_Alg : FLCorners) AlgStart += FL_Alg;
+		for (const auto& SL_Alg : SLEdges) AlgStart += SL_Alg;
 		AlgStart += LLCross1;
 		
 		const Cube C(AlgStart);
@@ -656,19 +658,19 @@ namespace grcube3
 		
 		DSLLCross2.EvaluateShortestResult(LLCross2, true);
 		
-		const std::chrono::duration<double> LLcross2_elapsed_seconds = std::chrono::system_clock::now() - time_LLcross2_start;
-        TimeLLCross2 = LLcross2_elapsed_seconds.count();
+		const std::chrono::duration<double> llcross2_elapsed_seconds = std::chrono::system_clock::now() - time_llcross2_start;
+        TimeLLCross2 = llcross2_elapsed_seconds.count();
 	}
 	
 	// Search the last layer corners (only permutation)
 	void LBL::SearchLLCorners1()
 	{
-		const auto time_LLcorners1_start = std::chrono::system_clock::now();
+		const auto time_llcorners1_start = std::chrono::system_clock::now();
 		
 		Algorithm AlgStart = Scramble + Inspections[FLi];
 		for (const auto& Cross_Alg : FLCross) AlgStart += Cross_Alg;
-		for (const auto& FL_Alg : FL) AlgStart += FL_Alg;
-		for (const auto& SL_Alg : SL) AlgStart += SL_Alg;
+		for (const auto& FL_Alg : FLCorners) AlgStart += FL_Alg;
+		for (const auto& SL_Alg : SLEdges) AlgStart += SL_Alg;
 		AlgStart += LLCross1;
 		AlgStart += LLCross2;
 		
@@ -739,19 +741,19 @@ namespace grcube3
 		
 		DSLLCorners1.EvaluateShortestResult(LLCorners1, true);
 		
-		const std::chrono::duration<double> LLcorners1_elapsed_seconds = std::chrono::system_clock::now() - time_LLcorners1_start;
-        TimeLLCorners1 = LLcorners1_elapsed_seconds.count();
+		const std::chrono::duration<double> llcorners1_elapsed_seconds = std::chrono::system_clock::now() - time_llcorners1_start;
+        TimeLLCorners1 = llcorners1_elapsed_seconds.count();
 	}
 	
 	// Search the last layer corners (orientation)
 	void LBL::SearchLLCorners2()
 	{
-		const auto time_LLcorners2_start = std::chrono::system_clock::now();
+		const auto time_llcorners2_start = std::chrono::system_clock::now();
 		
 		Algorithm AlgStart = Scramble + Inspections[FLi];
 		for (const auto& Cross_Alg : FLCross) AlgStart += Cross_Alg;
-		for (const auto& FL_Alg : FL) AlgStart += FL_Alg;
-		for (const auto& SL_Alg : SL) AlgStart += SL_Alg;
+		for (const auto& FL_Alg : FLCorners) AlgStart += FL_Alg;
+		for (const auto& SL_Alg : SLEdges) AlgStart += SL_Alg;
 		AlgStart += LLCross1;
 		AlgStart += LLCross2;
 		AlgStart += LLCorners1;
@@ -782,8 +784,8 @@ namespace grcube3
 		
         EvaluateLLCOResult(LLCorners2, DSLLCorners2.Solves);
 		
-		const std::chrono::duration<double> LLcorners2_elapsed_seconds = std::chrono::system_clock::now() - time_LLcorners2_start;
-        TimeLLCorners2 = LLcorners2_elapsed_seconds.count();
+		const std::chrono::duration<double> llcorners2_elapsed_seconds = std::chrono::system_clock::now() - time_llcorners2_start;
+        TimeLLCorners2 = llcorners2_elapsed_seconds.count();
 	}
 		
     // Check if the first layer cross is solved
@@ -811,7 +813,7 @@ namespace grcube3
         Cube CubeFL = CubeBase;
         CubeFL.ApplyAlgorithm(Inspections[FLi]);
         for (const auto& Cross_Alg : FLCross) CubeFL.ApplyAlgorithm(Cross_Alg);
-        for (const auto& A : FL) CubeFL.ApplyAlgorithm(A);
+        for (const auto& A : FLCorners) CubeFL.ApplyAlgorithm(A);
 		
 		return CubeFL.IsSolved(FirstLayer);
     }
@@ -822,8 +824,8 @@ namespace grcube3
         Cube CubeSL = CubeBase;
         CubeSL.ApplyAlgorithm(Inspections[FLi]);
         for (const auto& Cross_Alg : FLCross) CubeSL.ApplyAlgorithm(Cross_Alg);
-		for (const auto& A : FL) CubeSL.ApplyAlgorithm(A);
-        for (const auto& A : SL) CubeSL.ApplyAlgorithm(A);
+		for (const auto& A : FLCorners) CubeSL.ApplyAlgorithm(A);
+        for (const auto& A : SLEdges) CubeSL.ApplyAlgorithm(A);
 		
 		return CubeSL.IsSolved(FirstLayer) && CubeSL.IsSolved(Cube::AdjacentLayer(FirstLayer));
     }
@@ -853,7 +855,7 @@ namespace grcube3
 		return MaxScore;
 	}
 
-	std::string LBL::GetTextLLCross1Solve(bool Compress) const 
+	std::string LBL::GetTextLLCross_1(bool Compress) const 
 	{ 
 		if (!Compress) return LLCross1.ToString();
 		
@@ -862,7 +864,7 @@ namespace grcube3
 		return ACompress.ToString();
 	}
 	
-	std::string LBL::GetTextLLCross2Solve(bool Compress) const 
+	std::string LBL::GetTextLLCross_2(bool Compress) const 
 	{ 
 		if (!Compress) return LLCross2.ToString();
 
@@ -871,7 +873,7 @@ namespace grcube3
 		return ACompress.ToString();
 	}
 	
-	std::string LBL::GetTextLLCorners1Solve(bool Compress) const 
+	std::string LBL::GetTextLLCorners_1(bool Compress) const 
 	{ 
 		if (!Compress) return LLCorners1.ToString();
 
@@ -880,7 +882,7 @@ namespace grcube3
 		return ACompress.ToString();
 	}
 	
-	std::string LBL::GetTextLLCorners2Solve(bool Compress) const 
+	std::string LBL::GetTextLLCorners_2(bool Compress) const 
 	{
 		if (!Compress) return LLCorners2.ToString();
 
@@ -900,71 +902,71 @@ namespace grcube3
         if (!IsFLCrossSolved())
         {
             Report += "Cross not solved!\n";
-            Report += "Search time: " + std::to_string(GetFullTime()) + " s\n";
+            Report += "Search time: " + std::to_string(GetTime()) + " s\n";
             return Report;
         }
 
         const std::string Inspection = GetTextInspection();
-        if (Inspection.size() > 0u) Report +=  "Inspection: " + Inspection + "\n";
+        if (!Inspection.empty()) Report +=  "Inspection: " + Inspection + "\n";
 
 		// Show first layer cross solves
-        Report += "\nFirst layer cross (" + std::to_string(GetLengthFLCrossSolve()) + "): ";
-		std::string CrossString = GetTextFLCrossFirstSolve();
-        if (CrossString.size() > 0) Report += "(" + CrossString + ") ";
-        CrossString = GetTextFLCrossSecondSolve();
-        if (CrossString.size() > 0) Report += "(" + CrossString + ") ";
-        CrossString = GetTextFLCrossThirdSolve();
-        if (CrossString.size() > 0) Report += "(" + CrossString + ") ";
-        CrossString = GetTextFLCrossFourthSolve();
-        if (CrossString.size() > 0) Report += "(" + CrossString + ")";
+        Report += "\nFirst layer cross (" + Algorithm::GetMetricValue(GetMetricFLCross()) + "): ";
+		std::string CrossString = GetTextFLEdge_1();
+        if (!CrossString.empty()) Report += "(" + CrossString + ") ";
+        CrossString = GetTextFLEdge_2();
+        if (!CrossString.empty()) Report += "(" + CrossString + ") ";
+        CrossString = GetTextFLEdge_3();
+        if (!CrossString.empty()) Report += "(" + CrossString + ") ";
+        CrossString = GetTextFLEdge_4();
+        if (!CrossString.empty()) Report += "(" + CrossString + ")";
 		Report += "\n";
 
         // Show first layer (corners) solves
         if (!IsFLSolved())
         {
             Report += "First layer (corners) not solved!\n";
-            Report += "Search time: " + std::to_string(GetFullTime()) + " s\n";
+            Report += "Search time: " + std::to_string(GetTime()) + " s\n";
             return Report;
         }
 
-		Report += "First layer corners: (" + std::to_string(GetLengthFirstLayer()) + "): ";
-        std::string FLString = GetTextFLFirstSolve();
-        if (FLString.size() > 0) Report += "(" + FLString + ") ";
-        FLString = GetTextFLSecondSolve();
-        if (FLString.size() > 0) Report += "(" + FLString + ") ";
-        FLString = GetTextFLThirdSolve();
-        if (FLString.size() > 0) Report += "(" + FLString + ") ";
-        FLString = GetTextFLFourthSolve();
-        if (FLString.size() > 0) Report += "(" + FLString + ")";
+		Report += "First layer corners (" + Algorithm::GetMetricValue(GetMetricFLCorners()) + "): ";
+        std::string FLString = GetTextFLCorner_1();
+        if (!FLString.empty()) Report += "(" + FLString + ") ";
+        FLString = GetTextFLCorner_2();
+        if (!FLString.empty()) Report += "(" + FLString + ") ";
+        FLString = GetTextFLCorner_3();
+        if (!FLString.empty()) Report += "(" + FLString + ") ";
+        FLString = GetTextFLCorner_4();
+        if (!FLString.empty()) Report += "(" + FLString + ")";
 		Report += "\n";
 		
         // Show second layer solves
         if (!IsSLSolved())
         {
             Report += "Second layer not solved!\n";
-            Report += "Search time: " + std::to_string(GetFullTime()) + " s\n";
+            Report += "Search time: " + std::to_string(GetTime()) + " s\n";
             return Report;
         }
 
-		Report += "Second layer: (" + std::to_string(GetLengthSecondLayer()) + "): ";
-        std::string SLString = GetTextSLFirstSolve();
-        if (SLString.size() > 0) Report += "(" + SLString + ") ";
-        SLString = GetTextSLSecondSolve();
-        if (SLString.size() > 0) Report += "(" + SLString + ") ";
-        SLString = GetTextSLThirdSolve();
-        if (SLString.size() > 0) Report += "(" + SLString + ") ";
-        SLString = GetTextSLFourthSolve();
-        if (SLString.size() > 0) Report += "(" + SLString + ")";
+		Report += "Second layer edges (" + Algorithm::GetMetricValue(GetMetricSL()) + "): ";
+        std::string SLString = GetTextSLEdge_1();
+        if (!SLString.empty()) Report += "(" + SLString + ") ";
+        SLString = GetTextSLEdge_2();
+        if (!SLString.empty()) Report += "(" + SLString + ") ";
+        SLString = GetTextSLEdge_3();
+        if (!SLString.empty()) Report += "(" + SLString + ") ";
+        SLString = GetTextSLEdge_4();
+        if (!SLString.empty()) Report += "(" + SLString + ")";
 		Report += "\n";
 
 		// Show last layer solves
-       	Report += "Last layer cross orientation (" + std::to_string(GetLengthLLCross1Solve()) + "): " + GetTextLLCross1Solve(true) + "\n";
-		Report += "Last layer cross permutation (" + std::to_string(GetLengthLLCross2Solve()) + "): " + GetTextLLCross2Solve(true) + "\n";
-		Report += "Last layer corners permutation (" + std::to_string(GetLengthLLCorners1Solve()) + "): " + GetTextLLCorners1Solve(true) + "\n";
-		Report += "Last layer corners orientation (" + std::to_string(GetLengthLLCorners2Solve()) + "): " + GetTextLLCorners2Solve(true) + "\n";
+       	Report += "Last layer cross orientation (" + Algorithm::GetMetricValue(GetMetricLLCross1()) + "): " + GetTextLLCross_1(true) + "\n";
+		Report += "Last layer cross permutation (" + Algorithm::GetMetricValue(GetMetricLLCross2()) + "): " + GetTextLLCross_2(true) + "\n";
+		Report += "Last layer corners permutation (" + Algorithm::GetMetricValue(GetMetricLLCorners1()) + "): " + GetTextLLCorners_1(true) + "\n";
+		Report += "Last layer corners orientation (" + Algorithm::GetMetricValue(GetMetricLLCorners2()) + "): " + GetTextLLCorners_2(true) + "\n";
 		
-        // Show STM
-        Report += "\nSolve movements: " + std::to_string(GetLengthSolve()) + " STM\n";
+        // Show metric
+        Report += "\nSolve metric: " + Algorithm::GetMetricValue(GetMetricSolve()) + " " + Algorithm::GetMetricString(Metric) + "\n";
 
         return Report;
     };
@@ -974,12 +976,28 @@ namespace grcube3
     {
         std::string Report;
 
-        Report += "Total search time: " + std::to_string(GetFullTime()) + " s\n";
-        Report += "First layer cross search time: " + std::to_string(GetFLCrossTime()) + " s\n";
-        Report += "First layer corners search time: " + std::to_string(GetFLTime()) + " s\n";
-        Report += "Second layer search time: " + std::to_string(GetSLTime()) + " s\n";
-        Report += "Last layer search time: " + std::to_string(GetLastLayerTime()) + " s\n";
+        Report += "Total search time: " + std::to_string(GetTime()) + " s\n";
+        Report += "First layer cross search time: " + std::to_string(GetTimeFLCross()) + " s\n";
+        Report += "First layer corners search time: " + std::to_string(GetTimeFLCorners()) + " s\n";
+        Report += "Second layer search time: " + std::to_string(GetTimeSL()) + " s\n";
+        Report += "Last layer search time: " + std::to_string(GetTimeLL()) + " s\n";
 
         return Report;
+    }
+	
+	// Get the solve metric
+    float LBL::GetMetricSolve() const
+    {
+        Algorithm A;
+		
+        for (const auto& Alg : FLCross) A += Alg;
+		for (const auto& Alg : FLCorners) A += Alg;
+        for (const auto& Alg : SLEdges) A += Alg;
+		A += LLCross1;
+		A += LLCross2;
+		A += LLCorners1;
+		A += LLCorners2;
+        
+        return A.GetMetric(Metric);
     }
 }

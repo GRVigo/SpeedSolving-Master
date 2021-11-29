@@ -53,41 +53,36 @@ namespace grcube3
 			if (SS.empty()) for (int s = 0; s < 24; s++) SearchSpins.push_back(static_cast<Spn>(s));
 			else for (const auto s : SS) SearchSpins.push_back(s);
 		}
+		
+		// Set the metric for evaluations
+		void SetMetric(const Metrics m) { Metric = m; }
 
-        // Search the best first block solve algorithm with the given search deep and the maximun number of solves
+        // Search the best first block solve with the given search deep and the maximun number of solves
 		// Return false if no first block found
         bool SearchFirstBlock(const uint, const uint = 1u);
-		
-		// Search the best first block solve algorithms from an algorithms vector
-		void EvaluateFirstBlock(const std::vector<Algorithm>&, const uint = 1u);
 
-		// Search the best second block first square solve algorithm with the given search deep
-        void SearchSecondBlocksFirstSquare(const uint);
-		
-        // Complete the second square for the second blocks with the given search deep
-        void SearchSecondBlocksSecondSquare(const uint);
+        void SearchSecondBlocksFirstSquare(const uint); // Search best second block first square solve with given search depth
+        void SearchSecondBlocksSecondSquare(const uint); // Complete second square for second blocks with the given search depth
 		
         // CMLL/CMLL search (optional parameter = true to keep the last U movement)
 		void SearchCMLL(const bool = false);
 		void SearchCOLL(const bool = false);
 
-		// Search the last six edges orientated (U & M layer movements) with the given search deep
-        void SearchOrientationL6E(const uint);
+        void SearchL6EO(const uint); // Search the last six edges orientated (U & M layer movements) with the given search depth
+        void SearchL6E2E(const uint); // Search UR & UL edges in the last six edges (U & M layer movements) with the given search depth
+        void SearchL6E(const uint); // Search the last six edges (U & M layer movements) with the given search deep
 
-		// Search UR & UL edges in the last six edges (U & M layer movements) with the given search deep
-        void SearchL6E_URUL(const uint);
-		
-		// Search the last six edges (U & M layer movements) with the given search deep
-        void SearchL6E(const uint);
+        // Search the best first block solve algorithms from an algorithms vector
+        void EvaluateFirstBlock(const std::vector<Algorithm>&, const uint = 1u);
 
 		// Set regrips
 		void SetRegrips();
 		
 		// If the first block is search externally, use this function to set the first block search time
-		void SetFBTime(double t) { TimeFB = t; }
+        void SetTimeFB(double t) { TimeFB = t; }
 
         // If the first block is search externally, use this function to set the first block search depth
-        void SetFBDepth(uint d) { MaxDepthFB = d; }
+        void SetDepthFB(uint d) { MaxDepthFB = d; }
 
 		// Get search algorithms texts
         std::string GetTextScramble() const { return Scramble.ToString(); }
@@ -96,8 +91,8 @@ namespace grcube3
 		std::string GetTextSecondBlockSS(const Spn sp, const uint n) const { return SecondBlocksSS[static_cast<int>(sp)][n].ToString(); }
 		std::string GetTextCMLL(const Spn sp, const uint n) const { return AlgCMLL[static_cast<int>(sp)][n].ToString(); }
 		std::string GetTextCOLL(const Spn sp, const uint n) const { return AlgCOLL[static_cast<int>(sp)][n].ToString(); }
-		std::string GetTextOL6E(const Spn sp, const uint n) const { return AlgOL6E[static_cast<int>(sp)][n].ToString(); }
-		std::string GetTextL6E_URUL(const Spn sp, const uint n) const { return AlgL6E_URUL[static_cast<int>(sp)][n].ToString(); }
+        std::string GetTextL6EO(const Spn sp, const uint n) const { return AlgL6EO[static_cast<int>(sp)][n].ToString(); }
+        std::string GetTextL6E2E(const Spn sp, const uint n) const { return AlgL6E2E[static_cast<int>(sp)][n].ToString(); }
 		std::string GetTextL6E(const Spn sp, const uint n) const { return AlgL6E[static_cast<int>(sp)][n].ToString(); }
 
         // Get search algorithms lengths
@@ -108,36 +103,38 @@ namespace grcube3
 		uint GetLengthSecondBlock(const Spn sp, const uint n) const { return GetLengthSecondBlockFS(sp, n) + GetLengthSecondBlockSS(sp, n); }
 		uint GetLengthCMLL(const Spn sp, const uint n) const { return AlgCMLL[static_cast<int>(sp)][n].GetNumSteps(); }
 		uint GetLengthCOLL(const Spn sp, const uint n) const { return AlgCOLL[static_cast<int>(sp)][n].GetNumSteps(); }
-		uint GetLengthOL6E(const Spn sp, const uint n) const { return AlgOL6E[static_cast<int>(sp)][n].GetNumSteps(); }
-		uint GetLengthL6E_URUL(const Spn sp, const uint n) const { return AlgL6E_URUL[static_cast<int>(sp)][n].GetNumSteps(); }
+        uint GetLengthL6EO(const Spn sp, const uint n) const { return AlgL6EO[static_cast<int>(sp)][n].GetNumSteps(); }
+        uint GetLengthL6E2E(const Spn sp, const uint n) const { return AlgL6E2E[static_cast<int>(sp)][n].GetNumSteps(); }
 		uint GetLengthL6E(const Spn sp, const uint n) const { return AlgL6E[static_cast<int>(sp)][n].GetNumSteps(); }
 
-		// Get the solve STM metric
-		uint GetSolveSTM(const Spn, const uint) const;
+		// Get metric values
+        float GetMetricSolve(const Spn, const uint) const; // Get the full solve metric
+		float GetMetricScramble() const { return Scramble.GetMetric(Metric); }
+        float GetMetricFirstBlock(const Spn sp, const uint n) const { return FirstBlocks[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricSecondBlockFS(const Spn sp, const uint n) const { return SecondBlocksFS[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricSecondBlockSS(const Spn sp, const uint n) const { return SecondBlocksSS[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricSecondBlock(const Spn sp, const uint n) const { return GetMetricSecondBlockFS(sp, n) + GetMetricSecondBlockSS(sp, n); }
+        float GetMetricCMLL(const Spn sp, const uint n) const { return AlgCMLL[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricCOLL(const Spn sp, const uint n) const { return AlgCOLL[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricL6EO(const Spn sp, const uint n) const { return AlgL6EO[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricL6E2E(const Spn sp, const uint n) const { return AlgL6E2E[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricL6E(const Spn sp, const uint n) const { return AlgL6E[static_cast<int>(sp)][n].GetMetric(Metric); }
 		
-        // Get text for current CMLL case
-        std::string GetTextCMLLCase(const Spn sp, const uint n) const { return CaseCMLL[static_cast<int>(sp)][n]; }
-	
-		// Get text for current COLL case
-        std::string GetTextCOLLCase(const Spn sp, const uint n) const { return CaseCOLL[static_cast<int>(sp)][n]; }
+        // Get text for current cases
+        std::string GetTextCMLLCase(const Spn sp, const uint n) const { return CasesCMLL[static_cast<int>(sp)][n]; }
+        std::string GetTextCOLLCase(const Spn sp, const uint n) const { return CasesCOLL[static_cast<int>(sp)][n]; }
 	
         // Get a general solve report (all spins with results)
         std::string GetReport(const bool, bool = false) const; // cancellations, debug
-
-		// Get a solve report for given spin
-    	std::string GetReport(const Spn, const uint) const;
-
-        // Get a solve time report
-        std::string GetTimeReport() const;
-
-        // Get the best solve report (STM with or without cancellations)
-        std::string GetBestReport(const bool = false) const;
+        std::string GetReport(const Spn, const uint) const; // Get a solve report for given spin
+        std::string GetTimeReport() const; // Get a solve time report
+        std::string GetBestReport(const bool = false) const; // Get the best solve report (STM with or without cancellations)
 
 		// Get the full solve with cancellations
 		Algorithm GetCancellations(const Spn, const uint) const;
 
-		// Get the solve with cancellations STM metric
-		uint GetCancellationsSTM(const Spn spin, const uint n) const { return GetCancellations(spin, n).GetSTM(); }
+		// Get the solve with cancellations metric
+		float GetMetricCancellations(const Spn spin, const uint n) const { return GetCancellations(spin, n).GetMetric(Metric); }
 
 		// Get used cores in the solve
 		int GetUsedCores() const { return Cores; }
@@ -149,10 +146,10 @@ namespace grcube3
 		double GetTimeSB() const { return GetTimeSBFS() + GetTimeSBSS(); }
         double GetTimeCMLL() const { return TimeCMLL; }
         double GetTimeCOLL() const { return TimeCOLL; }
-        double GetTimeOL6E() const { return TimeOL6E; }
-        double GetTimeL6E_URUL() const { return TimeL6E_URUL; }
+        double GetTimeL6EO() const { return TimeL6EO; }
+        double GetTimeL6E2E() const { return TimeL6E2E; }
         double GetTimeL6E() const { return TimeL6E; }
-        double GetFullTime() const { return GetTimeFB() + GetTimeSB() + GetTimeCMLL() + GetTimeCOLL() + GetTimeOL6E() + GetTimeL6E_URUL() + GetTimeL6E(); }
+        double GetFullTime() const { return GetTimeFB() + GetTimeSB() + GetTimeCMLL() + GetTimeCOLL() + GetTimeL6EO() + GetTimeL6E2E() + GetTimeL6E(); }
 
         // Check if in the given spin the solve is OK
         bool IsSolved(const Spn, const uint) const;
@@ -171,7 +168,7 @@ namespace grcube3
 				   c.IsFaceOriented2(Cube::GetUpSliceLayer(c.GetSpin())) && 
 				   c.IsFaceOriented2(Cube::GetDownSliceLayer(c.GetSpin()));
 		}
-		static bool IsL6E_URUL(const Cube& c) // Check if the last six edges oriented and two edges solved in roux method
+        static bool IsL6EO2E(const Cube& c) // Check if the last six edges oriented and two edges solved in roux method
 		{
 			return c.IsSolved(Cube::GetLeftSliceLayer(c.GetSpin())) && c.IsSolved(Cube::GetRightSliceLayer(c.GetSpin())) &&
 				   c.IsFaceOriented2(Cube::GetUpSliceLayer(c.GetSpin())) && c.IsFaceOriented2(Cube::GetDownSliceLayer(c.GetSpin()));
@@ -193,23 +190,25 @@ namespace grcube3
 							   SecondBlocksSS[24], // Algorithms for the right block second square (Roux second block)
 							   AlgCMLL[24], // CMLL algorithms
 							   AlgCOLL[24], // COLL algorithms
-							   AlgOL6E[24], // Last six edges orientation algorithms
-							   AlgL6E_URUL[24], // UR & UL edges for last six edges
+                               AlgL6EO[24], // Last six edges orientation algorithms
+                               AlgL6E2E[24], // UR & UL edges for last six edges
 							   AlgL6E[24]; // Last six edges final algorithms
 
 		Cube CubeBase;
+		
+		Metrics Metric; // Metric for measures
 
 		// Last used maximum first blocks deep
-        uint MaxDepthFB, MaxDepthSBFS, MaxDepthSBSS, MaxDepthOL6E, MaxDepthL6E_URUL, MaxDepthL6E;
+        uint MaxDepthFB, MaxDepthSBFS, MaxDepthSBSS, MaxDepthL6EO, MaxDepthL6E2E, MaxDepthL6E;
 		
-		std::vector<std::string> CaseCMLL[24], // CMLL cases found for each spin
-		                         CaseCOLL[24]; // COLL cases found for each spin
+        std::vector<std::string> CasesCMLL[24], // CMLL cases found for each spin
+                                 CasesCOLL[24]; // COLL cases found for each spin
 				
 		// Cores to use in the search: -1 = no multithreading, 0 = all avaliable cores, other = use this amount of cores
 		int Cores;
 
 		// Times
-        double TimeFB, TimeSBFS, TimeSBSS, TimeCMLL, TimeCOLL, TimeOL6E, TimeL6E_URUL, TimeL6E;
+        double TimeFB, TimeSBFS, TimeSBSS, TimeCMLL, TimeCOLL, TimeL6EO, TimeL6E2E, TimeL6E;
 
 		// Check if the solves for the given spin are consistent (all needed algorithms are present)
 		bool CheckSolveConsistency(const Spn) const;

@@ -436,5 +436,10 @@ namespace grcube3
 	{
 		_1LLL, OLL, PLL, ZBLL, OCLL, CMLL, COLL, EPLL
 	};
-	
+
+    // Metrics
+    enum class Metrics
+    {
+        Movements, HTM, QTM, STM, QSTM, ETM, ATM, PTM, HTM15, OBTM
+    };
 }

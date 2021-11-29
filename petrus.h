@@ -53,49 +53,34 @@ namespace grcube3
             if (SS.empty()) for (int s = 0; s < 24; s++) SearchSpins.push_back(static_cast<Spn>(s));
             else for (const auto s : SS) SearchSpins.push_back(s);
         }
+		
+		// Set the metric for evaluations
+		void SetMetric(const Metrics m) { Metric = m; }
 
         // Search the best block solve algorithm with the given search depth
         // Return false if no block found
         bool SearchBlock(const uint, const uint = 1u);
-		
-		// Search the best block solve algorithms from an algorithms vector
-		void EvaluateBlock(const std::vector<Algorithm>&, const uint = 1u);
+        void SearchExpandedBlock(); // Search the best expanded block solve algorithm
+        void SearchEO(); // Orientate the other edges outside the block
+        void SearchF2L(const uint = 12u); // Complete the two first layers (F2L) with the given search depth
+        void SearchF2L_Alt(const uint); // Complete two first layers (F2L) - Alternative version (don't use it, slower and debug needed)
+        void SearchZBLL(); // Complete the last layer using ZBLL algorithms
+        void SearchOCLL(); // Complete the last layer using OCLL algorithms
+        void SearchPLL(); // Complete the last layer using PLL algorithms
+        void SearchCOLL(); // Complete the last layer using COLL algorithms
+        void SearchEPLL(); // Complete the last layer using EPLL algorithms
 
-        // Search the best expanded block solve algorithm
-        void SearchExpandedBlock();
-		
-        // Orientate the other edges outside the block
-        void SearchEO();
-		
-        // Complete the two first layers (F2L) with the given search depth
-        void SearchF2L(const uint = 12u);
-
-        // Complete the two first layers (F2L) - Alternative version (don't use it, slower and debug needed)
-        void SearchF2L_Alt(const uint);
-
-        // Complete the last layer using ZBLL algorithms
-        void SearchZBLL();
-
-        // Complete the last layer using OCLL algorithms
-        void SearchOCLL();
-
-        // Complete the last layer using PLL algorithms
-        void SearchPLL();
-		
-        // Complete the last layer using COLL algorithms
-        void SearchCOLL();
-
-        // Complete the last layer using EPLL algorithms
-        void SearchEPLL();
+        // Search the best block solve algorithms from an algorithms vector
+        void EvaluateBlock(const std::vector<Algorithm>&, const uint = 1u);
 
         // Set regrips
         void SetRegrips();
 		
 		// If the block is search externally, use this function to set the block search time
-		void SetBlockTime(double t) { TimeBlock = t; }
+        void SetTimeBlock(double t) { TimeBlock = t; }
 
         // If the block is search externally, use this function to set the block search depth
-        void SetBlockDepth(uint d) { MaxDepthBlock = d; }
+        void SetDepthBlock(uint d) { MaxDepthBlock = d; }
 
 		// Get search algorithms texts
         std::string GetTextScramble() const { return Scramble.ToString(); }
@@ -120,18 +105,30 @@ namespace grcube3
         uint GetLengthPLL(const Spn sp, const uint n) const { return AlgPLL[static_cast<int>(sp)][n].GetNumSteps(); }
         uint GetLengthCOLL(const Spn sp, const uint n) const { return AlgCOLL[static_cast<int>(sp)][n].GetNumSteps(); }
         uint GetLengthEPLL(const Spn sp, const uint n) const { return AlgEPLL[static_cast<int>(sp)][n].GetNumSteps(); }
-        uint GetLengthLastLayer(const Spn sp, const uint n) const { return  GetLengthZBLL(sp, n) + GetLengthOCLL(sp, n) +
-                                                                GetLengthPLL(sp, n) + GetLengthCOLL(sp, n) + GetLengthEPLL(sp, n); }
+        uint GetLengthLL(const Spn sp, const uint n) const { return  GetLengthZBLL(sp, n) + GetLengthOCLL(sp, n) +
+                                                                     GetLengthPLL(sp, n) + GetLengthCOLL(sp, n) + GetLengthEPLL(sp, n); }
 
-        // Get the solve STM metric
-        uint GetSolveSTM(const Spn, const uint) const;
+        // Get metric values
+        float GetMetricSolve(const Spn, const uint) const; // Get the full solve metric
+		float GetMetricScramble() const { return Scramble.GetMetric(Metric); }
+        float GetMetricBlock(const Spn sp, const uint n) const { return Blocks[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricExpandedBlock(const Spn sp, const uint n) const { return ExpandedBlocks[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricEO(const Spn sp, const uint n) const { return EO[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricF2L(const Spn sp, const uint n) const { return F2L[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricZBLL(const Spn sp, const uint n) const { return AlgZBLL[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricOCLL(const Spn sp, const uint n) const { return AlgOCLL[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricPLL(const Spn sp, const uint n) const { return AlgPLL[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricCOLL(const Spn sp, const uint n) const { return AlgCOLL[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricEPLL(const Spn sp, const uint n) const { return AlgEPLL[static_cast<int>(sp)][n].GetMetric(Metric); }
+        float GetMetricLL(const Spn sp, const uint n) const { return  GetMetricZBLL(sp, n) + GetMetricOCLL(sp, n) +
+                                                                     GetMetricPLL(sp, n) + GetMetricCOLL(sp, n) + GetMetricEPLL(sp, n); }
         
         // Get text for current cases
-        std::string GetTextZBLLCase(const Spn sp, const uint n) const { return CaseZBLL[static_cast<int>(sp)][n]; }
-        std::string GetTextOCLLCase(const Spn sp, const uint n) const { return CaseOCLL[static_cast<int>(sp)][n]; }
-        std::string GetTextPLLCase(const Spn sp, const uint n) const { return CasePLL[static_cast<int>(sp)][n]; }
-        std::string GetTextCOLLCase(const Spn sp, const uint n) const { return CaseCOLL[static_cast<int>(sp)][n]; }
-        std::string GetTextEPLLCase(const Spn sp, const uint n) const { return CaseEPLL[static_cast<int>(sp)][n]; }
+        std::string GetTextZBLLCase(const Spn sp, const uint n) const { return CasesZBLL[static_cast<int>(sp)][n]; }
+        std::string GetTextOCLLCase(const Spn sp, const uint n) const { return CasesOCLL[static_cast<int>(sp)][n]; }
+        std::string GetTextPLLCase(const Spn sp, const uint n) const { return CasesPLL[static_cast<int>(sp)][n]; }
+        std::string GetTextCOLLCase(const Spn sp, const uint n) const { return CasesCOLL[static_cast<int>(sp)][n]; }
+        std::string GetTextEPLLCase(const Spn sp, const uint n) const { return CasesEPLL[static_cast<int>(sp)][n]; }
         
         // Get a general solve report (all spins with results)
         std::string GetReport(const bool, bool = false) const; // cancellations, debug
@@ -148,8 +145,8 @@ namespace grcube3
         // Get the full solve with cancellations
         Algorithm GetCancellations(const Spn, const uint) const;
 
-        // Get the solve with cancellations STM metric
-        uint GetCancellationsSTM(const Spn spin, const uint n) const { return GetCancellations(spin, n).GetSTM(); }
+        // Get the solve with cancellations metric
+		float GetMetricCancellations(const Spn spin, const uint n) const { return GetCancellations(spin, n).GetMetric(Metric); }
 
 		// Get used cores in the solve
 		int GetUsedCores() const { return Cores; }
@@ -164,8 +161,8 @@ namespace grcube3
         double GetTimePLL() const { return TimePLL; }
         double GetTimeCOLL() const { return TimeCOLL; }
         double GetTimeEPLL() const { return TimeEPLL; }
-        double GetTimeLastLayer() const { return GetTimeZBLL() + GetTimeOCLL() + GetTimePLL() + GetTimeCOLL() + GetTimeEPLL(); }
-        double GetFullTime() const { return GetTimeBlock() + GetTimeExpBlock() + GetTimeEO() + GetTimeF2L() + GetTimeLastLayer(); }
+        double GetTimeLL() const { return GetTimeZBLL() + GetTimeOCLL() + GetTimePLL() + GetTimeCOLL() + GetTimeEPLL(); }
+        double GetTime() const { return GetTimeBlock() + GetTimeExpBlock() + GetTimeEO() + GetTimeF2L() + GetTimeLL(); }
 
         // Check if in the given spin the solve is OK
         bool IsSolved(const Spn, const uint) const;
@@ -203,15 +200,17 @@ namespace grcube3
                                AlgEPLL [24]; // EPLL algorithms
 		
 		Cube CubeBase;
+		
+		Metrics Metric; // Metric for measures
 
         // Last used maximum blocks & F2L depth
         uint MaxDepthBlock, MaxDepthF2L;
         
-        std::vector<std::string> CaseZBLL[24], // ZBLL cases found for each spin
-                                 CaseOCLL[24], // OCLL cases found for each spin
-                                 CasePLL[24], // PLL cases found for each spin
-		                         CaseCOLL[24], // COLL cases found for each spin
-                                 CaseEPLL[24]; // EPLL cases found for each spin
+        std::vector<std::string> CasesZBLL[24], // ZBLL cases found for each spin
+                                 CasesOCLL[24], // OCLL cases found for each spin
+                                 CasesPLL[24], // PLL cases found for each spin
+                                 CasesCOLL[24], // COLL cases found for each spin
+                                 CasesEPLL[24]; // EPLL cases found for each spin
         
 		// Cores to use in the search: -1 = no multithreading, 0 = all avaliable cores, other = use this amount of cores
 		int Cores;

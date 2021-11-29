@@ -39,18 +39,21 @@ namespace grcube3
 			SecondBlocksSS[i].clear();
             AlgCMLL[i].clear();
 			AlgCOLL[i].clear();
-			AlgOL6E[i].clear();
+            AlgL6EO[i].clear();
+            AlgL6E2E[i].clear();
             AlgL6E[i].clear();
 			
-			CaseCMLL[i].clear();
-			CaseCOLL[i].clear();
+            CasesCMLL[i].clear();
+            CasesCOLL[i].clear();
         }
 		 
-		MaxDepthFB = MaxDepthSBFS = MaxDepthSBSS = MaxDepthL6E = MaxDepthOL6E = 0u;
-        TimeFB = TimeSBFS = TimeSBSS = TimeCMLL = TimeCOLL = TimeOL6E = TimeL6E_URUL = TimeL6E = 0.0;
+        MaxDepthFB = MaxDepthSBFS = MaxDepthSBSS = MaxDepthL6E = MaxDepthL6EO = 0u;
+        TimeFB = TimeSBFS = TimeSBSS = TimeCMLL = TimeCOLL = TimeL6EO = TimeL6E2E = TimeL6E = 0.0;
 
 		SearchSpins.clear();
 		for (int s = 0; s < 24; s++) SearchSpins.push_back(static_cast<Spn>(s));
+		
+		Metric = Metrics::Movements; // Default metric
 	}
 
     // Search the best first blocks solve algorithm with the given search depth
@@ -370,7 +373,7 @@ namespace grcube3
 			for (uint n = 0u; n < FirstBlocks[sp].size(); n++)
 			{
 				AlgCMLL[sp].push_back(Algorithm(""));
-				CaseCMLL[sp].push_back("");
+                CasesCMLL[sp].push_back("");
 
 				Algorithm AlgStart = Scramble;
 				AlgStart.Append(Inspections[sp][n]);
@@ -384,7 +387,7 @@ namespace grcube3
 
 				Stp LastUStep;
 
-				Cube::CornersLL(AlgCMLL[sp][n], CaseCMLL[sp][n], LastUStep, AlgSets::CMLL, CubeRoux);
+                Cube::CornersLL(AlgCMLL[sp][n], CasesCMLL[sp][n], LastUStep, AlgSets::CMLL, CubeRoux);
 
 				if (AddLastUMovement) AlgCMLL[sp][n].Append(LastUStep);
             }
@@ -408,7 +411,7 @@ namespace grcube3
 			for (uint n = 0u; n < FirstBlocks[sp].size(); n++)
 			{
 				AlgCOLL[sp].push_back(Algorithm(""));
-				CaseCOLL[sp].push_back("");
+                CasesCOLL[sp].push_back("");
 
 				Algorithm AlgStart = Scramble;
 				AlgStart.Append(Inspections[sp][n]);
@@ -422,7 +425,7 @@ namespace grcube3
 
 				Stp LastUStep;
 
-				Cube::CornersLL(AlgCOLL[sp][n], CaseCOLL[sp][n], LastUStep, AlgSets::COLL, CubeRoux);
+                Cube::CornersLL(AlgCOLL[sp][n], CasesCOLL[sp][n], LastUStep, AlgSets::COLL, CubeRoux);
 
 				if (AddLastUMovement) AlgCOLL[sp][n].Append(LastUStep);
 			}
@@ -466,8 +469,8 @@ namespace grcube3
 				AlgStart.Append(SecondBlocksSS[sp][n]);
 				if (!AlgCMLL[sp].empty()) AlgStart.Append(AlgCMLL[sp][n]);
 				if (!AlgCOLL[sp].empty()) AlgStart.Append(AlgCOLL[sp][n]);
-				if (!AlgOL6E[sp].empty()) AlgStart.Append(AlgOL6E[sp][n]);
-				if (!AlgL6E_URUL[sp].empty()) AlgStart.Append(AlgL6E_URUL[sp][n]);
+                if (!AlgL6EO[sp].empty()) AlgStart.Append(AlgL6EO[sp][n]);
+                if (!AlgL6E2E[sp].empty()) AlgStart.Append(AlgL6E2E[sp][n]);
 				
 				Cube CubeRoux(AlgStart);
 
@@ -509,11 +512,11 @@ namespace grcube3
     }
 	
 	// Search the last six edges orientated (U & M layer movements) with the given search deep
-    void Roux::SearchOrientationL6E(const uint MaxDepth)
+    void Roux::SearchL6EO(const uint MaxDepth)
     {
-        const auto time_OL6E_start = std::chrono::system_clock::now();
+        const auto time_L6EO_start = std::chrono::system_clock::now();
 
-        MaxDepthOL6E = (MaxDepth <= 4u ? 4u : MaxDepth);
+        MaxDepthL6EO = (MaxDepth <= 4u ? 4u : MaxDepth);
 
         // First level is extended in the search to improve the multithreading - first three levels will not be checked
         // (it's supose that the last six edges will not be solved in three movements)
@@ -530,7 +533,7 @@ namespace grcube3
 		{
 			int sp = static_cast<int>(spin);
 
-			AlgOL6E[sp].clear();
+            AlgL6EO[sp].clear();
 
 			Pgr B1, B2, CORNERS, EDGES;
 
@@ -569,7 +572,7 @@ namespace grcube3
 
 			for (uint n = 0u; n < FirstBlocks[sp].size(); n++)
 			{
-				AlgOL6E[sp].push_back(Algorithm(""));
+                AlgL6EO[sp].push_back(Algorithm(""));
 
 				Algorithm AlgStart = Scramble;
 				AlgStart.Append(Inspections[sp][n]);
@@ -583,34 +586,34 @@ namespace grcube3
 
 				if (!AreFirstBlocksBuilt(CubeRoux) || IsL6EOriented(CubeRoux)) continue; // Last six edges already oriented or no solve
 
-				DeepSearch DSOL6E(AlgStart, Plc::SHORT); // Deep search for last six edges
+                DeepSearch DSOL6EO(AlgStart, Plc::SHORT); // Deep search for last six edges
 
-				DSOL6E.AddToMandatoryPieces(B1);
-				DSOL6E.AddToMandatoryPieces(B2);
-				DSOL6E.AddToMandatoryPieces(CORNERS);
-				DSOL6E.AddToMandatoryOrientations(EDGES);
+                DSOL6EO.AddToMandatoryPieces(B1);
+                DSOL6EO.AddToMandatoryPieces(B2);
+                DSOL6EO.AddToMandatoryPieces(CORNERS);
+                DSOL6EO.AddToMandatoryOrientations(EDGES);
 
-				DSOL6E.AddSearchLevel(L_Root); // Level 1 (three steps -TRIPLE- root algorithms
-				for (uint l = 2; l < MaxDepthOL6E; l++) DSOL6E.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
+                DSOL6EO.AddSearchLevel(L_Root); // Level 1 (three steps -TRIPLE- root algorithms
+                for (uint l = 2; l < MaxDepthL6EO; l++) DSOL6EO.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
 
-				DSOL6E.UpdateRootData();
+                DSOL6EO.UpdateRootData();
 
-				DSOL6E.Run(Cores);
+                DSOL6EO.Run(Cores);
 
-				DSOL6E.EvaluateShortestResult(AlgOL6E[sp][n], true);
+                DSOL6EO.EvaluateShortestResult(AlgL6EO[sp][n], true);
 			}
         }
 
-        const std::chrono::duration<double> OL6E_elapsed_seconds = std::chrono::system_clock::now() - time_OL6E_start;
-        TimeOL6E = OL6E_elapsed_seconds.count();
+        const std::chrono::duration<double> L6EO_elapsed_seconds = std::chrono::system_clock::now() - time_L6EO_start;
+        TimeL6EO = L6EO_elapsed_seconds.count();
     }
 
 	// Search the UR & UL edges (L6E)
-    void Roux::SearchL6E_URUL(const uint MaxDepth)
+    void Roux::SearchL6E2E(const uint MaxDepth)
     {
-        const auto time_L6E_URUL_start = std::chrono::system_clock::now();
+        const auto time_L6E2E_start = std::chrono::system_clock::now();
 
-        MaxDepthL6E_URUL = (MaxDepth <= 4u ? 4u : MaxDepth);
+        MaxDepthL6E2E = (MaxDepth <= 4u ? 4u : MaxDepth);
 
         // First level is extended in the search to improve the multithreading - first two levels will not be checked
         // (it's supose that the last six edges will not be solved in two movements)
@@ -627,7 +630,7 @@ namespace grcube3
 		{
 			int sp = static_cast<int>(spin);
 
-			AlgL6E_URUL[sp].clear();
+            AlgL6E2E[sp].clear();
 
 			Pgr LR, LL, LM;
 
@@ -663,7 +666,7 @@ namespace grcube3
 
 			for (uint n = 0u; n < FirstBlocks[sp].size(); n++)
 			{
-				AlgL6E_URUL[sp].push_back(Algorithm(""));
+                AlgL6E2E[sp].push_back(Algorithm(""));
 
 				Algorithm AlgStart = Scramble;
 				AlgStart.Append(Inspections[sp][n]);
@@ -672,31 +675,31 @@ namespace grcube3
 				AlgStart.Append(SecondBlocksSS[sp][n]);
 				if (!AlgCMLL[sp].empty()) AlgStart.Append(AlgCMLL[sp][n]);
 				if (!AlgCOLL[sp].empty()) AlgStart.Append(AlgCOLL[sp][n]);
-				AlgStart.Append(AlgOL6E[sp][n]);
+                AlgStart.Append(AlgL6EO[sp][n]);
 
 				Cube CubeRoux(AlgStart);
 
-				if (!IsL6EOriented(CubeRoux) || IsL6E_URUL(CubeRoux)) continue; // L6E two edges solved or no solve
+                if (!IsL6EOriented(CubeRoux) || IsL6EO2E(CubeRoux)) continue; // L6E two edges solved or no solve
 
-				DeepSearch DSL6E_URUL(AlgStart, Plc::SHORT); // Deep search for last six edges (UR & UL edges)
+                DeepSearch DSL6E2E(AlgStart, Plc::SHORT); // Deep search for last six edges (UR & UL edges)
 
-				DSL6E_URUL.AddToMandatoryPieces(LR);
-				DSL6E_URUL.AddToMandatoryPieces(LL);
-				DSL6E_URUL.AddToMandatoryOrientations(LM);
+                DSL6E2E.AddToMandatoryPieces(LR);
+                DSL6E2E.AddToMandatoryPieces(LL);
+                DSL6E2E.AddToMandatoryOrientations(LM);
 
-				DSL6E_URUL.AddSearchLevel(L_Root); // Level 1 (three steps -TRIPLE- root algorithms
-				for (uint l = 2; l < MaxDepthL6E_URUL; l++) DSL6E_URUL.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
+                DSL6E2E.AddSearchLevel(L_Root); // Level 1 (three steps -TRIPLE- root algorithms
+                for (uint l = 2; l < MaxDepthL6E2E; l++) DSL6E2E.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
 
-				DSL6E_URUL.UpdateRootData();
+                DSL6E2E.UpdateRootData();
 
-				DSL6E_URUL.Run(Cores);
+                DSL6E2E.Run(Cores);
 
-				DSL6E_URUL.EvaluateShortestResult(AlgL6E_URUL[sp][n], true);
+                DSL6E2E.EvaluateShortestResult(AlgL6E2E[sp][n], true);
 			}
 		}
 
-        const std::chrono::duration<double> L6E_URUL_elapsed_seconds = std::chrono::system_clock::now() - time_L6E_URUL_start;
-        TimeL6E_URUL = L6E_URUL_elapsed_seconds.count();
+        const std::chrono::duration<double> L6E2E_elapsed_seconds = std::chrono::system_clock::now() - time_L6E2E_start;
+        TimeL6E2E = L6E2E_elapsed_seconds.count();
     }
 
 	// Set regrips
@@ -720,9 +723,7 @@ namespace grcube3
 				}
 			}
 		}
-				
 	}
-
 
 	// Check if the left Roux block is built (first block)
 	bool Roux::IsFBBuilt(const Cube& C)
@@ -1171,9 +1172,9 @@ namespace grcube3
 
 				if (IsFBBuilt(C))
 				{
-					ReportLine += "[" + C.GetSpinText() + "|" + std::to_string(GetSolveSTM(C.GetSpin(), n));
-					if (cancellations) ReportLine += "(" + std::to_string(GetCancellationsSTM(spin, n)) + ")";
-					ReportLine += " STM]: ";
+					ReportLine += "[" + C.GetSpinText() + "|" + Algorithm::GetMetricValue(GetMetricSolve(C.GetSpin(), n));
+					if (cancellations) ReportLine += "(" + Algorithm::GetMetricValue(GetMetricCancellations(spin, n)) + ")";
+					ReportLine += " " + Algorithm::GetMetricString(Metric) +  "]: ";
 					if (!Inspections[sp][n].Empty()) ReportLine += "(" + Inspections[sp][n].ToString() + ") ";
 					ReportLine += "(" + FirstBlocks[sp][n].ToString() + ")";
 				}
@@ -1221,28 +1222,28 @@ namespace grcube3
 				if (!AlgCMLL[sp].empty())
 				{
 					C.ApplyAlgorithm(AlgCMLL[sp][n]);
-					if (debug) ReportLine += " {CMLL: " + CaseCMLL[sp][n] + "}";
+                    if (debug) ReportLine += " {CMLL: " + CasesCMLL[sp][n] + "}";
 					if (AlgCMLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgCMLL[sp][n].ToString() + ")";
 				}
 
 				if (!AlgCOLL[sp].empty())
 				{
 					C.ApplyAlgorithm(AlgCOLL[sp][n]);
-					if (debug) ReportLine += " {COLL: " + CaseCOLL[sp][n] + "}";
+                    if (debug) ReportLine += " {COLL: " + CasesCOLL[sp][n] + "}";
 					if (AlgCOLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgCOLL[sp][n].ToString() + ")";
 				}
 
-				if (!AlgOL6E[sp].empty())
+                if (!AlgL6EO[sp].empty())
 				{
-					C.ApplyAlgorithm(AlgOL6E[sp][n]);
-					if (AlgOL6E[sp][n].GetSize() > 0u) ReportLine += " (" + AlgOL6E[sp][n].ToString() + ")";
+                    C.ApplyAlgorithm(AlgL6EO[sp][n]);
+                    if (AlgL6EO[sp][n].GetSize() > 0u) ReportLine += " (" + AlgL6EO[sp][n].ToString() + ")";
 				}
 				else if (debug) ReportLine += " [No L6E orient.]"; // Debug code
 
-				if (!AlgL6E_URUL[sp].empty())
+                if (!AlgL6E2E[sp].empty())
 				{
-					C.ApplyAlgorithm(AlgL6E_URUL[sp][n]);
-					if (AlgL6E_URUL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgL6E_URUL[sp][n].ToString() + ")";
+                    C.ApplyAlgorithm(AlgL6E2E[sp][n]);
+                    if (AlgL6E2E[sp][n].GetSize() > 0u) ReportLine += " (" + AlgL6E2E[sp][n].ToString() + ")";
 				}
 				else if (debug) ReportLine += " [No L6E URUL]"; // Debug code
 
@@ -1273,7 +1274,7 @@ namespace grcube3
         Report += "Second blocks search time: " + std::to_string(GetTimeSB()) + " s\n";
         if (GetTimeCMLL() > 0.0) Report += "CMLL search time: " + std::to_string(GetTimeCMLL()) + " s\n";
         if (GetTimeCOLL() > 0.0) Report += "COLL search time: " + std::to_string(GetTimeCOLL()) + " s\n";
-        Report += "L6E search time: " + std::to_string(GetTimeL6E() + GetTimeOL6E() + GetTimeL6E_URUL()) + " s\n";
+        Report += "L6E search time: " + std::to_string(GetTimeL6E() + GetTimeL6EO() + GetTimeL6E2E()) + " s\n";
         Report += "Threads used: " + std::to_string(GetUsedCores() > 0 ? GetUsedCores() : 0) +
                   " of " + std::to_string(DeepSearch::GetSystemCores()) + "\n";
 
@@ -1307,7 +1308,7 @@ namespace grcube3
 			Report += "First block not built in " + std::to_string(MaxDepthFB) + " movements\n";
             return Report;
         }
-        Report += "First block (" + std::to_string(GetLengthFirstBlock(sp, n)) + "): " + FirstBlocks[si][n].ToString() + "\n";
+        Report += "First block (" + Algorithm::GetMetricValue(GetMetricFirstBlock(sp, n)) + "): " + FirstBlocks[si][n].ToString() + "\n";
 
         C.ApplyAlgorithm(SecondBlocksFS[si][n]);
         C.ApplyAlgorithm(SecondBlocksSS[si][n]);
@@ -1317,22 +1318,22 @@ namespace grcube3
             return Report;
         }
         if (GetLengthSecondBlockSS(sp, n) == 0u)
-			Report += "Second block (" + std::to_string(GetLengthSecondBlock(sp,n)) + "): " + SecondBlocksFS[si][n].ToString() + "\n";
+			Report += "Second block (" + Algorithm::GetMetricValue(GetMetricSecondBlock(sp,n)) + "): " + SecondBlocksFS[si][n].ToString() + "\n";
         else
         {
-            Report += "Second block - square (" + std::to_string(GetLengthSecondBlockFS(sp, n)) + "): " + SecondBlocksFS[si][n].ToString() + "\n";
-            Report += "Second block (" + std::to_string(GetLengthSecondBlockSS(sp, n)) + "): " + SecondBlocksSS[si][n].ToString() + "\n";
+            Report += "Second block - square (" + Algorithm::GetMetricValue(GetMetricSecondBlockFS(sp, n)) + "): " + SecondBlocksFS[si][n].ToString() + "\n";
+            Report += "Second block (" + Algorithm::GetMetricValue(GetMetricSecondBlockSS(sp, n)) + "): " + SecondBlocksSS[si][n].ToString() + "\n";
         }
 
 		if (!AlgCMLL[si].empty())
         {
             C.ApplyAlgorithm(AlgCMLL[si][n]);
-            Report += "CMLL (" + std::to_string(GetLengthCMLL(sp, n)) + "): " + AlgCMLL[si][n].ToString() + "\n";
+            Report += "CMLL (" + Algorithm::GetMetricValue(GetMetricCMLL(sp, n)) + "): " + AlgCMLL[si][n].ToString() + "\n";
         }
         else if (!AlgCOLL[si].empty())
         {
             C.ApplyAlgorithm(AlgCOLL[si][n]);
-            Report += "COLL (" + std::to_string(GetLengthCOLL(sp, n)) + "): " + AlgCOLL[si][n].ToString() + "\n";
+            Report += "COLL (" + Algorithm::GetMetricValue(GetMetricCOLL(sp, n)) + "): " + AlgCOLL[si][n].ToString() + "\n";
         }
         else
         {
@@ -1340,35 +1341,40 @@ namespace grcube3
             return Report;
         }
 
-		if (!AlgOL6E[si].empty())
+        if (!AlgL6EO[si].empty())
         {
-			C.ApplyAlgorithm(AlgOL6E[si][n]);
-			
-            if (!C.IsFaceOriented2(Cube::GetUpSliceLayer(sp)))
+            if (!AlgL6EO[si][n].Empty())
             {
-                Report += "L6E not orientated: " + AlgOL6E[si][n].ToString() + "\n";
-                return Report;
-            }
-            else if (!AlgOL6E[si][n].Empty())
-                Report += "L6E orientation (" + std::to_string(GetLengthOL6E(sp, n)) + "): " + AlgOL6E[si][n].ToString() + "\n";
+                C.ApplyAlgorithm(AlgL6EO[si][n]);
 
+                if (!C.IsFaceOriented2(Cube::GetUpSliceLayer(sp)))
+                {
+                    Report += "L6E not orientated: " + AlgL6EO[si][n].ToString() + "\n";
+                    return Report;
+                }
+                else if (!AlgL6EO[si][n].Empty())
+                    Report += "L6E orientation (" + Algorithm::GetMetricValue(GetMetricL6EO(sp, n)) + "): " + AlgL6EO[si][n].ToString() + "\n";
+            }
         }
-		if (!AlgL6E_URUL[si].empty())
+        if (!AlgL6E2E[si].empty())
 		{
-			C.ApplyAlgorithm(AlgL6E_URUL[si][n]);
-			if (!AlgL6E_URUL[si][n].Empty())
-                Report += "UR & UL edges (" + std::to_string(GetLengthL6E_URUL(sp, n)) + "): " + AlgL6E_URUL[si][n].ToString() + "\n";
+            if (!AlgL6E2E[si][n].Empty())
+            {
+                C.ApplyAlgorithm(AlgL6E2E[si][n]);
+                if (!AlgL6E2E[si][n].Empty())
+                    Report += "UR & UL edges (" + Algorithm::GetMetricValue(GetMetricL6E2E(sp, n)) + "): " + AlgL6E2E[si][n].ToString() + "\n";
+            }
 		}
 
 		C.ApplyAlgorithm(AlgL6E[si][n]);
 		if (C.IsSolved())
 		{
-			if (!AlgL6E[si][n].Empty()) Report += "L6E (" + std::to_string(GetLengthL6E(sp, n)) + "): " + AlgL6E[si][n].ToString() + "\n";
+			if (!AlgL6E[si][n].Empty()) Report += "L6E (" + Algorithm::GetMetricValue(GetMetricL6E(sp, n)) + "): " + AlgL6E[si][n].ToString() + "\n";
 		}
 		else Report += "L6E not solved: " + AlgL6E[si][n].ToString() + "\n";
 
         // Show summary
-        Report += "\nSolve movements: " + std::to_string(GetSolveSTM(sp, n)) + " STM\n";
+        Report += "\nSolve metric: " + Algorithm::GetMetricValue(GetMetricSolve(sp, n)) + " " + Algorithm::GetMetricString(Metric) + "\n";
 		if (AlgCMLL[si].empty()) // COLL
 			Report += "COLL case: " + GetTextCOLLCase(sp, n) + "\n";
 		else // CMLL 
@@ -1405,14 +1411,15 @@ namespace grcube3
         C.ApplyAlgorithm(SecondBlocksSS[Si][n]);
 		if (!AlgCMLL[Si].empty()) C.ApplyAlgorithm(AlgCMLL[Si][n]);
 		if (!AlgCOLL[Si].empty()) C.ApplyAlgorithm(AlgCOLL[Si][n]);
-		if (!AlgOL6E[Si].empty()) C.ApplyAlgorithm(AlgOL6E[Si][n]);
-		if (!AlgL6E_URUL[Si].empty()) C.ApplyAlgorithm(AlgL6E_URUL[Si][n]);
+        if (!AlgL6EO[Si].empty()) C.ApplyAlgorithm(AlgL6EO[Si][n]);
+        if (!AlgL6E2E[Si].empty()) C.ApplyAlgorithm(AlgL6E2E[Si][n]);
         C.ApplyAlgorithm(AlgL6E[Si][n]);
+		
         return C.IsSolved();
     }
 
-	// Get the solve STM metric
-	uint Roux::GetSolveSTM(const Spn spin, const uint n) const
+	// Get the solve metric
+    float Roux::GetMetricSolve(const Spn spin, const uint n) const
 	{
 		const int si = static_cast<int>(spin); // Spin index
 
@@ -1423,10 +1430,11 @@ namespace grcube3
 		A += SecondBlocksSS[si][n];
 		if (!AlgCMLL[si].empty()) A += AlgCMLL[si][n];
 		if (!AlgCOLL[si].empty()) A += AlgCOLL[si][n];
-		if (!AlgOL6E[si].empty()) A += AlgOL6E[si][n];
-		if (!AlgL6E_URUL[si].empty()) A += AlgL6E_URUL[si][n];
+        if (!AlgL6EO[si].empty()) A += AlgL6EO[si][n];
+        if (!AlgL6E2E[si].empty()) A += AlgL6E2E[si][n];
 		A += AlgL6E[si][n];
-		return A.GetSTM();
+		
+		return A.GetMetric(Metric);
 	}
 
 	// Get the full solve with cancellations
@@ -1448,8 +1456,8 @@ namespace grcube3
 		A += SecondBlocksSS[si][n];
 		if (!AlgCMLL[si].empty()) A += AlgCMLL[si][n];
 		if (!AlgCOLL[si].empty()) A += AlgCOLL[si][n];
-		if (!AlgOL6E[si].empty()) A += AlgOL6E[si][n];
-		if (!AlgL6E_URUL[si].empty()) A += AlgL6E_URUL[si][n];
+        if (!AlgL6EO[si].empty()) A += AlgL6EO[si][n];
+        if (!AlgL6E2E[si].empty()) A += AlgL6E2E[si][n];
 		A += AlgL6E[si][n];
 
 		return A.GetCancellations();
@@ -1458,7 +1466,8 @@ namespace grcube3
 	// Get the best solve report
 	std::string Roux::GetBestReport(const bool Cancellations) const
 	{
-		uint STM, min_STM = 0u, Bestn;
+		float M, min_M = 0.0f;
+		uint Bestn;
 		Spn BestSpin;
 
 		for (int sp = 0; sp < 24; sp++)
@@ -1471,26 +1480,24 @@ namespace grcube3
 			{
 				if (!IsSolved(Spin, n)) continue;
 
-				if (Cancellations)
+				if (Cancellations) M = GetMetricCancellations(Spin, n);
+                else M = GetMetricSolve(Spin, n);
+				
+				if (min_M == 0.0f || M < min_M)
 				{
-					Algorithm C = GetCancellations(Spin, n);
-					STM = C.GetSTM();
-				}
-				else STM = GetSolveSTM(Spin, n);
-				if (min_STM == 0u || STM < min_STM)
-				{
-					min_STM = STM;
+					min_M = M;
 					BestSpin = Spin;
 					Bestn = n;
 				}
 			}
 		}
-		if (min_STM == 0u) return "No Roux solves!\n";
+		if (min_M == 0.0f) return "No Roux solves!\n";
 
 		if (Cancellations)
 		{
 			Algorithm C = GetCancellations(BestSpin, Bestn);
-			return GetReport(BestSpin, Bestn) + "\nCancellations (" + std::to_string(C.GetSTM()) + " STM): " + C.ToString() + "\n";
+			return GetReport(BestSpin, Bestn) + "\nCancellations (" + Algorithm::GetMetricValue(C.GetMetric(Metric)) + " " + 
+			       Algorithm::GetMetricString(Metric) + "): " + C.ToString() + "\n";
 		}
 
 		return GetReport(BestSpin, Bestn);

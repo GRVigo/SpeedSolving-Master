@@ -34,7 +34,7 @@ namespace grcube3
         for (int i = 0; i < 24; i++)
         {
             Inspections[i].clear();
-			EOLine[i].clear();
+            EOX[i].clear();
             F2L_1[i].clear();
             F2L_2[i].clear();
             F2L_3[i].clear();
@@ -45,43 +45,45 @@ namespace grcube3
             AlgCOLL[i].clear();
             AlgEPLL[i].clear();
 			
-			CaseZBLL[i].clear();
-			CaseOCLL[i].clear();
-			CasePLL[i].clear();
-			CaseCOLL[i].clear();
-			CaseEPLL[i].clear();
+            CasesZBLL[i].clear();
+            CasesOCLL[i].clear();
+            CasesPLL[i].clear();
+            CasesCOLL[i].clear();
+            CasesEPLL[i].clear();
         }
 		
-        MaxDepthEO = 0u;
-        TimeEOLine = TimeF2L = TimeZBLL = TimeOCLL = TimePLL = TimeCOLL = TimeEPLL = 0.0;
+        MaxDepthEOX = 0u;
+        TimeEOX = TimeF2L = TimeZBLL = TimeOCLL = TimePLL = TimeCOLL = TimeEPLL = 0.0;
+		
+		Metric = Metrics::Movements; // Default metric
 	}
 
-    // Search the best EOLine solve algorithm with the given search deep
-    // Return false if no EOLine found
-    bool ZZ::SearchEOLine(const uint MaxDepth, const uint MaxSolves)
+    // Search the best EOX solve with the given search deep
+    // Return false if no EOX found
+    bool ZZ::SearchEOX(const uint MaxDepth, const uint MaxSolves)
 	{
-        const auto time_EO_start = std::chrono::system_clock::now();
+        const auto time_EOX_start = std::chrono::system_clock::now();
 
-        MaxDepthEO = (MaxDepth <= 4u ? 4u : MaxDepth);
+        MaxDepthEOX = (MaxDepth <= 4u ? 4u : MaxDepth);
 
-        DeepSearch DSEOLine(Scramble); // Deep search for EOLine
+        DeepSearch DSEOX(Scramble); // Deep search for EOLine
 		
-        DSEOLine.AddToOptionalPieces(Pgr::EOLINE_UF);
-        DSEOLine.AddToOptionalPieces(Pgr::EOLINE_UR);
-        DSEOLine.AddToOptionalPieces(Pgr::EOLINE_DF);
-        DSEOLine.AddToOptionalPieces(Pgr::EOLINE_DR);
+        DSEOX.AddToOptionalPieces(Pgr::EOLINE_UF);
+        DSEOX.AddToOptionalPieces(Pgr::EOLINE_UR);
+        DSEOX.AddToOptionalPieces(Pgr::EOLINE_DF);
+        DSEOX.AddToOptionalPieces(Pgr::EOLINE_DR);
 
-        DSEOLine.AddToOptionalPieces(Pgr::EOLINE_FU);
-        DSEOLine.AddToOptionalPieces(Pgr::EOLINE_FR);
-        DSEOLine.AddToOptionalPieces(Pgr::EOLINE_BU);
-        DSEOLine.AddToOptionalPieces(Pgr::EOLINE_BR);
+        DSEOX.AddToOptionalPieces(Pgr::EOLINE_FU);
+        DSEOX.AddToOptionalPieces(Pgr::EOLINE_FR);
+        DSEOX.AddToOptionalPieces(Pgr::EOLINE_BU);
+        DSEOX.AddToOptionalPieces(Pgr::EOLINE_BR);
         
-        DSEOLine.AddToOptionalPieces(Pgr::EOLINE_RU);
-        DSEOLine.AddToOptionalPieces(Pgr::EOLINE_RF);
-        DSEOLine.AddToOptionalPieces(Pgr::EOLINE_LU);
-        DSEOLine.AddToOptionalPieces(Pgr::EOLINE_LF);
+        DSEOX.AddToOptionalPieces(Pgr::EOLINE_RU);
+        DSEOX.AddToOptionalPieces(Pgr::EOLINE_RF);
+        DSEOX.AddToOptionalPieces(Pgr::EOLINE_LU);
+        DSEOX.AddToOptionalPieces(Pgr::EOLINE_LF);
         
-        DSEOLine.AddToMandatoryOrientations(Pgr::ALL_EDGES);
+        DSEOX.AddToMandatoryOrientations(Pgr::ALL_EDGES);
 
 		// First level is extended in the search to improve the multithreading - first level will not be checked
 		// (it's supose that the EO Line not will be solved in a single movement)
@@ -94,32 +96,32 @@ namespace grcube3
         SearchLevel L_Check(SearchCheck::CHECK);
         L_Check.Add(U);
 
-        DSEOLine.AddSearchLevel(L_Root); // Level 1 (two steps -DOUBLE- root algorithms)
-        for (uint l = 2u; l < MaxDepthEO; l++) DSEOLine.AddSearchLevel(L_Check);
+        DSEOX.AddSearchLevel(L_Root); // Level 1 (two steps -DOUBLE- root algorithms)
+        for (uint l = 2u; l < MaxDepthEOX; l++) DSEOX.AddSearchLevel(L_Check);
 
-        DSEOLine.UpdateRootData();
-		// DSEOLine.SetMinDeep(DSEOLine.GetMaxDeep() - 2u);
+        DSEOX.UpdateRootData();
+        // DSEOX.SetMinDeep(DSEOX.GetMaxDeep() - 2u);
 
-        DSEOLine.Run(Cores);
+        DSEOX.Run(Cores);
 
-        Cores = DSEOLine.GetCoresUsed(); // Update to the real number of cores used
+        Cores = DSEOX.GetCoresUsed(); // Update to the real number of cores used
 
-        EvaluateEOLine(DSEOLine.Solves, MaxSolves);
+        EvaluateEOX(DSEOX.Solves, MaxSolves);
 
-        const std::chrono::duration<double> EO_elapsed_seconds = std::chrono::system_clock::now() - time_EO_start;
-        TimeEOLine = EO_elapsed_seconds.count();
+        const std::chrono::duration<double> EOX_elapsed_seconds = std::chrono::system_clock::now() - time_EOX_start;
+        TimeEOX = EOX_elapsed_seconds.count();
 
-        return !DSEOLine.Solves.empty();
+        return !DSEOX.Solves.empty();
 	}
 	
-	// Search the best EOLine solve algorithms from an algorithms vector
-	void ZZ::EvaluateEOLine(const std::vector<Algorithm>& Solves, const uint MaxSolves)
+    // Search the best EOLine solves from an algorithms vector
+    void ZZ::EvaluateEOX(const std::vector<Algorithm>& Solves, const uint MaxSolves)
 	{
-		// Best EO Line solve algorithms for each spin
+        // Best EOX solves for each spin
         for (const auto spin : SearchSpins)
         {
             int sp = static_cast<int>(spin);
-            EvaluateEOResult(EOLine[sp], MaxSolves, Solves, CubeBase, spin, Plc::BEST_SOLVES);
+            EvaluateEOXResult(EOX[sp], MaxSolves, Solves, CubeBase, spin, Plc::BEST_SOLVES);
         }
 
         for (int sp = 0; sp < 24; sp++)
@@ -131,10 +133,10 @@ namespace grcube3
             if (T1 != Stp::NONE) Insp.Append(T1);
             if (T2 != Stp::NONE) Insp.Append(T2);
 
-            for (auto& eo : EOLine[sp])
+            for (auto& eox : EOX[sp])
             {
-                if (T1 != Stp::NONE) eo.TransformTurn(T1);
-                if (T2 != Stp::NONE) eo.TransformTurn(T2);
+                if (T1 != Stp::NONE) eox.TransformTurn(T1);
+                if (T2 != Stp::NONE) eox.TransformTurn(T2);
                 Inspections[sp].push_back(Insp);
             }
 		}
@@ -149,7 +151,7 @@ namespace grcube3
         {
             int sp = static_cast<int>(spin);
 
-            for (uint n = 0u; n < EOLine[sp].size(); n++)
+            for (uint n = 0u; n < EOX[sp].size(); n++)
             {
                 F2L_1[sp].push_back(Algorithm(""));
                 F2L_2[sp].push_back(Algorithm(""));
@@ -158,7 +160,7 @@ namespace grcube3
 
                 Cube C = CubeBase;
                 C.ApplyAlgorithm(Inspections[sp][n]);
-                C.ApplyAlgorithm(EOLine[sp][n]);
+                C.ApplyAlgorithm(EOX[sp][n]);
 
                 if (IsEOCrossBuilt(C, spin)) SearchF2L_EOCross(spin, n);
                 else if (IsEOLineBuilt(C, spin)) SearchF2L_EOLine(spin, n);
@@ -273,7 +275,7 @@ namespace grcube3
         default: return;
         }
 			
-		const Algorithm AlgBase = Scramble + Inspections[sp][n] + EOLine[sp][n];
+        const Algorithm AlgBase = Scramble + Inspections[sp][n] + EOX[sp][n];
         const Cube C(AlgBase);
 
         int control = 0;
@@ -297,8 +299,6 @@ namespace grcube3
             if (SQUARE_L1_IsSolved && SQUARE_L2_IsSolved && SQUARE_R1_IsSolved && SQUARE_R2_IsSolved) break;
 
             DeepSearch DS_F2L(F2L_Aux);
-			
-			Cores = DS_F2L.GetCoresUsed(); // Update to the real number of cores used
 
             DS_F2L.AddSearchLevel(L_F2L_Check);
             DS_F2L.AddSearchLevel(L_F2L_Check);
@@ -322,6 +322,8 @@ namespace grcube3
             else DS_F2L.AddToOptionalPieces(SQUARE_R2);
 
             DS_F2L.Run(Cores);
+
+            Cores = DS_F2L.GetCoresUsed(); // Update to the real number of cores used
 
             F2L_Found = false;
 
@@ -357,7 +359,7 @@ namespace grcube3
 
         bool F2L_Found = false; // F2L found flag
 			
-		const Algorithm AlgBase = Scramble + Inspections[sp][n] + EOLine[sp][n];
+        const Algorithm AlgBase = Scramble + Inspections[sp][n] + EOX[sp][n];
         const Cube C(AlgBase);
 			
 		if (!IsEOCrossBuilt(C, spin)) return; // It's necessary to have the cross built
@@ -468,15 +470,15 @@ namespace grcube3
             int sp = static_cast<int>(spin);
 
             AlgZBLL[sp].clear();
-            CaseZBLL[sp].clear();
+            CasesZBLL[sp].clear();
 
-            for (uint n = 0u; n < EOLine[sp].size(); n++)
+            for (uint n = 0u; n < EOX[sp].size(); n++)
             {
                 AlgZBLL[sp].push_back(Algorithm(""));
-                CaseZBLL[sp].push_back("");
+                CasesZBLL[sp].push_back("");
 
                 Algorithm Alg = Inspections[sp][n];
-                Alg += EOLine[sp][n];
+                Alg += EOX[sp][n];
                 Alg += F2L_1[sp][n];
                 Alg += F2L_2[sp][n];
                 Alg += F2L_3[sp][n];
@@ -487,7 +489,7 @@ namespace grcube3
 
                 Stp AUFStep;
 
-                Cube::SolveLL(AlgZBLL[sp][n], CaseZBLL[sp][n], AUFStep, AlgSets::ZBLL, CubeZBLL);
+                Cube::SolveLL(AlgZBLL[sp][n], CasesZBLL[sp][n], AUFStep, AlgSets::ZBLL, CubeZBLL);
 
                 AlgZBLL[sp][n].Append(AUFStep);
             }
@@ -507,15 +509,15 @@ namespace grcube3
             int sp = static_cast<int>(spin);
 
             AlgOCLL[sp].clear();
-            CaseOCLL[sp].clear();
+            CasesOCLL[sp].clear();
 
-            for (uint n = 0u; n < EOLine[sp].size(); n++)
+            for (uint n = 0u; n < EOX[sp].size(); n++)
             {
                 AlgOCLL[sp].push_back(Algorithm(""));
-                CaseOCLL[sp].push_back("");
+                CasesOCLL[sp].push_back("");
 
                 Algorithm Alg = Inspections[sp][n];
-                Alg += EOLine[sp][n];
+                Alg += EOX[sp][n];
                 Alg += F2L_1[sp][n];
                 Alg += F2L_2[sp][n];
                 Alg += F2L_3[sp][n];
@@ -524,7 +526,7 @@ namespace grcube3
                 Cube CubeF2L = CubeBase;
                 CubeF2L.ApplyAlgorithm(Alg);
 
-                Cube::OrientateLL(AlgOCLL[sp][n], CaseOCLL[sp][n], AlgSets::OCLL, CubeF2L);
+                Cube::OrientateLL(AlgOCLL[sp][n], CasesOCLL[sp][n], AlgSets::OCLL, CubeF2L);
             }
         }
 
@@ -542,15 +544,15 @@ namespace grcube3
             int sp = static_cast<int>(spin);
 
             AlgPLL[sp].clear();
-            CasePLL[sp].clear();
+            CasesPLL[sp].clear();
 
-            for (uint n = 0u; n < EOLine[sp].size(); n++)
+            for (uint n = 0u; n < EOX[sp].size(); n++)
             {
                 AlgPLL[sp].push_back(Algorithm(""));
-                CasePLL[sp].push_back("");
+                CasesPLL[sp].push_back("");
 
                 Algorithm Alg = Inspections[sp][n];
-                Alg += EOLine[sp][n];
+                Alg += EOX[sp][n];
                 Alg += F2L_1[sp][n];
                 Alg += F2L_2[sp][n];
                 Alg += F2L_3[sp][n];
@@ -562,7 +564,7 @@ namespace grcube3
 
                 Stp AUFStep;
 
-                Cube::SolveLL(AlgPLL[sp][n], CasePLL[sp][n], AUFStep, AlgSets::PLL, CubeOCLL);
+                Cube::SolveLL(AlgPLL[sp][n], CasesPLL[sp][n], AUFStep, AlgSets::PLL, CubeOCLL);
 
                 AlgPLL[sp][n].Append(AUFStep);
             }
@@ -582,15 +584,15 @@ namespace grcube3
             int sp = static_cast<int>(spin);
 
             AlgCOLL[sp].clear();
-            CaseCOLL[sp].clear();
+            CasesCOLL[sp].clear();
 
-            for (uint n = 0u; n < EOLine[sp].size(); n++)
+            for (uint n = 0u; n < EOX[sp].size(); n++)
             {
                 AlgCOLL[sp].push_back(Algorithm(""));
-                CaseCOLL[sp].push_back("");
+                CasesCOLL[sp].push_back("");
 
                 Algorithm Alg = Inspections[sp][n];
-                Alg += EOLine[sp][n];
+                Alg += EOX[sp][n];
                 Alg += F2L_1[sp][n];
                 Alg += F2L_2[sp][n];
                 Alg += F2L_3[sp][n];
@@ -601,7 +603,7 @@ namespace grcube3
 
                 Stp LastStep;
 
-                Cube::CornersLL(AlgCOLL[sp][n], CaseCOLL[sp][n], LastStep, AlgSets::COLL, CubeF2L);
+                Cube::CornersLL(AlgCOLL[sp][n], CasesCOLL[sp][n], LastStep, AlgSets::COLL, CubeF2L);
 
                 AlgCOLL[sp][n].Append(LastStep);
             }
@@ -621,15 +623,15 @@ namespace grcube3
             int sp = static_cast<int>(spin);
 
             AlgEPLL[sp].clear();
-            CaseEPLL[sp].clear();
+            CasesEPLL[sp].clear();
 
-            for (uint n = 0u; n < EOLine[sp].size(); n++)
+            for (uint n = 0u; n < EOX[sp].size(); n++)
             {
                 AlgEPLL[sp].push_back(Algorithm(""));
-                CaseEPLL[sp].push_back("");
+                CasesEPLL[sp].push_back("");
 
                 Algorithm Alg = Inspections[sp][n];
-                Alg += EOLine[sp][n];
+                Alg += EOX[sp][n];
                 Alg += F2L_1[sp][n];
                 Alg += F2L_2[sp][n];
                 Alg += F2L_3[sp][n];
@@ -641,7 +643,7 @@ namespace grcube3
 
                 Stp AUFStep;
 
-                Cube::SolveLL(AlgEPLL[sp][n], CaseEPLL[sp][n], AUFStep, AlgSets::EPLL, CubeCOLL);
+                Cube::SolveLL(AlgEPLL[sp][n], CasesEPLL[sp][n], AUFStep, AlgSets::EPLL, CubeCOLL);
 
                 AlgEPLL[sp][n].Append(AUFStep);
             }
@@ -662,24 +664,24 @@ namespace grcube3
 
             for (uint n = 0u; n < Inspections[sp].size(); n++)
             {
-                EOLine[sp][n] = EOLine[sp][n].GetRegrip();
+                EOX[sp][n] = EOX[sp][n].GetRegrip();
                 F2L_1[sp][n] = F2L_1[sp][n].GetRegrip();
                 F2L_2[sp][n] = F2L_2[sp][n].GetRegrip();
                 F2L_3[sp][n] = F2L_3[sp][n].GetRegrip();
                 F2L_4[sp][n] = F2L_4[sp][n].GetRegrip();
                 
-                if (Algorithm::IsTurn(EOLine[sp][n].First()))
+                if (Algorithm::IsTurn(EOX[sp][n].First()))
                 {
-                    Inspections[sp][n].AppendShrink(EOLine[sp][n].First());
+                    Inspections[sp][n].AppendShrink(EOX[sp][n].First());
                     if (Inspections[sp][n].GetSize() == 3u) Inspections[sp][n] = Inspections[sp][n].GetCancellations();
-                    EOLine[sp][n].EraseFirst();
+                    EOX[sp][n].EraseFirst();
                 }
 
-                if (Algorithm::IsTurn(EOLine[sp][n].Last()))
+                if (Algorithm::IsTurn(EOX[sp][n].Last()))
                 {
-                    F2L_1[sp][n].Insert(0u, EOLine[sp][n].Last());
+                    F2L_1[sp][n].Insert(0u, EOX[sp][n].Last());
                     while (F2L_1[sp][n].Shrink());
-                    EOLine[sp][n].EraseLast();
+                    EOX[sp][n].EraseLast();
                 }
 
                 if (Algorithm::IsTurn(F2L_1[sp][n].Last()))
@@ -906,7 +908,7 @@ namespace grcube3
     }
 	
 	// Returns best solve from the Solves vector class member and his score for ZZ
-    bool ZZ::EvaluateEOResult(std::vector<Algorithm>& BestSolves, const uint MaxSolves, const std::vector<Algorithm>& Solves, const Cube& CBase, const Spn spin, const Plc Policy)
+    bool ZZ::EvaluateEOXResult(std::vector<Algorithm>& BestSolves, const uint MaxSolves, const std::vector<Algorithm>& Solves, const Cube& CBase, const Spn spin, const Plc Policy)
 	{
         BestSolves.clear();
 
@@ -1140,7 +1142,7 @@ namespace grcube3
 
                 Cube C = CubeBase;
                 C.ApplyAlgorithm(Inspections[sp][n]);
-                C.ApplyAlgorithm(EOLine[sp][n]);
+                C.ApplyAlgorithm(EOX[sp][n]);
 
                 if (IsEOLineBuilt(C, spin))
                 {
@@ -1151,18 +1153,18 @@ namespace grcube3
                     else if (IsEOCrossBuilt(C, spin)) ReportLine += "EOCross ";
                     else if (IsEOArrowBuilt(C, spin)) ReportLine += "EOArrow ";
                     else ReportLine += "EOLine ";
-                    ReportLine += std::to_string(GetSolveSTM(spin, n));
-                    if (cancellations) ReportLine += "(" + std::to_string(GetCancellationsSTM(spin, n)) + ")";
-                    ReportLine += " STM]: ";
+                    ReportLine += Algorithm::GetMetricValue(GetMetricSolve(spin, n));
+                    if (cancellations) ReportLine += "(" + Algorithm::GetMetricValue(GetMetricCancellations(spin, n)) + ")";
+                    ReportLine += " " + Algorithm::GetMetricString(Metric) +  "]: ";
                     if (!Inspections[sp][n].Empty()) ReportLine += "(" + Inspections[sp][n].ToString() + ") ";
-                    ReportLine += "(" + EOLine[sp][n].ToString() + ")";
+                    ReportLine += "(" + EOX[sp][n].ToString() + ")";
                 }
                 else
                 {
                     if (debug)
                     {
                         ReportLine += "[" + Cube::GetSpinText(spin) + "| No EOLine]";
-                        if (EOLine[sp][n].GetSize() > 0u) ReportLine += ": (" + EOLine[sp][n].ToString() + ")\n";
+                        if (!EOX[sp][n].Empty()) ReportLine += ": (" + EOX[sp][n].ToString() + ")\n";
                         Report += ReportLine;
                     }
                     continue;
@@ -1188,34 +1190,34 @@ namespace grcube3
                 if (!AlgZBLL[sp].empty())
                 {
                     C.ApplyAlgorithm(AlgZBLL[sp][n]);
-                    if (debug) ReportLine += " {ZBLL: " + CaseZBLL[sp][n] + "}";
-                    if (AlgZBLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgZBLL[sp][n].ToString() + ")";
+                    if (debug) ReportLine += " {ZBLL: " + CasesZBLL[sp][n] + "}";
+                    if (!AlgZBLL[sp][n].Empty()) ReportLine += " (" + AlgZBLL[sp][n].ToString() + ")";
                 }
 
                 if (!AlgOCLL[sp].empty())
                 {
                     C.ApplyAlgorithm(AlgOCLL[sp][n]);
-                    if (debug) ReportLine += " {OCLL: " + CaseOCLL[sp][n] + "}";
-                    if (AlgOCLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgOCLL[sp][n].ToString() + ")";
+                    if (debug) ReportLine += " {OCLL: " + CasesOCLL[sp][n] + "}";
+                    if (!AlgOCLL[sp][n].Empty()) ReportLine += " (" + AlgOCLL[sp][n].ToString() + ")";
                 }
                 if (!AlgPLL[sp].empty())
                 {
                     C.ApplyAlgorithm(AlgPLL[sp][n]);
-                    if (debug) ReportLine += " {PLL: " + CasePLL[sp][n] + "}";
-                    if (AlgPLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgPLL[sp][n].ToString() + ")";
+                    if (debug) ReportLine += " {PLL: " + CasesPLL[sp][n] + "}";
+                    if (!AlgPLL[sp][n].Empty()) ReportLine += " (" + AlgPLL[sp][n].ToString() + ")";
                 }
 
                 if (!AlgCOLL[sp].empty())
                 {
                     C.ApplyAlgorithm(AlgCOLL[sp][n]);
-                    if (debug) ReportLine += " {COLL: " + CaseCOLL[sp][n] + "}";
-                    if (AlgCOLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgCOLL[sp][n].ToString() + ")";
+                    if (debug) ReportLine += " {COLL: " + CasesCOLL[sp][n] + "}";
+                    if (!AlgCOLL[sp][n].Empty()) ReportLine += " (" + AlgCOLL[sp][n].ToString() + ")";
                 }
                 if (!AlgEPLL[sp].empty())
                 {
                     C.ApplyAlgorithm(AlgEPLL[sp][n]);
-                    if (debug) ReportLine += " {EPLL: " + CaseEPLL[sp][n] + "}";
-                    if (AlgEPLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgEPLL[sp][n].ToString() + ")";
+                    if (debug) ReportLine += " {EPLL: " + CasesEPLL[sp][n] + "}";
+                    if (!AlgEPLL[sp][n].Empty()) ReportLine += " (" + AlgEPLL[sp][n].ToString() + ")";
                 }
 
                 if (debug)
@@ -1237,10 +1239,10 @@ namespace grcube3
     {
         std::string Report;
 
-        Report += "Total search time: " + std::to_string(GetFullTime()) + " s\n";
-        Report += "EO Line search time: " + std::to_string(GetTimeEOLine()) + " s\n";
+        Report += "Total search time: " + std::to_string(GetTime()) + " s\n";
+        Report += "EO Line search time: " + std::to_string(GetTimeEOX()) + " s\n";
         Report += "F2L search time: " + std::to_string(GetTimeF2L()) + " s\n";
-        Report += "Last layer search time: " + std::to_string(GetTimeLastLayer()) + " s\n";
+        Report += "Last layer search time: " + std::to_string(GetTimeLL()) + " s\n";
         Report += "Threads used: " + std::to_string(GetUsedCores() > 0 ? GetUsedCores() : 0) +
                   " of " + std::to_string(DeepSearch::GetSystemCores()) + "\n";
 
@@ -1252,7 +1254,7 @@ namespace grcube3
 	{
 		const int si = static_cast<int>(sp);
 		
-		if (!CheckSolveConsistency(sp) || EOLine[si].size() <= n)
+        if (!CheckSolveConsistency(sp) || EOX[si].size() <= n)
 		{
 			std::string FReport = "No solve for spin ";
 			FReport += Cube::GetSpinText(sp);
@@ -1268,10 +1270,10 @@ namespace grcube3
 		C.ApplyAlgorithm(Inspections[si][n]);
 		if (!Inspections[si][n].Empty()) Report += "Inspection [" + C.GetSpinText() + "]: " + Inspections[si][n].ToString() + "\n";
 
-		C.ApplyAlgorithm(EOLine[si][n]);
+        C.ApplyAlgorithm(EOX[si][n]);
 		if (!IsEOLineBuilt(C, sp))
 		{
-			Report += "EO X not built in " + std::to_string(MaxDepthEO) + " movements\n";
+            Report += "EO X not built in " + std::to_string(MaxDepthEOX) + " movements\n";
 			return Report;
 		}
 
@@ -1281,7 +1283,7 @@ namespace grcube3
         else if (IsEOCrossBuilt(C, sp)) Report += "EOCross (";
         else if (IsEOArrowBuilt(C, sp)) Report += "EOArrow (";
         else Report += "EOLine (";
-		Report += std::to_string(GetLengthEOLine(sp, n)) + "): " + EOLine[si][n].ToString() + "\n";
+        Report += Algorithm::GetMetricValue(GetMetricEOX(sp, n)) + "): " + EOX[si][n].ToString() + "\n";
 
         // Show F2L solves
         C.ApplyAlgorithm(F2L_1[si][n]);
@@ -1295,35 +1297,35 @@ namespace grcube3
             return Report;
         }
 
-        std::string F2LString = GetTextF2LFirstSolve(sp, n);
-        if (F2LString.size() > 0u) Report += "F2L 1 (" + std::to_string(GetLengthF2LFirstSolve(sp, n)) + "): " + F2LString + "\n";
-        F2LString = GetTextF2LSecondSolve(sp, n);
-        if (F2LString.size() > 0u) Report += "F2L 2 (" + std::to_string(GetLengthF2LSecondSolve(sp, n)) + "): " + F2LString + "\n";
-        F2LString = GetTextF2LThirdSolve(sp, n);
-        if (F2LString.size() > 0u) Report += "F2L 3 (" + std::to_string(GetLengthF2LThirdSolve(sp, n)) + "): " + F2LString + "\n";
-        F2LString = GetTextF2LFourthSolve(sp, n);
-        if (F2LString.size() > 0u) Report += "F2L 4 (" + std::to_string(GetLengthF2LFourthSolve(sp, n)) + "): " + F2LString + "\n";
+        std::string F2LString = GetTextF2L_1(sp, n);
+        if (!F2LString.empty()) Report += "F2L 1 (" + Algorithm::GetMetricValue(GetMetricF2L_1(sp, n)) + "): " + F2LString + "\n";
+        F2LString = GetTextF2L_2(sp, n);
+        if (!F2LString.empty()) Report += "F2L 2 (" + Algorithm::GetMetricValue(GetMetricF2L_2(sp, n)) + "): " + F2LString + "\n";
+        F2LString = GetTextF2L_3(sp, n);
+        if (!F2LString.empty()) Report += "F2L 3 (" + Algorithm::GetMetricValue(GetMetricF2L_3(sp, n)) + "): " + F2LString + "\n";
+        F2LString = GetTextF2L_4(sp, n);
+        if (!F2LString.empty()) Report += "F2L 4 (" + Algorithm::GetMetricValue(GetMetricF2L_4(sp, n)) + "): " + F2LString + "\n";
 
 		if (!AlgZBLL[si].empty())
 		{
 			C.ApplyAlgorithm(AlgZBLL[si][n]);
-            Report += "ZBLL (" + std::to_string(GetLengthZBLL(sp, n)) + "): " + AlgZBLL[si][n].ToString() + "\n";
+            Report += "ZBLL (" + Algorithm::GetMetricValue(GetMetricZBLL(sp, n)) + "): " + AlgZBLL[si][n].ToString() + "\n";
 		}
 		else if (!AlgOCLL[si].empty() && !AlgPLL[si].empty())
 		{
 			C.ApplyAlgorithm(AlgOCLL[si][n]);
-            if (AlgOCLL[si][n].GetSize() > 0u) Report += "OCLL (" + std::to_string(GetLengthOCLL(sp, n)) + "): " + AlgOCLL[si][n].ToString() + "\n";
+            if (!AlgOCLL[si][n].Empty()) Report += "OCLL (" + Algorithm::GetMetricValue(GetMetricOCLL(sp, n)) + "): " + AlgOCLL[si][n].ToString() + "\n";
 
 			C.ApplyAlgorithm(AlgPLL[si][n]);
-            if (AlgPLL[si][n].GetSize() > 0u) Report += "PLL (" + std::to_string(GetLengthPLL(sp, n)) + "): " + AlgPLL[si][n].ToString() + "\n";
+            if (!AlgPLL[si][n].Empty()) Report += "PLL (" + Algorithm::GetMetricValue(GetMetricPLL(sp, n)) + "): " + AlgPLL[si][n].ToString() + "\n";
 		}
 		else if (!AlgCOLL[si].empty() && !AlgEPLL[si].empty())
 		{
 			C.ApplyAlgorithm(AlgCOLL[si][n]);
-            if (AlgCOLL[si][n].GetSize() > 0u) Report += "COLL (" + std::to_string(GetLengthCOLL(sp, n)) + "): " + AlgCOLL[si][n].ToString() + "\n";
+            if (!AlgCOLL[si][n].Empty()) Report += "COLL (" + Algorithm::GetMetricValue(GetMetricCOLL(sp, n)) + "): " + AlgCOLL[si][n].ToString() + "\n";
 
 			C.ApplyAlgorithm(AlgEPLL[si][n]);
-            if (AlgEPLL[si][n].GetSize() > 0u) Report += "EPLL (" + std::to_string(GetLengthEPLL(sp, n)) + "): " + AlgEPLL[si][n].ToString() + "\n";
+            if (!AlgEPLL[si][n].Empty()) Report += "EPLL (" + Algorithm::GetMetricValue(GetMetricEPLL(sp, n)) + "): " + AlgEPLL[si][n].ToString() + "\n";
 		}
 		else
 		{
@@ -1332,15 +1334,15 @@ namespace grcube3
 		}
 
         // Show summary
-        Report += "\nSolve movements: " + std::to_string(GetSolveSTM(sp, n)) + " STM\n";
-		if (!CaseOCLL[si].empty() && !CasePLL[si].empty()) // OCLL + PLL
-		{
+        Report += "\nSolve metric: " + Algorithm::GetMetricValue(GetMetricSolve(sp, n)) + " " + Algorithm::GetMetricString(Metric) + "\n";
+        if (!CasesOCLL[si].empty() && !CasesPLL[si].empty()) // OCLL + PLL
+        {
 			Report += "OCLL case: " + GetTextOCLLCase(sp, n) + "\n";
 			Report += "PLL case: " + GetTextPLLCase(sp, n) + "\n";
 		}
-		else if (!CaseZBLL[si].empty()) // ZBLL
+        else if (!CasesZBLL[si].empty()) // ZBLL
 			Report += "ZBLL case: " + GetTextZBLLCase(sp, n) + "\n";
-		else if (!CaseCOLL[si].empty() && !CaseEPLL[si].empty()) // COLL + EPLL
+        else if (!CasesCOLL[si].empty() && !CasesEPLL[si].empty()) // COLL + EPLL
 		{
 			Report += "COLL case: " + GetTextCOLLCase(sp, n) + "\n";
 			Report += "EPLL case: " + GetTextEPLLCase(sp, n) + "\n";
@@ -1358,7 +1360,7 @@ namespace grcube3
 
         auto n = Inspections[si].size();
 
-        return (EOLine[si].size() == n) &&
+        return (EOX[si].size() == n) &&
                (F2L_1[si].size() == n) && (F2L_2[si].size() == n) && (F2L_3[si].size() == n) && (F2L_4[si].size() == n) &&
                ((AlgZBLL[si].size() == n) ||
                ((AlgOCLL[si].size() == n) && AlgPLL[si].size() == n) ||
@@ -1372,7 +1374,7 @@ namespace grcube3
 
         Cube C = CubeBase;
         C.ApplyAlgorithm(Inspections[Si][n]);
-        C.ApplyAlgorithm(EOLine[Si][n]);
+        C.ApplyAlgorithm(EOX[Si][n]);
         C.ApplyAlgorithm(F2L_1[Si][n]);
         C.ApplyAlgorithm(F2L_2[Si][n]);
         C.ApplyAlgorithm(F2L_3[Si][n]);
@@ -1386,12 +1388,12 @@ namespace grcube3
         return C.IsSolved();
     }
 
-    // Get the solve STM metric
-    uint ZZ::GetSolveSTM(const Spn spin, const uint n) const
+    // Get the solve metric
+    float ZZ::GetMetricSolve(const Spn spin, const uint n) const
     {
         const int si = static_cast<int>(spin); // Spin index
 
-        Algorithm A = EOLine[si][n];;
+        Algorithm A = EOX[si][n];;
         A += F2L_1[si][n];
         A += F2L_2[si][n];
         A += F2L_3[si][n];
@@ -1402,7 +1404,7 @@ namespace grcube3
         if (!AlgCOLL[si].empty()) A += AlgCOLL[si][n];
         if (!AlgEPLL[si].empty()) A += AlgEPLL[si][n];
 
-        return A.GetSTM();
+        return A.GetMetric(Metric);
     }
 
     // Get the full solve with cancellations
@@ -1410,7 +1412,7 @@ namespace grcube3
     {
         const int si = static_cast<int>(spin); // Spin index
 
-        if (!CheckSolveConsistency(spin) || EOLine[si].size() <= n)
+        if (!CheckSolveConsistency(spin) || EOX[si].size() <= n)
         {
             std::string FReport = "No solve with cancellations for spin ";
             FReport += Cube::GetSpinText(spin);
@@ -1419,7 +1421,7 @@ namespace grcube3
         }
 
         Algorithm A = Inspections[si][n];
-        A += EOLine[si][n];
+        A += EOX[si][n];
         A += F2L_1[si][n];
         A += F2L_2[si][n];
         A += F2L_3[si][n];
@@ -1436,7 +1438,8 @@ namespace grcube3
     // Get the best solve report
     std::string ZZ::GetBestReport(const bool Cancellations) const
     {
-        uint STM, min_STM = 0u, Bestn;
+        float M, min_M = 0.0f;
+		uint Bestn;
         Spn BestSpin;
 
         for (int sp = 0; sp < 24; sp++)
@@ -1445,32 +1448,44 @@ namespace grcube3
 
             if (!CheckSolveConsistency(Spin)) continue;
 
-            for (uint n = 0u; n < EOLine[sp].size(); n++)
+            for (uint n = 0u; n < EOX[sp].size(); n++)
             {
                 if (!IsSolved(Spin, n)) continue;
 
-                if (Cancellations)
+                if (Cancellations) M = GetMetricCancellations(Spin, n);
+                else M = GetMetricSolve(Spin, n);
+				
+                if (min_M == 0.0f || M < min_M)
                 {
-                    Algorithm C = GetCancellations(Spin, n);
-                    STM = C.GetSTM();
-                }
-                else STM = GetSolveSTM(Spin, n);
-                if (min_STM == 0u || STM < min_STM)
-                {
-                    min_STM = STM;
+                    min_M = M;
                     BestSpin = Spin;
                     Bestn = n;
                 }
             }
         }
-        if (min_STM == 0u) return "No ZZ solves!\n";
+        if (min_M == 0.0f) return "No ZZ solves!\n";
 
         if (Cancellations)
         {
             Algorithm C = GetCancellations(BestSpin, Bestn);
-            return GetReport(BestSpin, Bestn) + "\nCancellations (" + std::to_string(C.GetSTM()) + " STM): " + C.ToString() + "\n";
+            return GetReport(BestSpin, Bestn) + "\nCancellations (" + Algorithm::GetMetricValue(C.GetMetric(Metric)) + " " + 
+			       Algorithm::GetMetricString(Metric) + "): " + C.ToString() + "\n";
         }
 
         return GetReport(BestSpin, Bestn);
+    }
+
+    // Get full F2L string
+    std::string ZZ::GetTextF2L(const Spn sp, const uint n) const
+    {
+        std::string F2LString, Aux = GetTextF2L_1(sp, n);
+        if (!Aux.empty()) F2LString += " (" + Aux + ")";
+        Aux = GetTextF2L_2(sp, n);
+        if (!Aux.empty()) F2LString += " (" + Aux + ")";
+        Aux = GetTextF2L_3(sp, n);
+        if (!Aux.empty()) F2LString += " (" + Aux + ")";
+        Aux = GetTextF2L_4(sp, n);
+        if (!Aux.empty()) F2LString += " (" + Aux + ")";
+        return F2LString;
     }
 }

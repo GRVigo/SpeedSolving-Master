@@ -40,7 +40,7 @@ namespace grcube3
 		~Algorithm() { } // Destructor
 		
 		Stp& operator[](const uint pos) { return Movs[pos]; } // Return step at position (read/write)
-		Stp At(const uint pos) const { return Movs[pos]; } // Return step at position (read only)
+        Stp At(const uint pos) const { return pos < Movs.size() ? Movs[pos] : Stp::NONE; } // Return step at position (read only)
 		bool operator==(const Algorithm&) const; // Equal operator
 		bool operator!=(const Algorithm&) const; // Not equal operator
 		Algorithm operator+(const Algorithm&); // Algorithm addition operator
@@ -62,7 +62,18 @@ namespace grcube3
 		static Algorithm Compress(const Algorithm&, const Algorithm&); // Returns equivalent algorithm with the subalgorithm expressed with repetitions
 		
 		// Get the slice turn metric (STM) for current algorithm
-		uint GetSTM() const { Algorithm A = GetDeveloped(); A = A.GetWithoutTurns(); return A.GetSize(); }
+		// uint GetSTM() const { Algorithm A = GetDeveloped(); A = A.GetWithoutTurns(); return A.GetSize(); }
+		// Get metrics
+        uint GetHTM() const; // Half turn metric (HTM), also known as face turn metric (FTM)
+        uint GetQTM() const; // Quarter turn metric (QTM)
+        uint GetSTM() const; // Slice turn metric (STM)
+        uint GetQSTM() const; // Quarter slice turn metric (QSTM)
+        uint GetETM() const; // Execution turn metric (ETM)
+        uint GetATM() const; // Axial turn metric (ATM)
+        uint GetPTM() const; // Pacelli turn metric (PTM)
+        float Get15HTM() const; // 1.5 half turn metric (1.5HTM)	
+        uint GetOBTM() const; // Outer block turn metric (OBTM)
+        float GetMetric(const Metrics = Metrics::Movements) const; // Get algorithm metric
 		
 		int GetParenthesesNesting() const; // Gets parentheses nesting - 0 for parentheses OK
 		
@@ -164,7 +175,19 @@ namespace grcube3
 		static Rng GetRange(const Stp s) { return m_range[static_cast<int>(s)]; }
 		static Lyr GetLayer(const Stp s) { return m_layer[static_cast<int>(s)]; }
 		
+        static std::string GetMetricString(const Metrics m) { return metric_strings[static_cast<int>(m)]; }
+        static std::string GetMetricValue(const float m)
+        {
+            std::string str = std::to_string (m);
+            str.erase(str.find_last_not_of('0') + 1, std::string::npos);
+            str.erase(str.find_last_not_of('.') + 1, std::string::npos);
+            str.erase(str.find_last_not_of(',') + 1, std::string::npos);
+            return str;
+        }
+		
 		static bool IsTurn(const Stp t) { return m_range[static_cast<int>(t)] == Rng::TURN; }
+        static bool IsSingleMov(const Stp m) { return m_range[static_cast<int>(m)] == Rng::SINGLE; }
+        static bool IsDoubleMov(const Stp m) { return m_range[static_cast<int>(m)] == Rng::DOUBLE; }
 		static bool IsyTurn(const Stp s) { return (s == Stp::y) || (s == Stp::yp) || (s == Stp::y2); }
 		static bool IsUMov(const Stp s) { return (s == Stp::U) || (s == Stp::Up) || (s == Stp::U2); }
 		
@@ -201,10 +224,23 @@ namespace grcube3
 		const static Lyr m_layer_opposite[]; // Array for get movements opposite layer
 		
 		const static Rng m_range[]; // Array for get movements range
+        
+        // Metrics
+        const static uint m_HTM[]; // Half turn metric (HTM), also known as face turn metric (FTM)
+        const static uint m_QTM[]; // Quarter turn metric (QTM)
+        const static uint m_STM[]; // Slice turn metric (STM)
+        const static uint m_QSTM[]; // Quarter slice turn metric (QSTM)
+        const static uint m_ETM[]; // Execution turn metric (ETM)
+        const static uint m_ATM[]; // Axial turn metric (ATM)
+        const static uint m_PTM[]; // Pacelli turn metric (PTM)
+        const static float m_15HTM[]; // 1.5 half turn metric (1.5HTM)	
+        const static uint m_OBTM[]; // Outer block turn metric (OBTM)
 	
 		const static std::array<char, 33u> m_chars; // Array with allowed chars in an algorithm
 	
 		const static std::string m_strings[]; // Array with steps string representation
+		
+		const static std::string metric_strings[]; // Array with metrics string representation
 		
 		const static uint m_scores[]; // Array with subjective score for each movement
 

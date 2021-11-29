@@ -27,7 +27,7 @@
 
 namespace grcube3
 {
-	// Default inspection algorithms (first layer down)
+    // Default inspections (first layer down)
 	const Algorithm CFOP::DefaultInspections[6] = 
 	{
         Algorithm("z2"), // U
@@ -52,30 +52,32 @@ namespace grcube3
             A_OLL[i].clear();
             A_PLL[i].clear();
             A_1LLL[i].clear();
-            A_EO[i].clear();
+            EOLL[i].clear();
             A_ZBLL[i].clear();
             AUF[i].clear();
 
-            CaseOLL[i].clear();
-            CasePLL[i].clear();
-            Case1LLL[i].clear();
-            CaseZBLL[i].clear();
+            CasesOLL[i].clear();
+            CasesPLL[i].clear();
+            Cases1LLL[i].clear();
+            CasesZBLL[i].clear();
         }
 
-        TimeCross = TimeF2L = TimeOLL = TimePLL = Time1LLL = TimeEO = TimeZBLL = 0.0f;
-        CrossDepth = 0u;
+        TimeCrosses = TimeF2L = TimeOLL = TimePLL = Time1LLL = TimeEOLL = TimeZBLL = 0.0f;
+        DepthCrosses = 0u;
 
         CrossLayers.clear();
         for (const auto CL : Cube::ExtLayers) CrossLayers.push_back(CL);
+		
+		Metric = Metrics::Movements; // Default metric
 	}
 
     // Search the best crosses solve algorithms with the given search depth for the scramble and the maximun number of solves
     // Returns false if no crosses found
     bool CFOP::SearchCrosses(const uint MaxDepth, const uint MaxSolves)
 	{
-        const auto time_cross_start = std::chrono::system_clock::now();
+        const auto time_crosses_start = std::chrono::system_clock::now();
 
-        CrossDepth = MaxDepth >= 4 ? MaxDepth : 4u;
+        DepthCrosses = MaxDepth >= 4 ? MaxDepth : 4u;
 
         DeepSearch DSCrosses(Scramble);
         DSCrosses.AddToOptionalPieces(Pgr::CROSS_U);
@@ -99,7 +101,7 @@ namespace grcube3
         
         DSCrosses.AddSearchLevel(L_Root); // Level 1 (two steps -DOUBLE- root algorithms)
         DSCrosses.AddSearchLevel(L_NoCheck); // Level 2
-        for (uint l = 3; l < CrossDepth; l++) DSCrosses.AddSearchLevel(L_Check); // Levels 3 to CrossDepth
+        for (uint l = 3; l < DepthCrosses; l++) DSCrosses.AddSearchLevel(L_Check); // Levels 3 to CrossDepth
 
         DSCrosses.UpdateRootData();
 
@@ -109,8 +111,8 @@ namespace grcube3
 
         EvaluateCrosses(DSCrosses.Solves, MaxSolves);
 
-        const std::chrono::duration<double> cross_elapsed_seconds = std::chrono::system_clock::now() - time_cross_start;
-        TimeCross = cross_elapsed_seconds.count();
+        const std::chrono::duration<double> crosses_elapsed_seconds = std::chrono::system_clock::now() - time_crosses_start;
+        TimeCrosses = crosses_elapsed_seconds.count();
 
         return !DSCrosses.Solves.empty();
 	}
@@ -311,12 +313,12 @@ namespace grcube3
             const int CLI = static_cast<int>(Cube::LayerToFace(CrossLayer)); // Cross layer index
 
             A_OLL[CLI].clear();
-            CaseOLL[CLI].clear();
+            CasesOLL[CLI].clear();
 
             for (uint n = 0u; n < Crosses[CLI].size(); n++)
             {
                 A_OLL[CLI].push_back(Algorithm(""));
-                CaseOLL[CLI].push_back("");
+                CasesOLL[CLI].push_back("");
 
                 Algorithm Alg = Inspections[CLI][n];
                 Alg += Crosses[CLI][n];
@@ -328,7 +330,7 @@ namespace grcube3
                 Cube CubeF2L = CubeBase;
                 CubeF2L.ApplyAlgorithm(Alg);
 
-                Cube::OrientateLL(A_OLL[CLI][n], CaseOLL[CLI][n], AlgSets::OLL, CubeF2L);
+                Cube::OrientateLL(A_OLL[CLI][n], CasesOLL[CLI][n], AlgSets::OLL, CubeF2L);
             }
         }
 
@@ -347,12 +349,12 @@ namespace grcube3
 
             A_PLL[CLI].clear();
             AUF[CLI].clear();
-            CasePLL[CLI].clear();
+            CasesPLL[CLI].clear();
 
             for (uint n = 0u; n < Crosses[CLI].size(); n++)
             {
                 A_PLL[CLI].push_back(Algorithm(""));
-                CasePLL[CLI].push_back("");
+                CasesPLL[CLI].push_back("");
 
                 Algorithm Alg = Inspections[CLI][n];
                 Alg += Crosses[CLI][n];
@@ -367,7 +369,7 @@ namespace grcube3
 
                 Stp AUFStep;
 
-                Cube::SolveLL(A_PLL[CLI][n], CasePLL[CLI][n], AUFStep, AlgSets::PLL, CubeOLL);
+                Cube::SolveLL(A_PLL[CLI][n], CasesPLL[CLI][n], AUFStep, AlgSets::PLL, CubeOLL);
 
                 Algorithm Aux;
                 Aux.Append(AUFStep);
@@ -390,12 +392,12 @@ namespace grcube3
 
             A_1LLL[CLI].clear();
             AUF[CLI].clear();
-            Case1LLL[CLI].clear();
+            Cases1LLL[CLI].clear();
 
             for (uint n = 0u; n < Crosses[CLI].size(); n++)
             {
                 A_1LLL[CLI].push_back(Algorithm(""));
-                Case1LLL[CLI].push_back("");
+                Cases1LLL[CLI].push_back("");
 
                 Algorithm Alg = Inspections[CLI][n];
                 Alg += Crosses[CLI][n];
@@ -409,7 +411,7 @@ namespace grcube3
 
                 Stp AUFStep;
 
-                Cube::SolveLL(A_1LLL[CLI][n], Case1LLL[CLI][n], AUFStep, AlgSets::_1LLL, CubeF2L);
+                Cube::SolveLL(A_1LLL[CLI][n], Cases1LLL[CLI][n], AUFStep, AlgSets::_1LLL, CubeF2L);
 
                 Algorithm Aux;
                 Aux.Append(AUFStep);
@@ -422,9 +424,9 @@ namespace grcube3
     }
 
     // Last layer edges orientation search
-    void CFOP::SearchEO()
+    void CFOP::SearchEOLL()
     {
-        const auto time_EO_start = std::chrono::system_clock::now();
+        const auto time_EOLL_start = std::chrono::system_clock::now();
 
         const SearchUnit U_UR(SequenceType::SINGLE, Sst::SINGLE_UR);
         const SearchUnit U_OR1(SequenceType::RETURN_FIXED_SINGLE, Sst::SINGLE_U, Sst::PETRUS_OR_U);
@@ -439,11 +441,11 @@ namespace grcube3
         {
             const int CLI = static_cast<int>(Cube::LayerToFace(CrossLayer)); // Cross layer index
 
-            A_EO[CLI].clear();
+            EOLL[CLI].clear();
 
             for (uint n = 0u; n < Crosses[CLI].size(); n++)
             {
-                A_EO[CLI].push_back(Algorithm(""));
+                EOLL[CLI].push_back(Algorithm(""));
 
                 Algorithm Alg = Scramble;
                 Alg += Inspections[CLI][n];
@@ -452,7 +454,6 @@ namespace grcube3
                 Alg += F2L_2[CLI][n];
                 Alg += F2L_3[CLI][n];
                 Alg += F2L_4[CLI][n];
-                Alg += A_EO[CLI][n];
 
                 Cube CubeF2L(Alg);
 
@@ -483,12 +484,12 @@ namespace grcube3
 
                 DSEO.Run(Cores);
 
-                DSEO.EvaluateShortestResult(A_EO[CLI][n], true);
+                DSEO.EvaluateShortestResult(EOLL[CLI][n], true);
             }
         }
 
-        const std::chrono::duration<double> EO_elapsed_seconds = std::chrono::system_clock::now() - time_EO_start;
-        TimeEO = EO_elapsed_seconds.count();
+        const std::chrono::duration<double> EOLL_elapsed_seconds = std::chrono::system_clock::now() - time_EOLL_start;
+        TimeEOLL = EOLL_elapsed_seconds.count();
     }
 
     // ZBLL last layer search + AUF
@@ -502,12 +503,12 @@ namespace grcube3
 
             A_ZBLL[CLI].clear();
             AUF[CLI].clear();
-            CaseZBLL[CLI].clear();
+            CasesZBLL[CLI].clear();
 
             for (uint n = 0u; n < Crosses[CLI].size(); n++)
             {
                 A_ZBLL[CLI].push_back(Algorithm(""));
-                CaseZBLL[CLI].push_back("");
+                CasesZBLL[CLI].push_back("");
 
                 Algorithm Alg = Inspections[CLI][n];
                 Alg += Crosses[CLI][n];
@@ -515,14 +516,14 @@ namespace grcube3
                 Alg += F2L_2[CLI][n];
                 Alg += F2L_3[CLI][n];
                 Alg += F2L_4[CLI][n];
-                Alg += A_EO[CLI][n];
+                Alg += EOLL[CLI][n];
 
                 Cube CubeEOLL = CubeBase;
                 CubeEOLL.ApplyAlgorithm(Alg);
 
                 Stp AUFStep;
 
-                Cube::SolveLL(A_ZBLL[CLI][n], CaseZBLL[CLI][n], AUFStep, AlgSets::ZBLL, CubeEOLL);
+                Cube::SolveLL(A_ZBLL[CLI][n], CasesZBLL[CLI][n], AUFStep, AlgSets::ZBLL, CubeEOLL);
 
                 Algorithm Aux;
                 Aux.Append(AUFStep);
@@ -550,7 +551,7 @@ namespace grcube3
                 F2L_2[CLI][n] = F2L_2[CLI][n].GetRegrip();
                 F2L_3[CLI][n] = F2L_3[CLI][n].GetRegrip();
                 F2L_4[CLI][n] = F2L_4[CLI][n].GetRegrip();
-                if (!A_EO[CLI].empty()) A_EO[CLI][n] = A_EO[CLI][n].GetRegrip();
+                if (!EOLL[CLI].empty()) EOLL[CLI][n] = EOLL[CLI][n].GetRegrip();
 
                 if (Algorithm::IsTurn(Crosses[CLI][n].First()))
                 {
@@ -582,10 +583,10 @@ namespace grcube3
                             while (A_1LLL[CLI][n].Shrink());
                             F2L_1[CLI][n].EraseLast();
                         }
-                        else if (!A_EO[CLI].empty())
+                        else if (!EOLL[CLI].empty())
                         {
-                            A_EO[CLI][n].Insert(0u, F2L_1[CLI][n].Last());
-                            while (A_EO[CLI][n].Shrink());
+                            EOLL[CLI][n].Insert(0u, F2L_1[CLI][n].Last());
+                            while (EOLL[CLI][n].Shrink());
                             F2L_1[CLI][n].EraseLast();
                         }
                     }
@@ -613,10 +614,10 @@ namespace grcube3
                             while (A_1LLL[CLI][n].Shrink());
                             F2L_2[CLI][n].EraseLast();
                         }
-                        else if (!A_EO[CLI].empty())
+                        else if (!EOLL[CLI].empty())
                         {
-                            A_EO[CLI][n].Insert(0u, F2L_2[CLI][n].Last());
-                            while (A_EO[CLI][n].Shrink());
+                            EOLL[CLI][n].Insert(0u, F2L_2[CLI][n].Last());
+                            while (EOLL[CLI][n].Shrink());
                             F2L_2[CLI][n].EraseLast();
                         }
                     }
@@ -644,10 +645,10 @@ namespace grcube3
                             while (A_1LLL[CLI][n].Shrink());
                             F2L_3[CLI][n].EraseLast();
                         }
-                        else if (!A_EO[CLI].empty())
+                        else if (!EOLL[CLI].empty())
                         {
-                            A_EO[CLI][n].Insert(0u, F2L_3[CLI][n].Last());
-                            while (A_EO[CLI][n].Shrink());
+                            EOLL[CLI][n].Insert(0u, F2L_3[CLI][n].Last());
+                            while (EOLL[CLI][n].Shrink());
                             F2L_3[CLI][n].EraseLast();
                         }
                     }
@@ -673,20 +674,20 @@ namespace grcube3
                         while (A_1LLL[CLI][n].Shrink());
                         F2L_4[CLI][n].EraseLast();
                     }
-                    else if (!A_EO[CLI].empty())
+                    else if (!EOLL[CLI].empty())
                     {
-                        A_EO[CLI][n].Insert(0u, F2L_4[CLI][n].Last());
-                        while (A_EO[CLI][n].Shrink());
+                        EOLL[CLI][n].Insert(0u, F2L_4[CLI][n].Last());
+                        while (EOLL[CLI][n].Shrink());
                         F2L_4[CLI][n].EraseLast();
                     }
                 }
-                if (!A_EO[CLI].empty())
+                if (!EOLL[CLI].empty())
                 {
-                    if (Algorithm::IsTurn(A_EO[CLI][n].Last()))
+                    if (Algorithm::IsTurn(EOLL[CLI][n].Last()))
                     {
-                        A_ZBLL[CLI][n].Insert(0u, A_EO[CLI][n].Last());
+                        A_ZBLL[CLI][n].Insert(0u, EOLL[CLI][n].Last());
                         while (A_ZBLL[CLI][n].Shrink());
-                        A_EO[CLI][n].EraseLast();
+                        EOLL[CLI][n].EraseLast();
                     }
                 }
             }
@@ -999,7 +1000,7 @@ namespace grcube3
         return (Crosses[CLI].size() == n) &&
                (F2L_1[CLI].size() == n) && (F2L_2[CLI].size() == n) && (F2L_3[CLI].size() == n) && (F2L_4[CLI].size() == n) &&
                ((A_1LLL[CLI].size() == n) || (A_OLL[CLI].size() == n && A_PLL[CLI].size() == n) || 
-               (A_EO[CLI].size() == n && A_ZBLL[CLI].size() == n)) && (AUF[CLI].size() == n);
+               (EOLL[CLI].size() == n && A_ZBLL[CLI].size() == n)) && (AUF[CLI].size() == n);
     }
 
     // Get a full solve report (for each cross layer)
@@ -1031,9 +1032,9 @@ namespace grcube3
 					else ReportLine += "[XXXXCross ";
 					
                     ReportLine.push_back(Cube::GetLayerChar(CrossLayer));
-                    ReportLine += "|" + std::to_string(GetSolveSTM(Cube::LayerToFace(CrossLayer), n));
-                    if (cancellations) ReportLine += "(" + std::to_string(GetCancellationsSTM(Cube::LayerToFace(CrossLayer), n)) + ")";
-                    ReportLine += " STM]: ";
+                    ReportLine += "|" + Algorithm::GetMetricValue(GetMetricSolve(Cube::LayerToFace(CrossLayer), n));
+                    if (cancellations) ReportLine += "(" + Algorithm::GetMetricValue(GetMetricCancellations(Cube::LayerToFace(CrossLayer), n)) + ")";
+                    ReportLine += " " + Algorithm::GetMetricString(Metric) +  "]: ";
 					if (!Inspections[CLI][n].Empty()) ReportLine += "(" + Inspections[CLI][n].ToString() + ") ";
                     ReportLine += "(" + Crosses[CLI][n].ToString() + ")";
 				}
@@ -1043,7 +1044,7 @@ namespace grcube3
 					{
                         ReportLine += "[Cross ";
                         ReportLine.push_back(Cube::GetLayerChar(CrossLayer));
-                        ReportLine += "] Cross not found in " + std::to_string(CrossDepth) + " or less movements\n";
+                        ReportLine += "] Cross not found in " + std::to_string(DepthCrosses) + " or less movements\n";
 					}
                     if (debug) Report += ReportLine;
 					continue;
@@ -1055,10 +1056,10 @@ namespace grcube3
 				C.ApplyAlgorithm(F2L_4[CLI][n]);
 
                 if (!IsF2LBuilt(C, CrossLayer)) ReportLine += " F2L not found:";
-                if (F2L_1[CLI][n].GetSize() > 0u) ReportLine += " (" + F2L_1[CLI][n].ToString() + ")";
-                if (F2L_2[CLI][n].GetSize() > 0u) ReportLine += " (" + F2L_2[CLI][n].ToString() + ")";
-                if (F2L_3[CLI][n].GetSize() > 0u) ReportLine += " (" + F2L_3[CLI][n].ToString() + ")";
-                if (F2L_4[CLI][n].GetSize() > 0u) ReportLine += " (" + F2L_4[CLI][n].ToString() + ")";
+                if (!F2L_1[CLI][n].Empty()) ReportLine += " (" + F2L_1[CLI][n].ToString() + ")";
+                if (!F2L_2[CLI][n].Empty()) ReportLine += " (" + F2L_2[CLI][n].ToString() + ")";
+                if (!F2L_3[CLI][n].Empty()) ReportLine += " (" + F2L_3[CLI][n].ToString() + ")";
+                if (!F2L_4[CLI][n].Empty()) ReportLine += " (" + F2L_4[CLI][n].ToString() + ")";
 
                 if (!IsF2LBuilt(C, CrossLayer))
 				{
@@ -1067,15 +1068,15 @@ namespace grcube3
 					continue;
 				}
 
-				if (!CaseOLL[CLI].empty()) // OLL + PLL
+                if (!CasesOLL[CLI].empty()) // OLL + PLL
 				{
 					C.ApplyAlgorithm(A_OLL[CLI][n]);
 
 					if (IsLastLayerOriented(C))
 					{
-                        if (A_OLL[CLI][n].GetSize() > 0u)
+                        if (!A_OLL[CLI][n].Empty())
                         {
-                            if (debug) ReportLine += " {OLL: " + CaseOLL[CLI][n] + "}";
+                            if (debug) ReportLine += " {OLL: " + CasesOLL[CLI][n] + "}";
                             ReportLine += " (" + A_OLL[CLI][n].ToString() + ")";
                         }
 					}
@@ -1091,12 +1092,12 @@ namespace grcube3
 
 					if (C.IsSolved())
 					{
-                        if (A_PLL[CLI][n].GetSize() > 0u)
+                        if (!A_PLL[CLI][n].Empty())
                         {
-                            if (debug) ReportLine += " {PLL: " + CasePLL[CLI][n] + "}";
+                            if (debug) ReportLine += " {PLL: " + CasesPLL[CLI][n] + "}";
                             ReportLine += " (" + A_PLL[CLI][n].ToString() + ")";
                         }
-						if (AUF[CLI][n].GetSize() > 0u && AUF[CLI][n].At(0) != Stp::NONE) ReportLine += " (" + AUF[CLI][n].ToString() + ")";
+						if (!AUF[CLI][n].Empty() && AUF[CLI][n].At(0) != Stp::NONE) ReportLine += " (" + AUF[CLI][n].ToString() + ")";
 					}
 					else
 					{
@@ -1105,13 +1106,13 @@ namespace grcube3
 						continue;
 					}
 				}
-                else if (!A_EO[CLI].empty()) // EO + ZBLL
+                else if (!EOLL[CLI].empty()) // EO + ZBLL
                 {
-                    C.ApplyAlgorithm(A_EO[CLI][n]);
+                    C.ApplyAlgorithm(EOLL[CLI][n]);
 
                     if (C.EO())
                     {
-                        if (!A_EO[CLI][n].Empty()) ReportLine += " (" + A_EO[CLI][n].ToString() + ")";
+                        if (!EOLL[CLI][n].Empty()) ReportLine += " (" + EOLL[CLI][n].ToString() + ")";
                     }
                     else
                     {
@@ -1125,12 +1126,12 @@ namespace grcube3
 
                     if (C.IsSolved())
                     {
-                        if (A_ZBLL[CLI][n].GetSize() > 0u)
+                        if (!A_ZBLL[CLI][n].Empty())
                         {
-                            if (debug) ReportLine += " {ZBLL: " + CaseZBLL[CLI][n] + "}";
+                            if (debug) ReportLine += " {ZBLL: " + CasesZBLL[CLI][n] + "}";
                             ReportLine += " (" + A_ZBLL[CLI][n].ToString() + ")";
                         }
-                        if (AUF[CLI][n].GetSize() > 0u && AUF[CLI][n].At(0) != Stp::NONE)
+                        if (!AUF[CLI][n].Empty() && AUF[CLI][n].At(0) != Stp::NONE)
                             ReportLine += " (" + AUF[CLI][n].ToString() + ")";
                     }
                     else
@@ -1140,19 +1141,19 @@ namespace grcube3
                         continue;
                     }
                 }
-				else if (!Case1LLL[CLI].empty()) // 1LLL
+                else if (!Cases1LLL[CLI].empty()) // 1LLL
 				{
 					C.ApplyAlgorithm(A_1LLL[CLI][n]);
 					C.ApplyAlgorithm(AUF[CLI][n]);
 
 					if (C.IsSolved())
 					{
-                        if (A_1LLL[CLI][n].GetSize() > 0u)
+                        if (!A_1LLL[CLI][n].Empty())
                         {
-                            if (debug) ReportLine += " {1LLL: " + Case1LLL[CLI][n] + "}";
+                            if (debug) ReportLine += " {1LLL: " + Cases1LLL[CLI][n] + "}";
                             ReportLine += " (" + A_1LLL[CLI][n].ToString() + ")";
                         }
-						if (AUF[CLI][n].GetSize() > 0u && AUF[CLI][n].At(0) != Stp::NONE)
+						if (!AUF[CLI][n].Empty() && AUF[CLI][n].At(0) != Stp::NONE)
                             ReportLine += " (" + AUF[CLI][n].ToString() + ")";
 					}
 					else
@@ -1182,12 +1183,12 @@ namespace grcube3
     {
         std::string Report;
 
-        Report += "Total search time: " + std::to_string(GetFullTime()) + " s\n";
-        Report += "Crosses search time: " + std::to_string(GetCrossTime()) + " s\n";
-        Report += "F2L search time: " + std::to_string(GetF2LTime()) + " s\n";
-        Report += "Last layer search time: " + std::to_string(GetLLTime()) + " s\n";
-        Report += "Threads used: " + std::to_string(GetUsedCores() > 0 ? GetUsedCores() : 0) +
-            " of " + std::to_string(DeepSearch::GetSystemCores()) + "\n";
+        Report += "Total search time: " + std::to_string(GetTime()) + " s\n";
+        Report += "Crosses search time: " + std::to_string(GetTimeCrosses()) + " s\n";
+        Report += "F2L search time: " + std::to_string(GetTimeF2L()) + " s\n";
+        Report += "Last layer search time: " + std::to_string(GetTimeLL()) + " s\n";
+        Report += "Threads used: " + std::to_string(GetCores() > 0 ? GetCores() : 0) +
+                  " of " + std::to_string(DeepSearch::GetSystemCores()) + "\n";
 
         return Report;
     }
@@ -1217,23 +1218,23 @@ namespace grcube3
 
         if (!IsCrossBuilt(C, CrossLayer))
         {
-            Report += "Cross not solved in " + std::to_string(CrossDepth) + " movements!\n";
-            Report += "Search time: " + std::to_string(GetFullTime()) + " s\n";
+            Report += "Cross not solved in " + std::to_string(DepthCrosses) + " movements!\n";
+            Report += "Search time: " + std::to_string(GetTime()) + " s\n";
             return Report;
         }
 
         const std::string Inspection = GetTextInspection(CrossFace, n);
-        if (Inspection.size() > 0u) Report +=  "Inspection: " + Inspection + "\n\n";
+        if (!Inspection.empty()) Report +=  "Inspection: " + Inspection + "\n\n";
 
         std::string CrossType;
 
-        if (F2L_4[CLI][n].GetSize() > 0u) CrossType = "Cross";
-        else if (F2L_3[CLI][n].GetSize() > 0u) CrossType += "XCross";
-        else if (F2L_2[CLI][n].GetSize() > 0u) CrossType += "XXCross";
-        else if (F2L_1[CLI][n].GetSize() > 0u) CrossType += "XXXCross";
+        if (!F2L_4[CLI][n].Empty()) CrossType = "Cross";
+        else if (!F2L_3[CLI][n].Empty()) CrossType += "XCross";
+        else if (!F2L_2[CLI][n].Empty()) CrossType += "XXCross";
+        else if (!F2L_1[CLI][n].Empty()) CrossType += "XXXCross";
         else CrossType += "XXXXCross";
 
-        Report += CrossType + " (" + std::to_string(GetLengthCrossSolve(CrossFace, n)) + "): " + GetTextCrossSolve(CrossFace, n) + "\n";
+        Report += CrossType + " (" + Algorithm::GetMetricValue(GetMetricCross(CrossFace, n)) + "): " + GetTextCross(CrossFace, n) + "\n";
 
         // Show F2L solves
         C.ApplyAlgorithm(F2L_1[CLI][n]);
@@ -1244,18 +1245,18 @@ namespace grcube3
         if (!IsF2LBuilt(C, CrossLayer))
         {
             Report += "F2L not solved!\n";
-            Report += "Search time: " + std::to_string(GetFullTime()) + " s\n";
+            Report += "Search time: " + std::to_string(GetTime()) + " s\n";
             return Report;
         }
 
-        std::string F2LString = GetTextF2LFirstSolve(CrossFace, n);
-        if (F2LString.size() > 0u) Report += "F2L 1 (" + std::to_string(GetLengthF2LFirstSolve(CrossFace, n)) + "): " + F2LString + "\n";
-        F2LString = GetTextF2LSecondSolve(CrossFace, n);
-        if (F2LString.size() > 0u) Report += "F2L 2 (" + std::to_string(GetLengthF2LSecondSolve(CrossFace, n)) + "): " + F2LString + "\n";
-        F2LString = GetTextF2LThirdSolve(CrossFace, n);
-        if (F2LString.size() > 0u) Report += "F2L 3 (" + std::to_string(GetLengthF2LThirdSolve(CrossFace, n)) + "): " + F2LString + "\n";
-        F2LString = GetTextF2LFourthSolve(CrossFace, n);
-        if (F2LString.size() > 0u) Report += "F2L 4 (" + std::to_string(GetLengthF2LFourthSolve(CrossFace, n)) + "): " + F2LString + "\n";
+        std::string F2LString = GetTextF2L_1(CrossFace, n);
+        if (!F2LString.empty()) Report += "F2L 1 (" + Algorithm::GetMetricValue(GetMetricF2L_1(CrossFace, n)) + "): " + F2LString + "\n";
+        F2LString = GetTextF2L_2(CrossFace, n);
+        if (!F2LString.empty()) Report += "F2L 2 (" + Algorithm::GetMetricValue(GetMetricF2L_2(CrossFace, n)) + "): " + F2LString + "\n";
+        F2LString = GetTextF2L_3(CrossFace, n);
+        if (!F2LString.empty()) Report += "F2L 3 (" + Algorithm::GetMetricValue(GetMetricF2L_3(CrossFace, n)) + "): " + F2LString + "\n";
+        F2LString = GetTextF2L_4(CrossFace, n);
+        if (!F2LString.empty()) Report += "F2L 4 (" + Algorithm::GetMetricValue(GetMetricF2L_4(CrossFace, n)) + "): " + F2LString + "\n";
 
         if (!A_OLL[CLI].empty()) // OLL + PLL
         {
@@ -1265,12 +1266,12 @@ namespace grcube3
             if (!IsLastLayerOriented(C))
             {
                 Report += "OLL not solved!\n";
-                Report += "Search time: " + std::to_string(GetFullTime()) + " s\n";
+                Report += "Search time: " + std::to_string(GetTime()) + " s\n";
                 return Report;
             }
 
-            std::string OLLString = GetTextOLLSolve(CrossFace, n);
-            Report += "OLL (" + std::to_string(GetLengthOLLSolve(CrossFace, n)) + "): ";
+            std::string OLLString = GetTextOLL(CrossFace, n);
+            Report += "OLL (" + Algorithm::GetMetricValue(GetMetricOLL(CrossFace, n)) + "): ";
             if (OLLString.size() <= 3u) Report += "SKIP!\n";
             else Report += OLLString + "\n";
 
@@ -1281,35 +1282,35 @@ namespace grcube3
             if (!C.IsSolved())
             {
                 Report += "PLL not solved!\n";
-                Report += "Search time: " + std::to_string(GetFullTime()) + " s\n";
+                Report += "Search time: " + std::to_string(GetTime()) + " s\n";
                 return Report;
             }
 
             // Show PLL solve
-            std::string PLLString = GetTextPLLSolve(CrossFace, n);
-            Report += "PLL (" + std::to_string(GetLengthPLLSolve(CrossFace, n)) + "): ";
+            std::string PLLString = GetTextPLL(CrossFace, n);
+            Report += "PLL (" + Algorithm::GetMetricValue(GetMetricPLL(CrossFace, n)) + "): ";
             if (PLLString.size() <= 3u) Report += "SKIP!\n";
             else Report += PLLString + "\n";
 
             // Show AUF solve
-            std::string AUFString = GetTextAUFSolve(CrossFace, n);
+            std::string AUFString = GetTextAUF(CrossFace, n);
             if (AUFString.size() > 0u) Report += "AUF: " + AUFString + "\n";
         }
 
-        else if (!A_EO[CLI].empty()) // LLEO + ZBLL
+        else if (!EOLL[CLI].empty()) // LLEO + ZBLL
         {
             // Show edges orientation
-            C.ApplyAlgorithm(A_EO[CLI][n]);
+            C.ApplyAlgorithm(EOLL[CLI][n]);
 
             if (!C.EO())
             {
                 Report += "Last layer edges not oriented!\n";
-                Report += "Search time: " + std::to_string(GetFullTime()) + " s\n";
+                Report += "Search time: " + std::to_string(GetTime()) + " s\n";
                 return Report;
             }
 
-            std::string EOString = GetTextEOSolve(CrossFace, n);
-            Report += "EO (" + std::to_string(GetLengthEOSolve(CrossFace, n)) + "): ";
+            std::string EOString = GetTextEOLL(CrossFace, n);
+            Report += "EO (" + Algorithm::GetMetricValue(GetMetricEOLL(CrossFace, n)) + "): ";
             if (EOString.size() <= 3u) Report += "SKIP!\n";
             else Report += EOString + "\n";
 
@@ -1320,18 +1321,18 @@ namespace grcube3
             if (!C.IsSolved())
             {
                 Report += "ZBLL not solved!\n";
-                Report += "Search time: " + std::to_string(GetFullTime()) + " s\n";
+                Report += "Search time: " + std::to_string(GetTime()) + " s\n";
                 return Report;
             }
 
             // Show ZBLL solve
-            std::string ZBLLString = GetTextZBLLSolve(CrossFace, n);
-            Report += "ZBLL (" + std::to_string(GetLengthZBLLSolve(CrossFace, n)) + "): ";
+            std::string ZBLLString = GetTextZBLL(CrossFace, n);
+            Report += "ZBLL (" + Algorithm::GetMetricValue(GetMetricZBLL(CrossFace, n)) + "): ";
             if (ZBLLString.size() <= 3u) Report += "SKIP!\n";
             else Report += ZBLLString + "\n";
 
             // Show AUF solve
-            std::string AUFString = GetTextAUFSolve(CrossFace, n);
+            std::string AUFString = GetTextAUF(CrossFace, n);
             if (AUFString.size() > 0u) Report += "AUF: " + AUFString + "\n";
         }
 
@@ -1344,15 +1345,15 @@ namespace grcube3
             if (!C.IsSolved())
             {
                 Report += "1LLL not solved!\n";
-                Report += "Search time: " + std::to_string(GetFullTime()) + " s\n";
+                Report += "Search time: " + std::to_string(GetTime()) + " s\n";
                 return Report;
             }
-            std::string String1LLL = GetText1LLLSolve(CrossFace, n);
-            Report += "1LLL (" + std::to_string(GetLength1LLLSolve(CrossFace, n)) + "): " + String1LLL + "\n";
+            std::string String1LLL = GetText1LLL(CrossFace, n);
+            Report += "1LLL (" + Algorithm::GetMetricValue(GetMetric1LLL(CrossFace, n)) + "): " + String1LLL + "\n";
             if (String1LLL.size() <= 3u) Report += "SKIP!\n";
 
             // Show AUF solve
-            std::string AUFString = GetTextAUFSolve(CrossFace, n);
+            std::string AUFString = GetTextAUF(CrossFace, n);
             if (AUFString.size() > 0u) Report += "AUF: " + AUFString + "\n";
         }
 
@@ -1363,18 +1364,18 @@ namespace grcube3
         }
 
         // Show summary
-        Report += "\nSolve movements: " + std::to_string(GetSolveSTM(CrossFace, n)) + " STM\n";
+        Report += "\nSolve metric: " + Algorithm::GetMetricValue(GetMetricSolve(CrossFace, n)) + " " + Algorithm::GetMetricString(Metric) + "\n";
         Report += CrossType + " in layer ";
 		Report.push_back(Cube::GetLayerChar(CrossLayer));
-        Report += ", in " + std::to_string(CrossDepth) + " or less movements\n";
-        if (!CaseOLL[CLI].empty()) // OLL + PLL
+        Report += ", in " + std::to_string(DepthCrosses) + " or less movements\n";
+        if (!CasesOLL[CLI].empty()) // OLL + PLL
         {
             Report += "OLL case: " + GetTextOLLCase(CrossFace, n) + "\n";
             Report += "PLL case: " + GetTextPLLCase(CrossFace, n) + "\n";
         }
-        else if (!CaseZBLL[CLI].empty()) // EO + ZBLL
+        else if (!CasesZBLL[CLI].empty()) // EO + ZBLL
             Report += "ZBLL case: " + GetTextZBLLCase(CrossFace, n) + "\n";
-        else if (!Case1LLL[CLI].empty()) // 1LLL
+        else if (!Cases1LLL[CLI].empty()) // 1LLL
             Report += "1LLL case: " + GetText1LLLCase(CrossFace, n) + "\n";
 
         return Report;
@@ -1396,19 +1397,19 @@ namespace grcube3
         C.ApplyAlgorithm(F2L_4[CLI][n]);
         if (!A_OLL[CLI].empty()) C.ApplyAlgorithm(A_OLL[CLI][n]);
         if (!A_PLL[CLI].empty()) C.ApplyAlgorithm(A_PLL[CLI][n]);
-        if (!A_EO[CLI].empty()) C.ApplyAlgorithm(A_EO[CLI][n]);
+        if (!EOLL[CLI].empty()) C.ApplyAlgorithm(EOLL[CLI][n]);
         if (!A_ZBLL[CLI].empty()) C.ApplyAlgorithm(A_ZBLL[CLI][n]);
         if (!A_1LLL[CLI].empty()) C.ApplyAlgorithm(A_1LLL[CLI][n]);
         C.ApplyAlgorithm(AUF[CLI][n]);
         return C.IsSolved();
     }
 
-    // Get the solve STM metric
-    uint CFOP::GetSolveSTM(const Fce CrossFace, const uint n) const
+    // Get the solve metric
+    float CFOP::GetMetricSolve(const Fce CrossFace, const uint n) const
     {
         const int CLI = static_cast<int>(CrossFace); // Cross layer index
 
-        if (!CheckSolveConsistency(Cube::FaceToLayer(CrossFace)) || Crosses[CLI].size() <= n) return 0u;
+        if (!CheckSolveConsistency(Cube::FaceToLayer(CrossFace)) || Crosses[CLI].size() <= n) return 0.0f;
 
         Algorithm A;
         A += Crosses[CLI][n];
@@ -1418,11 +1419,11 @@ namespace grcube3
         A += F2L_4[CLI][n];
         if (!A_OLL[CLI].empty()) A += A_OLL[CLI][n];
         if (!A_PLL[CLI].empty()) A += A_PLL[CLI][n];
-        if (!A_EO[CLI].empty()) A += A_EO[CLI][n];
+        if (!EOLL[CLI].empty()) A += EOLL[CLI][n];
         if (!A_ZBLL[CLI].empty()) A += A_ZBLL[CLI][n];
         if (!A_1LLL[CLI].empty()) A += A_1LLL[CLI][n];
         A += AUF[CLI][n];
-        return A.GetSTM();
+        return A.GetMetric(Metric);
     }
 
     // Get the full solve with cancellations
@@ -1448,7 +1449,7 @@ namespace grcube3
         A += F2L_4[CLI][n];
         if (!A_OLL[CLI].empty()) A += A_OLL[CLI][n];
         if (!A_PLL[CLI].empty()) A += A_PLL[CLI][n];
-        if (!A_EO[CLI].empty()) A += A_EO[CLI][n];
+        if (!EOLL[CLI].empty()) A += EOLL[CLI][n];
         if (!A_ZBLL[CLI].empty()) A += A_ZBLL[CLI][n];
         if (!A_1LLL[CLI].empty()) A += A_1LLL[CLI][n];
         A += AUF[CLI][n];
@@ -1459,7 +1460,8 @@ namespace grcube3
     // Get the best solve report
     std::string CFOP::GetBestReport(bool Cancellations) const
     {
-        uint STM, min_STM = 0u, Bestn;
+        float M, min_M = 0.0f;
+		uint Bestn;
         Lyr BestLayer;
 		
         for (const auto CrossLayer : CrossLayers)
@@ -1473,85 +1475,40 @@ namespace grcube3
             {
                 if (!IsSolved(face, n)) continue;
 
-                if (Cancellations)
+                if (Cancellations) M = GetMetricCancellations(face, n);
+                else M = GetMetricSolve(face, n);
+				
+                if (min_M == 0.0f || M < min_M)
                 {
-                    Algorithm C = GetCancellations(CrossLayer, n);
-                    STM = C.GetSTM();
-                }
-                else STM = GetSolveSTM(face, n);
-                if (min_STM == 0u || STM < min_STM)
-                {
-                    min_STM = STM;
+                    min_M = M;
                     BestLayer = CrossLayer;
                     Bestn = n;
                 }
             }
         }
-        if (min_STM == 0u) return "No CFOP solves!\n";
+        if (min_M == 0.0f) return "No CFOP solves!\n";
 
         if (Cancellations)
         {
             Algorithm C = GetCancellations(BestLayer, Bestn);
-            return GetReport(BestLayer, Bestn) + "\nCancellations (" + std::to_string(C.GetSTM()) + " STM): " + C.ToString() + "\n";
+            return GetReport(BestLayer, Bestn) + "\nCancellations (" + Algorithm::GetMetricValue(C.GetMetric(Metric)) + " " +
+			       Algorithm::GetMetricString(Metric) + "): " + C.ToString() + "\n";
         }
 
         return GetReport(BestLayer, Bestn);
     }
 
-    std::string CFOP::GetTextF2LFirstSolve(const Fce CrossFace, const uint n) const
-    {
-		int CLI = static_cast<int>(CrossFace);
-        return F2L_1[CLI][n].GetSize() > 0u ? F2L_1[CLI][n].ToString() : "";
-    }
-
-    std::string CFOP::GetTextF2LSecondSolve(const Fce CrossFace, const uint n) const
-    {
-        int CLI = static_cast<int>(CrossFace);
-        return F2L_2[CLI][n].GetSize() > 0u ? F2L_2[CLI][n].ToString() : "";
-    }
-
-    std::string CFOP::GetTextF2LThirdSolve(const Fce CrossFace, const uint n) const
-    {
-        int CLI = static_cast<int>(CrossFace);
-        return F2L_3[CLI][n].GetSize() > 0u ? F2L_3[CLI][n].ToString() : "";
-    }
-
-    std::string CFOP::GetTextF2LFourthSolve(const Fce CrossFace, const uint n) const
-    {
-        int CLI = static_cast<int>(CrossFace);
-        return F2L_4[CLI][n].GetSize() > 0u ? F2L_4[CLI][n].ToString() : "";
-    }
-
+    // Get full F2L text with parentheses
     std::string CFOP::GetTextF2L(const Fce CrossFace, const uint n) const
     {
-        std::string F2LString, Aux = GetTextF2LFirstSolve(CrossFace, n);
-        if (Aux.size() > 0) F2LString += "(" + Aux + ")";
-        Aux = GetTextF2LSecondSolve(CrossFace, n);
-        if (Aux.size() > 0) F2LString += "(" + Aux + ")";
-        Aux = GetTextF2LThirdSolve(CrossFace, n);
-        if (Aux.size() > 0) F2LString += "(" + Aux + ")";
-        Aux = GetTextF2LFourthSolve(CrossFace, n);
-        if (Aux.size() > 0) F2LString += "(" + Aux + ")";
+        std::string F2LString, Aux = GetTextF2L_1(CrossFace, n);
+        if (!Aux.empty()) F2LString += "(" + Aux + ")";
+        Aux = GetTextF2L_2(CrossFace, n);
+        if (!Aux.empty()) F2LString += "(" + Aux + ")";
+        Aux = GetTextF2L_3(CrossFace, n);
+        if (!Aux.empty()) F2LString += "(" + Aux + ")";
+        Aux = GetTextF2L_4(CrossFace, n);
+        if (!Aux.empty()) F2LString += "(" + Aux + ")";
         return F2LString;
-    }
-
-    uint CFOP::GetLengthF2LFirstSolve(const Fce CrossFace, const uint n) const
-    {
-        return F2L_1[static_cast<int>(CrossFace)][n].GetNumSteps();
-    }
-
-    uint CFOP::GetLengthF2LSecondSolve(const Fce CrossFace, const uint n) const
-    {
-        return F2L_2[static_cast<int>(CrossFace)][n].GetNumSteps();
-    }
-
-    uint CFOP::GetLengthF2LThirdSolve(const Fce CrossFace, const uint n) const
-    {
-        return F2L_3[static_cast<int>(CrossFace)][n].GetNumSteps();
-    }
-
-    uint CFOP::GetLengthF2LFourthSolve(const Fce CrossFace, const uint n) const
-    {
-        return F2L_4[static_cast<int>(CrossFace)][n].GetNumSteps();
     }
 }

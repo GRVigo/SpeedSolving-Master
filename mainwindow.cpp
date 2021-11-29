@@ -40,6 +40,7 @@
 using namespace grcube3;
 using namespace tinyxml2;
 
+// Information to store about a solve search for the cache
 struct CacheUnit
 {
     Algorithm Scramble;
@@ -50,7 +51,7 @@ struct CacheUnit
     void Reset() { Scramble.Clear(); Depth = 0u; Time = 0.0; Solves.clear(); }
 };
 
-std::vector<CacheUnit> Cache;
+std::vector<CacheUnit> Cache; // Solves cache
 
 #define _DEBUG_ false
 
@@ -107,10 +108,10 @@ void MainWindow::on_pushButton_Credits_clicked()
     QString summary = CurrentLang["LoadExternal"];
     summary.append("\n\t");
     summary.append(CurrentLang["LoadCancel2"]);
-    summary.append(std::to_string(Algorithm::GetCancellation2Size()).c_str());
+    summary.append(std::to_string(Algorithm::GetCancellation2Size() >> 1).c_str());
     summary.append("\n\t");
     summary.append(CurrentLang["LoadCancel3"]);
-    summary.append(std::to_string(Algorithm::GetCancellation3Size()).c_str());
+    summary.append(std::to_string(Algorithm::GetCancellation3Size() >> 1).c_str());
 
     summary.append("\n\t");
     summary.append(CurrentLang["LoadOLL"]);
@@ -259,6 +260,11 @@ void MainWindow::SaveXMLDefaultLanguage() const
     pElement = lang_xml.NewElement("FixedText");
     pElement->SetAttribute("ObjectName", ui->pushButton_ClearHistory->objectName().toStdString().c_str());
     pElement->SetText(ui->pushButton_ClearHistory->text().toStdString().c_str());
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("FixedText");
+    pElement->SetAttribute("ObjectName", ui->label_Metric->objectName().toStdString().c_str());
+    pElement->SetText(ui->label_Metric->text().toStdString().c_str());
     pRoot->InsertEndChild(pElement);
 
 	// CFOP
@@ -535,7 +541,7 @@ void MainWindow::SaveXMLDefaultLanguage() const
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "Cache");
-    pElement->SetText("[From cache]");
+    pElement->SetText("[Evaluating from cache]");
     pRoot->InsertEndChild(pElement);
 
 	pElement = lang_xml.NewElement("Message");
@@ -1232,7 +1238,7 @@ double MainWindow::UpdateRefTime(const int cores)
     Algorithm RefA("B F U F D R' F D L B2 U' B2 D B' R' F2 L2 R2 U'");
     CFOP RefSearch(RefA, cores);
     RefSearch.SearchCrosses(5u);
-    return RefSearch.GetCrossTime();
+    return RefSearch.GetTime();
 }
 
 double MainWindow::GetCFOPEstimatedTime(const uint depth, const uint insp)
@@ -1605,6 +1611,8 @@ void MainWindow::on_pushButton_StartSearch_clicked()
 
         SearchCFOP.SetCrossLayers(CrossLayers);
 
+		SearchCFOP.SetMetric(static_cast<Metrics>(ui->comboBox_Metric->currentIndex()));
+
         // Start cross search
         ui->textBrowser_report->append(CurrentLang["SearchingCross"]);
         qApp->processEvents();
@@ -1616,12 +1624,12 @@ void MainWindow::on_pushButton_StartSearch_clicked()
             {
                 if (c.Scramble == Scramble && static_cast<int>(c.Depth) == ui->spinBox_CFOP_Cross->value() && !c.Solves.empty())
                 {
-                    SearchCFOP.EvaluateCrosses(c.Solves, ui->spinBox_CFOP_Inspections->value());
-                    SearchCFOP.SetCrossTime(c.Time);
-                    SearchCFOP.SetCrossDepth(c.Depth);
-                    found = true;
                     ui->textBrowser_report->append(CurrentLang["Cache"]);
                     qApp->processEvents();
+                    SearchCFOP.EvaluateCrosses(c.Solves, ui->spinBox_CFOP_Inspections->value());
+                    SearchCFOP.SetTimeCrosses(c.Time);
+                    SearchCFOP.SetDepthCrosses(c.Depth);
+                    found = true;
                     break;
                 }
             }
@@ -1651,13 +1659,14 @@ void MainWindow::on_pushButton_StartSearch_clicked()
                 SearchCFOP.EvaluateCrosses(BaseSearch.Solves, ui->spinBox_CFOP_Inspections->value());
 
                 const std::chrono::duration<double> cross_elapsed_seconds = std::chrono::system_clock::now() - time_cross_start;
-                SearchCFOP.SetCrossTime(cross_elapsed_seconds.count());
+                SearchCFOP.SetTimeCrosses(cross_elapsed_seconds.count());
+                SearchCFOP.SetDepthCrosses(ui->spinBox_CFOP_Cross->value());
 
                 // Add current solves into cache
                 CacheUnit CU;
                 CU.Scramble = Scramble;
                 CU.Depth = ui->spinBox_CFOP_Cross->value();
-                CU.Time = SearchCFOP.GetCrossTime();
+                CU.Time = SearchCFOP.GetTime();
                 CU.Solves = BaseSearch.Solves;
                 Cache.push_back(CU);
             }
@@ -1696,7 +1705,7 @@ void MainWindow::on_pushButton_StartSearch_clicked()
         }
         else if (ui->radioButton_CFOP_EO->isChecked()) // EO + ZBLL
         {
-            SearchCFOP.SearchEO();
+            SearchCFOP.SearchEOLL();
             SearchCFOP.SearchZBLL();
         }
         else SearchCFOP.Search1LLL(); // 1LLL
@@ -1769,6 +1778,8 @@ void MainWindow::on_pushButton_StartSearch_clicked()
 
         SearchRoux.SetSearchSpins(SearchSpins);
 
+        SearchRoux.SetMetric(static_cast<Metrics>(ui->comboBox_Metric->currentIndex()));
+
         // Start first block search
         ui->textBrowser_report->append(CurrentLang["SearchingFB"]);
         qApp->processEvents();
@@ -1780,12 +1791,12 @@ void MainWindow::on_pushButton_StartSearch_clicked()
             {
                 if (c.Scramble == Scramble && static_cast<int>(c.Depth) == ui->spinBox_Roux_FB->value() && !c.Solves.empty())
                 {
-                    SearchRoux.EvaluateFirstBlock(c.Solves, ui->spinBox_Roux_Inspections->value());
-                    SearchRoux.SetFBTime(c.Time);
-                    SearchRoux.SetFBDepth(c.Depth);
-                    found = true;
                     ui->textBrowser_report->append(CurrentLang["Cache"]);
                     qApp->processEvents();
+                    SearchRoux.EvaluateFirstBlock(c.Solves, ui->spinBox_Roux_Inspections->value());
+                    SearchRoux.SetTimeFB(c.Time);
+                    SearchRoux.SetDepthFB(c.Depth);
+                    found = true;
                     break;
                 }
             }
@@ -1817,7 +1828,8 @@ void MainWindow::on_pushButton_StartSearch_clicked()
                 SearchRoux.EvaluateFirstBlock(BaseSearch.Solves, ui->spinBox_Roux_Inspections->value());
 
                 const std::chrono::duration<double> fb_elapsed_seconds = std::chrono::system_clock::now() - time_fb_start;
-                SearchRoux.SetFBTime(fb_elapsed_seconds.count());
+                SearchRoux.SetTimeFB(fb_elapsed_seconds.count());
+                SearchRoux.SetDepthFB(ui->spinBox_Roux_FB->value());
 
                 // Add current solves into cache
                 CacheUnit CU;
@@ -1874,8 +1886,8 @@ void MainWindow::on_pushButton_StartSearch_clicked()
         qApp->processEvents();
         if (ui->radioButton_Roux_StepsL6E->isChecked())
         {
-            SearchRoux.SearchOrientationL6E(10u);
-            SearchRoux.SearchL6E_URUL(12u);
+            SearchRoux.SearchL6EO(10u);
+            SearchRoux.SearchL6E2E(12u);
             SearchRoux.SearchL6E(15u);
         }
         else SearchRoux.SearchL6E(16u);
@@ -1949,6 +1961,8 @@ void MainWindow::on_pushButton_StartSearch_clicked()
 
         SearchPetrus.SetSearchSpins(SearchSpins);
 
+        SearchPetrus.SetMetric(static_cast<Metrics>(ui->comboBox_Metric->currentIndex()));
+
         // Start blocks search
         ui->textBrowser_report->append(CurrentLang["SearchingBlocks"]);
         qApp->processEvents();
@@ -1960,12 +1974,12 @@ void MainWindow::on_pushButton_StartSearch_clicked()
             {
                 if (c.Scramble == Scramble && static_cast<int>(c.Depth) == ui->spinBox_Petrus_BlockDepth->value() && !c.Solves.empty())
                 {
-                    SearchPetrus.EvaluateBlock(c.Solves, ui->spinBox_Petrus_Inspections->value());
-                    SearchPetrus.SetBlockTime(c.Time);
-                    SearchPetrus.SetBlockDepth(c.Depth);
-                    found = true;
                     ui->textBrowser_report->append(CurrentLang["Cache"]);
                     qApp->processEvents();
+                    SearchPetrus.EvaluateBlock(c.Solves, ui->spinBox_Petrus_Inspections->value());
+                    SearchPetrus.SetTimeBlock(c.Time);
+                    SearchPetrus.SetDepthBlock(c.Depth);
+                    found = true;
                     break;
                 }
             }
@@ -1997,7 +2011,8 @@ void MainWindow::on_pushButton_StartSearch_clicked()
                 SearchPetrus.EvaluateBlock(BaseSearch.Solves, ui->spinBox_Petrus_Inspections->value());
 
                 const std::chrono::duration<double> block_elapsed_seconds = std::chrono::system_clock::now() - time_block_start;
-                SearchPetrus.SetBlockTime(block_elapsed_seconds.count());
+                SearchPetrus.SetTimeBlock(block_elapsed_seconds.count());
+                SearchPetrus.SetDepthBlock(ui->spinBox_Petrus_BlockDepth->value());
 
                 // Add current solves into cache
                 CacheUnit CU;
@@ -2143,6 +2158,8 @@ void MainWindow::on_pushButton_StartSearch_clicked()
 
 		SearchZZ.SetSearchSpins(SearchSpins);
 
+        SearchZZ.SetMetric(static_cast<Metrics>(ui->comboBox_Metric->currentIndex()));
+
 		// Start EOX search
         ui->textBrowser_report->append(CurrentLang["SearchingEOX"]);
 		qApp->processEvents();
@@ -2154,12 +2171,12 @@ void MainWindow::on_pushButton_StartSearch_clicked()
 			  {
                   if (c.Scramble == Scramble && static_cast<int>(c.Depth) == ui->spinBox_ZZ_EODepth->value() && !c.Solves.empty())
 				  {
-					  SearchZZ.EvaluateEOLine(c.Solves, ui->spinBox_ZZ_Inspections->value());
-					  SearchZZ.SetEOLineTime(c.Time);
-					  SearchZZ.SetEOLineDepth(c.Depth);
-					  found = true;
                       ui->textBrowser_report->append(CurrentLang["Cache"]);
-					  qApp->processEvents();
+                      qApp->processEvents();
+                      SearchZZ.EvaluateEOX(c.Solves, ui->spinBox_ZZ_Inspections->value());
+                      SearchZZ.SetTimeEOX(c.Time);
+                      SearchZZ.SetDepthEOX(c.Depth);
+					  found = true;
 					  break;
 				  }
 			  }
@@ -2188,23 +2205,24 @@ void MainWindow::on_pushButton_StartSearch_clicked()
 					  return;
 				  }
 
-				  SearchZZ.EvaluateEOLine(BaseSearch.Solves, ui->spinBox_ZZ_Inspections->value());
+                  SearchZZ.EvaluateEOX(BaseSearch.Solves, ui->spinBox_ZZ_Inspections->value());
 
 				  const std::chrono::duration<double> eoline_elapsed_seconds = std::chrono::system_clock::now() - time_eoline_start;
-				  SearchZZ.SetEOLineTime(eoline_elapsed_seconds.count());
+                  SearchZZ.SetTimeEOX(eoline_elapsed_seconds.count());
+                  SearchZZ.SetDepthEOX(ui->spinBox_ZZ_EODepth->value());
 
 				  // Add current solves into cache
 				  CacheUnit CU;
 				  CU.Scramble = Scramble;
                   CU.Depth = ui->spinBox_ZZ_EODepth->value();
-                  CU.Time = SearchZZ.GetTimeEOLine();
+                  CU.Time = SearchZZ.GetTimeEOX();
 				  CU.Solves = BaseSearch.Solves;
 				  Cache.push_back(CU);
 			  }
 		  }
 		  else // No cache
 		  {
-			  if (!SearchZZ.SearchEOLine(ui->spinBox_ZZ_EODepth->value(), ui->spinBox_ZZ_Inspections->value()))
+              if (!SearchZZ.SearchEOX(ui->spinBox_ZZ_EODepth->value(), ui->spinBox_ZZ_Inspections->value()))
 			{
 				ui->statusBar->showMessage(CurrentLang["NoEOX"]);
 
@@ -2301,6 +2319,8 @@ void MainWindow::on_pushButton_StartSearch_clicked()
         // Create search
         LBL SearchLBL(Scramble, ui->spinBox_Cores->value());
 
+        SearchLBL.SetMetric(static_cast<Metrics>(ui->comboBox_Metric->currentIndex()));
+
         // Start cross search
         ui->textBrowser_report->append(CurrentLang["SearchingCross"]);
         qApp->processEvents();
@@ -2322,12 +2342,12 @@ void MainWindow::on_pushButton_StartSearch_clicked()
         // Start first layer search
         ui->textBrowser_report->append(CurrentLang["SearchingFL"]);
         qApp->processEvents();
-        SearchLBL.SearchFL();
+        SearchLBL.SearchFLCorners();
 
         // Start second layer search
         ui->textBrowser_report->append(CurrentLang["SearchingSL"]);
         qApp->processEvents();
-        SearchLBL.SearchSL();
+        SearchLBL.SearchSLEdges();
 
         // Start last layer search
         ui->textBrowser_report->append(CurrentLang["SearchingLL"]);
@@ -2359,3 +2379,15 @@ void MainWindow::on_pushButton_StartSearch_clicked()
         ui->textBrowser_report->clear();
     }
 }
+
+void MainWindow::on_pushButton_ZoomPlus_clicked()
+{
+    ui->textBrowser_report->zoomIn();
+}
+
+
+void MainWindow::on_pushButton_ZoomMinus_clicked()
+{
+    ui->textBrowser_report->zoomOut();
+}
+

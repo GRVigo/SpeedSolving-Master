@@ -174,8 +174,8 @@ namespace grcube3
 		Stp::l, Stp::lp, Stp::l2,
 	
 		// Middle layer movements
-		Stp::Sp, Stp::S, Stp::S2,
-		Stp::E, Stp::Ep, Stp::E2,
+		Stp::S, Stp::Sp, Stp::S2,
+		Stp::Ep, Stp::E, Stp::E2,
 		Stp::M, Stp::Mp, Stp::M2,
 	
 		// Full cube turns
@@ -217,8 +217,8 @@ namespace grcube3
 		Stp::l, Stp::lp, Stp::l2,
 		
 		// Middle layer movements
-		Stp::S, Stp::Sp, Stp::S2,
-		Stp::Ep, Stp::E, Stp::E2,
+		Stp::Sp, Stp::S, Stp::S2,
+		Stp::E, Stp::Ep, Stp::E2,
 		Stp::M, Stp::Mp, Stp::M2,
 		
 		// Full cube turns
@@ -304,8 +304,8 @@ namespace grcube3
 	
 	    // Middle layers movememts
 	    Stp::E, Stp::Ep, Stp::E2,
-	    Stp::Mp, Stp::M, Stp::M2,
-	    Stp::S, Stp::Sp, Stp::S2,
+	    Stp::M, Stp::Mp, Stp::M2,
+	    Stp::Sp, Stp::S, Stp::S2,
 	
 	    // Full cube turns
 	    Stp::z, Stp::zp, Stp::z2,
@@ -347,8 +347,8 @@ namespace grcube3
 		
 		// Middle layers movememts
 		Stp::E, Stp::Ep, Stp::E2,
-		Stp::M, Stp::Mp, Stp::M2,
-		Stp::Sp, Stp::S, Stp::S2,
+		Stp::Mp, Stp::M, Stp::M2,
+		Stp::S, Stp::Sp, Stp::S2,
 		
 		// Full cube turns
 		Stp::zp, Stp::z, Stp::z2,
@@ -747,6 +747,321 @@ namespace grcube3
 		Rng::PARENTHESES,
 		Rng::PARENTHESES
 	};
+    
+    // Half turn metric (HTM), also known as face turn metric (FTM)
+    const uint Algorithm::m_HTM[] =
+    {
+		0u, // No movement
+
+		// Single layer
+		1u, 1u, 1u, // U, U', U2
+		1u, 1u, 1u, // D, D', D2
+		1u, 1u, 1u, // F, F', F2
+		1u, 1u, 1u, // B, B', B2
+		1u, 1u, 1u, // R, R', R2
+		1u, 1u, 1u, // L, L', L2
+
+		// Double layer
+		1u, 1u, 1u, // u, u', u2
+		1u, 1u, 1u, // d, d', d2
+		1u, 1u, 1u, // f, f', f2
+		1u, 1u, 1u, // b, b', b2
+		1u, 1u, 1u, // r, r', r2
+		1u, 1u, 1u, // l, l', l2  
+
+		// Middle layers
+		2u, 2u, 2u, // E, E', E2
+		2u, 2u, 2u,	// S, S', S2
+		2u, 2u, 2u,	// M, M', M2
+
+		// Full cube turns
+		0u, 0u, 0u, // x, x', x2
+		0u, 0u, 0u,	// y, y', y2
+		0u, 0u, 0u,	// z, z', z2
+
+		// Parentheses --limited to a maximum of 9 repetitions--
+		0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u
+	};
+    
+    // Quarter turn metric (QTM)
+    const uint Algorithm::m_QTM[] =
+    {
+		0u, // No movement
+
+		// Single layer
+		1u, 1u, 2u, // U, U', U2
+		1u, 1u, 2u, // D, D', D2
+		1u, 1u, 2u, // F, F', F2
+		1u, 1u, 2u, // B, B', B2
+		1u, 1u, 2u, // R, R', R2
+		1u, 1u, 2u, // L, L', L2
+
+		// Double layer
+		1u, 1u, 2u, // u, u', u2
+		1u, 1u, 2u, // d, d', d2
+		1u, 1u, 2u, // f, f', f2
+		1u, 1u, 2u, // b, b', b2
+		1u, 1u, 2u, // r, r', r2
+		1u, 1u, 2u, // l, l', l2  
+
+		// Middle layers
+		2u, 2u, 4u, // E, E', E2
+		2u, 2u, 4u,	// S, S', S2
+		2u, 2u, 4u,	// M, M', M2
+
+		// Full cube turns
+		0u, 0u, 0u, // x, x', x2
+		0u, 0u, 0u,	// y, y', y2
+		0u, 0u, 0u,	// z, z', z2
+
+		// Parentheses --limited to a maximum of 9 repetitions--
+		0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u
+	};
+    
+    // Slice turn metric (STM)
+    const uint Algorithm::m_STM[] =
+    {
+		0u, // No movement
+
+		// Single layer
+		1u, 1u, 1u, // U, U', U2
+		1u, 1u, 1u, // D, D', D2
+		1u, 1u, 1u, // F, F', F2
+		1u, 1u, 1u, // B, B', B2
+		1u, 1u, 1u, // R, R', R2
+		1u, 1u, 1u, // L, L', L2
+
+		// Double layer
+		1u, 1u, 1u, // u, u', u2
+		1u, 1u, 1u, // d, d', d2
+		1u, 1u, 1u, // f, f', f2
+		1u, 1u, 1u, // b, b', b2
+		1u, 1u, 1u, // r, r', r2
+		1u, 1u, 1u, // l, l', l2  
+
+		// Middle layers
+		1u, 1u, 1u, // E, E', E2
+		1u, 1u, 1u,	// S, S', S2
+		1u, 1u, 1u,	// M, M', M2
+
+		// Full cube turns
+		0u, 0u, 0u, // x, x', x2
+		0u, 0u, 0u,	// y, y', y2
+		0u, 0u, 0u,	// z, z', z2
+
+		// Parentheses --limited to a maximum of 9 repetitions--
+		0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u
+	};
+    
+    // Quarter slice turn metric (QSTM)
+    const uint Algorithm::m_QSTM[] =
+    {
+		0u, // No movement
+
+		// Single layer
+		1u, 1u, 2u, // U, U', U2
+		1u, 1u, 2u, // D, D', D2
+		1u, 1u, 2u, // F, F', F2
+		1u, 1u, 2u, // B, B', B2
+		1u, 1u, 2u, // R, R', R2
+		1u, 1u, 2u, // L, L', L2
+
+		// Double layer
+		1u, 1u, 2u, // u, u', u2
+		1u, 1u, 2u, // d, d', d2
+		1u, 1u, 2u, // f, f', f2
+		1u, 1u, 2u, // b, b', b2
+		1u, 1u, 2u, // r, r', r2
+		1u, 1u, 2u, // l, l', l2  
+
+		// Middle layers
+		1u, 1u, 2u, // E, E', E2
+		1u, 1u, 2u,	// S, S', S2
+		1u, 1u, 2u,	// M, M', M2
+
+		// Full cube turns
+		0u, 0u, 0u, // x, x', x2
+		0u, 0u, 0u,	// y, y', y2
+		0u, 0u, 0u,	// z, z', z2
+
+		// Parentheses --limited to a maximum of 9 repetitions--
+		0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u
+	};
+    
+    // Execution turn metric (ETM)
+    const uint Algorithm::m_ETM[] =
+    {
+		0u, // No movement
+
+		// Single layer
+		1u, 1u, 1u, // U, U', U2
+		1u, 1u, 1u, // D, D', D2
+		1u, 1u, 1u, // F, F', F2
+		1u, 1u, 1u, // B, B', B2
+		1u, 1u, 1u, // R, R', R2
+		1u, 1u, 1u, // L, L', L2
+
+		// Double layer
+		1u, 1u, 1u, // u, u', u2
+		1u, 1u, 1u, // d, d', d2
+		1u, 1u, 1u, // f, f', f2
+		1u, 1u, 1u, // b, b', b2
+		1u, 1u, 1u, // r, r', r2
+		1u, 1u, 1u, // l, l', l2  
+
+		// Middle layers
+		1u, 1u, 1u, // E, E', E2
+		1u, 1u, 1u,	// S, S', S2
+		1u, 1u, 1u,	// M, M', M2
+
+		// Full cube turns
+		1u, 1u, 1u, // x, x', x2
+		1u, 1u, 1u,	// y, y', y2
+		1u, 1u, 1u,	// z, z', z2
+
+		// Parentheses --limited to a maximum of 9 repetitions--
+		0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u
+	};
+    
+    // Axial turn metric (ATM)
+    const uint Algorithm::m_ATM[] =
+    {
+		0u, // No movement
+
+		// Single layer
+		1u, 1u, 1u, // U, U', U2
+		1u, 1u, 1u, // D, D', D2
+		1u, 1u, 1u, // F, F', F2
+		1u, 1u, 1u, // B, B', B2
+		1u, 1u, 1u, // R, R', R2
+		1u, 1u, 1u, // L, L', L2
+
+		// Double layer
+		1u, 1u, 1u, // u, u', u2
+		1u, 1u, 1u, // d, d', d2
+		1u, 1u, 1u, // f, f', f2
+		1u, 1u, 1u, // b, b', b2
+		1u, 1u, 1u, // r, r', r2
+		1u, 1u, 1u, // l, l', l2  
+
+		// Middle layers
+		1u, 1u, 1u, // E, E', E2
+		1u, 1u, 1u,	// S, S', S2
+		1u, 1u, 1u,	// M, M', M2
+
+		// Full cube turns
+		0u, 0u, 0u, // x, x', x2
+		0u, 0u, 0u,	// y, y', y2
+		0u, 0u, 0u,	// z, z', z2
+
+		// Parentheses --limited to a maximum of 9 repetitions--
+		0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u
+	};
+    
+    // Pacelli turn metric (PTM)
+    const uint Algorithm::m_PTM[] =
+    {
+		0u, // No movement
+
+		// Single layer
+		1u, 1u, 1u, // U, U', U2
+		1u, 1u, 1u, // D, D', D2
+		1u, 1u, 1u, // F, F', F2
+		1u, 1u, 1u, // B, B', B2
+		1u, 1u, 1u, // R, R', R2
+		1u, 1u, 1u, // L, L', L2
+
+		// Double layer
+		0u, 0u, 0u, // u, u', u2
+		0u, 0u, 0u, // d, d', d2
+		0u, 0u, 0u, // f, f', f2
+		0u, 0u, 0u, // b, b', b2
+		0u, 0u, 0u, // r, r', r2
+		0u, 0u, 0u, // l, l', l2  
+
+		// Middle layers
+		1u, 1u, 1u, // E, E', E2
+		1u, 1u, 1u,	// S, S', S2
+		1u, 1u, 1u,	// M, M', M2
+
+		// Full cube turns
+		0u, 0u, 0u, // x, x', x2
+		0u, 0u, 0u,	// y, y', y2
+		0u, 0u, 0u,	// z, z', z2
+
+		// Parentheses --limited to a maximum of 9 repetitions--
+		0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u
+	};
+    
+    // 1.5 half turn metric (1.5HTM)
+    const float Algorithm::m_15HTM[] =
+    {
+		0.0f, // No movement
+
+		// Single layer
+		1.0f, 1.0f, 1.5f, // U, U', U2
+		1.0f, 1.0f, 1.5f, // D, D', D2
+		1.0f, 1.0f, 1.5f, // F, F', F2
+		1.0f, 1.0f, 1.5f, // B, B', B2
+		1.0f, 1.0f, 1.5f, // R, R', R2
+		1.0f, 1.0f, 1.5f, // L, L', L2
+
+		// Double layer
+		1.0f, 1.0f, 1.5f, // u, u', u2
+		1.0f, 1.0f, 1.5f, // d, d', d2
+		1.0f, 1.0f, 1.5f, // f, f', f2
+		1.0f, 1.0f, 1.5f, // b, b', b2
+		1.0f, 1.0f, 1.5f, // r, r', r2
+		1.0f, 1.0f, 1.5f, // l, l', l2  
+
+		// Middle layers
+		2.0f, 2.0f, 3.0f, // E, E', E2
+		2.0f, 2.0f, 3.0f, // S, S', S2
+		2.0f, 2.0f, 3.0f, // M, M', M2
+
+		// Full cube turns
+		0.0f, 0.0f, 0.0f, // x, x', x2
+		0.0f, 0.0f, 0.0f, // y, y', y2
+		0.0f, 0.0f, 0.0f, // z, z', z2
+
+		// Parentheses --limited to a maximum of 9 repetitions--
+		0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f
+	};
+    
+    // Outer block turn metric (OBTM)
+    const uint Algorithm::m_OBTM[] =
+    {
+		0u, // No movement
+
+		// Single layer
+		1u, 1u, 1u, // U, U', U2
+		1u, 1u, 1u, // D, D', D2
+		1u, 1u, 1u, // F, F', F2
+		1u, 1u, 1u, // B, B', B2
+		1u, 1u, 1u, // R, R', R2
+		1u, 1u, 1u, // L, L', L2
+
+		// Double layer
+		1u, 1u, 1u, // u, u', u2
+		1u, 1u, 1u, // d, d', d2
+		1u, 1u, 1u, // f, f', f2
+		1u, 1u, 1u, // b, b', b2
+		1u, 1u, 1u, // r, r', r2
+		1u, 1u, 1u, // l, l', l2  
+
+		// Middle layers
+		2u, 2u, 2u, // E, E', E2
+		2u, 2u, 2u,	// S, S', S2
+		2u, 2u, 2u,	// M, M', M2
+
+		// Full cube turns
+		0u, 0u, 0u, // x, x', x2
+		0u, 0u, 0u,	// y, y', y2
+		0u, 0u, 0u,	// z, z', z2
+
+		// Parentheses --limited to a maximum of 9 repetitions--
+		0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u
+	};
 	
 	// Array with allowed chars in an algorithm
 	const std::array<char, 33u> Algorithm::m_chars = 
@@ -793,6 +1108,12 @@ namespace grcube3
 	
 		// Parentheses --limited to a maximum of 9 repetitions--
 		"(", ")", ")2", ")3", ")4", ")5", ")6", ")7", ")8", ")9"
+	};
+	
+	// Array with metrics string representation
+	const std::string Algorithm::metric_strings[] =
+	{
+		"Movs", "HTM", "QTM", "STM", "QSTM", "ETM", "ATM", "PTM", "1.5HTM", "OBTM"
 	};
 
 	// Array with all turns
@@ -2117,4 +2438,139 @@ namespace grcube3
 		}
 		return Canc;
 	}
+	
+	// Half turn metric (HTM), also known as face turn metric (FTM)
+	uint Algorithm::GetHTM() const
+	{
+        const Algorithm A = GetDeveloped();
+        uint HTM = 0u;
+        for (uint n = 0u; n < A.GetSize(); n++) HTM += m_HTM[static_cast<int>(A.At(n))];
+        return HTM;
+    }
+    
+    // Quarter turn metric (QTM)
+    uint Algorithm::GetQTM() const
+    {
+        const Algorithm A = GetDeveloped();
+        uint QTM = 0u;
+        for (uint n = 0u; n < A.GetSize(); n++) QTM += m_QTM[static_cast<int>(A.At(n))];
+        return QTM;
+    }
+    
+    // Slice turn metric (STM)
+    uint Algorithm::GetSTM() const
+    {
+        const Algorithm A = GetDeveloped();
+        uint STM = 0u;
+        for (uint n = 0u; n < A.GetSize(); n++) STM += m_STM[static_cast<int>(A.At(n))];
+        return STM;
+    }
+    
+    // Quarter slice turn metric (QSTM)
+    uint Algorithm::GetQSTM() const
+    {
+        const Algorithm A = GetDeveloped();
+        uint QSTM = 0u;
+        for (uint n = 0u; n < A.GetSize(); n++) QSTM += m_QSTM[static_cast<int>(A.At(n))];
+        return QSTM;
+    }
+    
+    // Execution turn metric (ETM)
+    uint Algorithm::GetETM() const
+    {
+        const Algorithm A = GetDeveloped();
+        uint ETM = 0u;
+        for (uint n = 0u; n < A.GetSize(); n++)
+        {
+            if (IsTurn(A.At(n)) && IsTurn(A.At(n + 1u)))
+            {
+                ETM++;
+                n++;
+                continue;
+            }
+            if (IsSingleMov(A.At(n)) && (OppositeSteps(A.At(n), A.At(n + 1u)) ||
+                                         OppositeSteps(A.At(n), InvertedStep(A.At(n + 1u)))))
+            {
+                ETM++;
+                n++;
+                continue;
+            }
+            ETM += m_ETM[static_cast<int>(A.At(n))];
+        }
+        return ETM;
+    }
+    
+    // Axial turn metric (ATM)
+    uint Algorithm::GetATM() const
+    {
+        const Algorithm A = GetDeveloped();
+        uint ATM = 0u;
+        for (uint n = 0u; n < A.GetSize(); n++)
+        {
+            if (IsSingleMov(A.At(n)) && (OppositeSteps(A.At(n), A.At(n + 1u)) ||
+                                         OppositeSteps(A.At(n), InvertedStep(A.At(n + 1u)))))
+            {
+                ATM++;
+                n++;
+                continue;
+            }
+            ATM += m_ATM[static_cast<int>(A.At(n))];
+        }
+        return ATM;
+    }
+    
+    // Pacelli turn metric (PTM)
+    uint Algorithm::GetPTM() const
+    {
+        const Algorithm A = GetDeveloped();
+        uint PTM = 0u;
+        for (uint n = 0u; n < A.GetSize(); n++)
+        {
+            if (IsSingleMov(A.At(n)) && (OppositeSteps(A.At(n), A.At(n + 1u)) ||
+                                         OppositeSteps(A.At(n), InvertedStep(A.At(n + 1u)))))
+            {
+                PTM++;
+                n++;
+                continue;
+            }
+            PTM += m_PTM[static_cast<int>(A.At(n))];
+        }
+        return PTM;
+    }
+    
+    // 1.5 half turn metric (1.5HTM)	
+    float Algorithm::Get15HTM() const
+    {
+        const Algorithm A = GetDeveloped();
+        float HTM15 = 0u;
+        for (uint n = 0u; n < A.GetSize(); n++) HTM15 += m_15HTM[static_cast<int>(A.At(n))];
+        return HTM15;
+    }
+    
+    // Outer block turn metric (OBTM)
+    uint Algorithm::GetOBTM() const
+    {
+        const Algorithm A = GetDeveloped();
+        uint OBTM = 0u;
+        for (uint n = 0u; n < A.GetSize(); n++) OBTM += m_OBTM[static_cast<int>(A.At(n))];
+        return OBTM;
+    }
+
+    // Get algorithm metric
+    float Algorithm::GetMetric(const Metrics M) const
+    {
+        switch (M)
+        {
+        case Metrics::HTM: return static_cast<float>(GetHTM());
+        case Metrics::QTM: return static_cast<float>(GetQTM());
+        case Metrics::STM: return static_cast<float>(GetSTM());
+        case Metrics::QSTM: return static_cast<float>(GetQSTM());
+        case Metrics::ATM: return static_cast<float>(GetATM());
+        case Metrics::ETM: return static_cast<float>(GetETM());
+        case Metrics::PTM: return static_cast<float>(GetPTM());
+        case Metrics::HTM15: return Get15HTM();
+        case Metrics::OBTM: return static_cast<float>(GetOBTM());
+        default: return static_cast<float>(GetNumSteps());
+        }
+    }
 }

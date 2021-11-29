@@ -51,136 +51,124 @@ namespace grcube3
 		{
 			CrossLayers.clear();
 			if (CL.empty()) for (const auto ELy : Cube::ExtLayers) CrossLayers.push_back(ELy);
-			else for (const auto Ly : CL) CrossLayers.push_back(Ly);
+            else for (const auto Ly : CL) if (Cube::IsExternalLayer(Ly)) CrossLayers.push_back(Ly);
 		}
+		
+		// Set the metric for evaluations
+		void SetMetric(const Metrics m) { Metric = m; }
 
-		// Search the best crosses solve algorithms with the given search depth and the maximun number of solves
-		// Return false if no crosses found
-		bool SearchCrosses(const uint, const uint = 1u);
-
-		// Search the best crosses solve algorithms from an algorithms vector
-		void EvaluateCrosses(const std::vector<Algorithm>&, const uint = 1u);
-
-		// Search the best F2L algorithms for the Scramble
+        // Solves searchs
+        bool SearchCrosses(const uint, const uint = 1u); // Search best solves for given search depth and the maximun inspections, return false if no crosses found
         void SearchF2L();
-
-		// Orientation of last layer search
 		void SearchOLL();
-
-		// Permutation of last layer search
 		void SearchPLL();
-
-        // One-Look last layer search (1LLL)
         void Search1LLL();
-
-		// Orientation of last layer edges search (EO)
-		void SearchEO();
-
-		// ZBLL last layer search
+        void SearchEOLL();
 		void SearchZBLL();
+
+        // Search the best crosses solves from a given algorithms vector
+        void EvaluateCrosses(const std::vector<Algorithm>&, const uint = 1u);
 
 		// Set regrips
 		void SetRegrips();
 
-		// If the cross is search externally, use this function to set the cross search time
-		void SetCrossTime(double t) { TimeCross = t; }
+        // If the crosses are searched externally, use this function to set the crosses search time
+        void SetTimeCrosses(double t) { TimeCrosses = t; }
 
-        // If the cross is search externally, use this function to set the cross search depth
-        void SetCrossDepth(uint d) { CrossDepth = d; }
+        // If the crosses are searched externally, use this function to set the crosses search depth
+        void SetDepthCrosses(uint d) { DepthCrosses = d; }
 
-		// Get current OLL case in given cross face
-		std::string GetOLLCase(const Fce CrossFace, const uint n) const { return CaseOLL[static_cast<int>(CrossFace)][n]; }
+        // Get current cases in given cross face
+        std::string GetOLLCase(const Fce CrossFace, const uint n) const { return CasesOLL[static_cast<int>(CrossFace)][n]; }
+        std::string GetPLLCase(const Fce CrossFace, const uint n) const { return CasesPLL[static_cast<int>(CrossFace)][n]; }
+        std::string Get1LLLCase(const Fce CrossFace, const uint n) const { return Cases1LLL[static_cast<int>(CrossFace)][n]; }
+        std::string GetZBLLCase(const Fce CrossFace, const uint n) const { return CasesZBLL[static_cast<int>(CrossFace)][n]; }
 
-		// Get current PLL case in given cross face
-		std::string GetPLLCase(const Fce CrossFace, const uint n) const { return CasePLL[static_cast<int>(CrossFace)][n]; }
-
-		// Get current 1LLL case in given cross face
-		std::string Get1LLLCase(const Fce CrossFace, const uint n) const { return Case1LLL[static_cast<int>(CrossFace)][n]; }
-
-		// Get current ZBLL case in given cross face
-		std::string GetZBLLCase(const Fce CrossFace, const uint n) const { return CaseZBLL[static_cast<int>(CrossFace)][n]; }
-
-		// Get search algorithms texts
+        // Get search solves texts
         std::string GetTextScramble() const { return Scramble.ToString(); }
         std::string GetTextInspection(const Fce CrossFace, const uint n) const { return Inspections[static_cast<int>(CrossFace)][n].ToString(); }
-        std::string GetTextCrossSolve(const Fce CrossFace, const uint n) const { return Crosses[static_cast<int>(CrossFace)][n].ToString(); }	
-		std::string GetTextF2LFirstSolve(const Fce, const uint) const;
-		std::string GetTextF2LSecondSolve(const Fce, const uint) const;
-		std::string GetTextF2LThirdSolve(const Fce, const uint) const;
-		std::string GetTextF2LFourthSolve(const Fce, const uint) const;
-		std::string GetTextF2L(const Fce, const uint) const;
-        std::string GetTextOLLSolve(const Fce CrossFace, const uint n) const { return A_OLL[static_cast<int>(CrossFace)][n].ToString(); }
-        std::string GetTextAUFSolve(const Fce CrossFace, const uint n) const { return AUF[static_cast<int>(CrossFace)][n].ToString(); }
-        std::string GetTextPLLSolve(const Fce CrossFace, const uint n) const { return A_PLL[static_cast<int>(CrossFace)][n].ToString(); }
-        std::string GetText1LLLSolve(const Fce CrossFace, const uint n) const { return A_1LLL[static_cast<int>(CrossFace)][n].ToString(); }
-		std::string GetTextEOSolve(const Fce CrossFace, const uint n) const { return A_EO[static_cast<int>(CrossFace)][n].ToString(); }
-		std::string GetTextZBLLSolve(const Fce CrossFace, const uint n) const { return A_ZBLL[static_cast<int>(CrossFace)][n].ToString(); }
+        std::string GetTextCross(const Fce CrossFace, const uint n) const { return Crosses[static_cast<int>(CrossFace)][n].ToString(); }
+        std::string GetTextF2L_1(const Fce CrossFace, const uint n) const { return F2L_1[static_cast<int>(CrossFace)][n].ToString(); }
+        std::string GetTextF2L_2(const Fce CrossFace, const uint n) const { return F2L_2[static_cast<int>(CrossFace)][n].ToString(); }
+        std::string GetTextF2L_3(const Fce CrossFace, const uint n) const { return F2L_3[static_cast<int>(CrossFace)][n].ToString(); }
+        std::string GetTextF2L_4(const Fce CrossFace, const uint n) const { return F2L_4[static_cast<int>(CrossFace)][n].ToString(); }
+        std::string GetTextF2L(const Fce, const uint) const; // Get full F2L text with parentheses
+        std::string GetTextOLL(const Fce CrossFace, const uint n) const { return A_OLL[static_cast<int>(CrossFace)][n].ToString(); }
+        std::string GetTextPLL(const Fce CrossFace, const uint n) const { return A_PLL[static_cast<int>(CrossFace)][n].ToString(); }
+        std::string GetText1LLL(const Fce CrossFace, const uint n) const { return A_1LLL[static_cast<int>(CrossFace)][n].ToString(); }
+        std::string GetTextEOLL(const Fce CrossFace, const uint n) const { return EOLL[static_cast<int>(CrossFace)][n].ToString(); }
+        std::string GetTextZBLL(const Fce CrossFace, const uint n) const { return A_ZBLL[static_cast<int>(CrossFace)][n].ToString(); }
+        std::string GetTextAUF(const Fce CrossFace, const uint n) const { return AUF[static_cast<int>(CrossFace)][n].ToString(); }
 
-        // Get search algorithms lengths
+        // Get search solves lengths
         uint GetLengthScramble() const { return Scramble.GetNumSteps(); }
         uint GetLengthInspection(const Fce CrossFace, const uint n) const { return Inspections[static_cast<int>(CrossFace)][n].GetNumSteps(); }
-        uint GetLengthCrossSolve(const Fce CrossFace, const uint n) const { return Crosses[static_cast<int>(CrossFace)][n].GetNumSteps(); }
-		uint GetLengthF2LFirstSolve(const Fce, const uint) const;
-		uint GetLengthF2LSecondSolve(const Fce, const uint) const;
-		uint GetLengthF2LThirdSolve(const Fce, const uint) const;
-		uint GetLengthF2LFourthSolve(const Fce, const uint) const;
-        uint GetLengthOLLSolve(const Fce CrossFace, const uint n) const { return A_OLL[static_cast<int>(CrossFace)][n].GetNumSteps(); }
-        uint GetLengthAUFSolve(const Fce CrossFace, const uint n) const { return AUF[static_cast<int>(CrossFace)][n].GetNumSteps(); }
-        uint GetLengthPLLSolve(const Fce CrossFace, const uint n) const { return A_PLL[static_cast<int>(CrossFace)][n].GetNumSteps(); }
-        uint GetLength1LLLSolve(const Fce CrossFace, const uint n) const { return A_1LLL[static_cast<int>(CrossFace)][n].GetNumSteps(); }
-		uint GetLengthEOSolve(const Fce CrossFace, const uint n) const { return A_EO[static_cast<int>(CrossFace)][n].GetNumSteps(); }
-		uint GetLengthZBLLSolve(const Fce CrossFace, const uint n) const { return A_ZBLL[static_cast<int>(CrossFace)][n].GetNumSteps(); }
+        uint GetLengthCross(const Fce CrossFace, const uint n) const { return Crosses[static_cast<int>(CrossFace)][n].GetNumSteps(); }
+        uint GetLengthF2L_1(const Fce CrossFace, const uint n) const { return F2L_1[static_cast<int>(CrossFace)][n].GetNumSteps(); }
+        uint GetLengthF2L_2(const Fce CrossFace, const uint n) const { return F2L_2[static_cast<int>(CrossFace)][n].GetNumSteps(); }
+        uint GetLengthF2L_3(const Fce CrossFace, const uint n) const { return F2L_3[static_cast<int>(CrossFace)][n].GetNumSteps(); }
+        uint GetLengthF2L_4(const Fce CrossFace, const uint n) const { return F2L_4[static_cast<int>(CrossFace)][n].GetNumSteps(); }
+        uint GetLengthOLL(const Fce CrossFace, const uint n) const { return A_OLL[static_cast<int>(CrossFace)][n].GetNumSteps(); }
+        uint GetLengthPLL(const Fce CrossFace, const uint n) const { return A_PLL[static_cast<int>(CrossFace)][n].GetNumSteps(); }
+        uint GetLength1LLL(const Fce CrossFace, const uint n) const { return A_1LLL[static_cast<int>(CrossFace)][n].GetNumSteps(); }
+        uint GetLengthEOLL(const Fce CrossFace, const uint n) const { return EOLL[static_cast<int>(CrossFace)][n].GetNumSteps(); }
+        uint GetLengthZBLL(const Fce CrossFace, const uint n) const { return A_ZBLL[static_cast<int>(CrossFace)][n].GetNumSteps(); }
+        uint GetLengthAUF(const Fce CrossFace, const uint n) const { return AUF[static_cast<int>(CrossFace)][n].GetNumSteps(); }
 
-		// Get the solve STM metric
-		uint GetSolveSTM(const Fce, const uint) const;
+        // Get metric values
+        float GetMetricSolve(const Fce, const uint) const; // Get the full solve metric
+		float GetMetricScramble() const { return Scramble.GetMetric(Metric); }
+        float GetMetricInspection(const Fce CrossFace, const uint n) const { return Inspections[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
+        float GetMetricCross(const Fce CrossFace, const uint n) const { return Crosses[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
+        float GetMetricF2L_1(const Fce CrossFace, const uint n) const { return F2L_1[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
+        float GetMetricF2L_2(const Fce CrossFace, const uint n) const { return F2L_2[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
+        float GetMetricF2L_3(const Fce CrossFace, const uint n) const { return F2L_3[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
+        float GetMetricF2L_4(const Fce CrossFace, const uint n) const { return F2L_4[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
+        float GetMetricOLL(const Fce CrossFace, const uint n) const { return A_OLL[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
+        float GetMetricPLL(const Fce CrossFace, const uint n) const { return A_PLL[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
+        float GetMetric1LLL(const Fce CrossFace, const uint n) const { return A_1LLL[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
+        float GetMetricEOLL(const Fce CrossFace, const uint n) const { return EOLL[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
+        float GetMetricZBLL(const Fce CrossFace, const uint n) const { return A_ZBLL[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
+        float GetMetricAUF(const Fce CrossFace, const uint n) const { return AUF[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
 		
 		// Get text for cases
-        std::string GetTextOLLCase(const Fce CrossFace, const uint n) const { return CaseOLL[static_cast<int>(CrossFace)][n]; }
-		std::string GetTextPLLCase(const Fce CrossFace, const uint n) const { return CasePLL[static_cast<int>(CrossFace)][n]; }
-        std::string GetText1LLLCase(const Fce CrossFace, const uint n) const { return Case1LLL[static_cast<int>(CrossFace)][n]; }
-		std::string GetTextZBLLCase(const Fce CrossFace, const uint n) const { return CaseZBLL[static_cast<int>(CrossFace)][n]; }
+        std::string GetTextOLLCase(const Fce CrossFace, const uint n) const { return CasesOLL[static_cast<int>(CrossFace)][n]; }
+        std::string GetTextPLLCase(const Fce CrossFace, const uint n) const { return CasesPLL[static_cast<int>(CrossFace)][n]; }
+        std::string GetText1LLLCase(const Fce CrossFace, const uint n) const { return Cases1LLL[static_cast<int>(CrossFace)][n]; }
+        std::string GetTextZBLLCase(const Fce CrossFace, const uint n) const { return CasesZBLL[static_cast<int>(CrossFace)][n]; }
 
         // Get the times elapsed searching
-        double GetCrossTime() const { return TimeCross; }
-		double GetF2LTime() const { return TimeF2L; }
-		double GetOLLTime() const { return TimeOLL; }
-		double GetPLLTime() const { return TimePLL; }
-		double Get1LLLTime() const { return Time1LLL; }
-		double GetEOTime() const { return TimeEO; }
-		double GetZBLLTime() const { return TimeZBLL; }
-		double GetLLTime() const { return GetOLLTime() + GetPLLTime() + Get1LLLTime() + GetEOTime() + GetZBLLTime(); }
-		double GetFullTime() const { return GetCrossTime() + GetF2LTime() + GetLLTime();	}
+        double GetTimeCrosses() const { return TimeCrosses; }
+        double GetTimeF2L() const { return TimeF2L; }
+        double GetTimeOLL() const { return TimeOLL; }
+        double GetTimePLL() const { return TimePLL; }
+        double GetTime1LLL() const { return Time1LLL; }
+        double GetTimeEOLL() const { return TimeEOLL; }
+        double GetTimeZBLL() const { return TimeZBLL; }
+        double GetTimeLL() const { return GetTimeOLL() + GetTimePLL() + GetTime1LLL() + GetTimeEOLL() + GetTimeZBLL(); }
+        double GetTime() const { return GetTimeCrosses() + GetTimeF2L() + GetTimeLL();	}
 
-        // Get a solve report (for each cross layer)
+        // Get solves report
         std::string GetReport(const bool, const bool = false) const; // cancellations, debug
-
-        // Get a solve report
-        std::string GetReport(const Lyr, const uint) const;
-
-        // Get a solve time report
-        std::string GetTimeReport() const;
-
-        // Get the best solve report (STM with or without cancellations)
-        std::string GetBestReport(bool = false) const;
+        std::string GetReport(const Lyr, const uint) const; // Get a single solve report
+        std::string GetTimeReport() const; // Get solves time report
+        std::string GetBestReport(bool = false) const; // Get the best solve report (STM with or without cancellations)
 
 		// Get the full solve with cancellations
 		Algorithm GetCancellations(const Lyr, const uint) const;
 
-		// Get the solve with cancellations STM metric
-		uint GetCancellationsSTM(const Fce CF, const uint n) const { return GetCancellations(Cube::FaceToLayer(CF), n).GetSTM(); }
+        // Get solve metric with cancellations
+		float GetMetricCancellations(const Fce CF, const uint n) const { return GetCancellations(Cube::FaceToLayer(CF), n).GetMetric(Metric); }
 
 		// Get used cores in the solve
-		int GetUsedCores() const { return Cores; }
+        int GetCores() const { return Cores; }
 
 		// Returns best F2L solve from the Solves vector class member
 		// F2L pieces are used as evaluation condition
 		static bool EvaluateF2LResult(std::vector<Algorithm>&, const uint, const std::vector<Algorithm>&, const Cube&, const Lyr, const Plc, const bool = true);
 
-		// Check if the CFOP first cross is built
-		static bool IsCrossBuilt(const Cube&, const Lyr);
-
-		// Check if first two layers are built
-		static bool IsF2LBuilt(const Cube&, const Lyr);
+        static bool IsCrossBuilt(const Cube&, const Lyr); // Check if the CFOP first cross is built
+        static bool IsF2LBuilt(const Cube&, const Lyr); // Check if first two layers are built
 
 		// Check if the last layer is oriented (OLL search completed)
 		static bool IsLastLayerOriented(const Cube& C) { return C.IsFaceOriented(Cube::GetUpSliceLayer(C.GetSpin())); }
@@ -206,20 +194,22 @@ namespace grcube3
 							   A_OLL[6], // Algorithms for OLL
 							   A_PLL[6], // Algorithms for PLL
 							   A_1LLL[6], // Algorithms for 1LLL
-							   A_EO[6], // Algorithms for LL edges orientation
+                               EOLL[6], // Algorithms for last layer edges orientation
 							   A_ZBLL[6], // Algorithms for ZBLL
 							   AUF[6]; // Algorithms for AUF
 		
-		uint CrossDepth; // Cross search depth
+        uint DepthCrosses; // Crosses search depth
 
-		std::vector<std::string> CaseOLL[6], // OLL cases
-								 CasePLL[6], // PLL cases
-								 CaseZBLL[6], // ZBLL cases
-								 Case1LLL[6]; // One-Look Last Layer cases
+        std::vector<std::string> CasesOLL[6], // OLL cases
+                                 CasesPLL[6], // PLL cases
+                                 CasesZBLL[6], // ZBLL cases
+                                 Cases1LLL[6]; // One-Look Last Layer cases
 
         Cube CubeBase; // Cube base
+		
+		Metrics Metric; // Metric for measures
 
-		double TimeCross, TimeF2L, TimeOLL, TimePLL, Time1LLL, TimeEO, TimeZBLL; // Times
+        double TimeCrosses, TimeF2L, TimeOLL, TimePLL, Time1LLL, TimeEOLL, TimeZBLL; // Times
 
 		int Cores; // Cores to use in the search: -1 = no multithreading, 0 = all avaliable cores, other = use this amount of cores
 
