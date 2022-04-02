@@ -173,7 +173,7 @@ namespace grcube3
         void SetNewScramble(const Algorithm& scr) {	Scramble = scr; CubeBase.Reset(); CubeBase.ApplyAlgorithm(Scramble); }
 
 		// Search the best solve algorithms with the given search depth
-		void SearchBase(const uint, const int = 0);
+		void SearchBase(const uint, const Plc, const int = 0);
 
         // Get the number of cores (threads) in the current system
         static uint GetSystemCores() { return std::thread::hardware_concurrency(); }

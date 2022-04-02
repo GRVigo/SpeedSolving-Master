@@ -32,14 +32,17 @@ SOURCES += \
     collection.cpp \
     corners.cpp \
     cube.cpp \
+    deep_eval.cpp \
     deep_search.cpp \
     edges.cpp \
     lbl.cpp \
     main.cpp \
     mainwindow.cpp \
+    mehta.cpp \
     petrus.cpp \
     roux.cpp \
     tinyxml2.cpp \
+    yruru.cpp \
     zz.cpp
 
 HEADERS += \
@@ -49,13 +52,16 @@ HEADERS += \
     corners.h \
     cube.h \
     cube_definitions.h \
+    deep_eval.h \
     deep_search.h \
     edges.h \
     lbl.h \
     mainwindow.h \
+    mehta.h \
     petrus.h \
     roux.h \
     tinyxml2.h \
+    yruru.h \
     zz.h
 
 FORMS += \

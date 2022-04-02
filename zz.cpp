@@ -22,6 +22,7 @@
 
 #include "zz.h"
 #include "cfop.h"
+#include "collection.h"
 
 #include <chrono>
 #include <algorithm>
@@ -489,7 +490,7 @@ namespace grcube3
 
                 Stp AUFStep;
 
-                Cube::SolveLL(AlgZBLL[sp][n], CasesZBLL[sp][n], AUFStep, AlgSets::ZBLL, CubeZBLL);
+                Collection::SolveLL(AlgZBLL[sp][n], CasesZBLL[sp][n], AUFStep, AlgSets::ZBLL, CubeZBLL);
 
                 AlgZBLL[sp][n].Append(AUFStep);
             }
@@ -526,7 +527,7 @@ namespace grcube3
                 Cube CubeF2L = CubeBase;
                 CubeF2L.ApplyAlgorithm(Alg);
 
-                Cube::OrientateLL(AlgOCLL[sp][n], CasesOCLL[sp][n], AlgSets::OCLL, CubeF2L);
+                Collection::OrientateLL(AlgOCLL[sp][n], CasesOCLL[sp][n], AlgSets::OCLL, CubeF2L);
             }
         }
 
@@ -564,7 +565,7 @@ namespace grcube3
 
                 Stp AUFStep;
 
-                Cube::SolveLL(AlgPLL[sp][n], CasesPLL[sp][n], AUFStep, AlgSets::PLL, CubeOCLL);
+                Collection::SolveLL(AlgPLL[sp][n], CasesPLL[sp][n], AUFStep, AlgSets::PLL, CubeOCLL);
 
                 AlgPLL[sp][n].Append(AUFStep);
             }
@@ -603,7 +604,7 @@ namespace grcube3
 
                 Stp LastStep;
 
-                Cube::CornersLL(AlgCOLL[sp][n], CasesCOLL[sp][n], LastStep, AlgSets::COLL, CubeF2L);
+                Collection::CornersLL(AlgCOLL[sp][n], CasesCOLL[sp][n], LastStep, AlgSets::COLL, CubeF2L);
 
                 AlgCOLL[sp][n].Append(LastStep);
             }
@@ -643,7 +644,7 @@ namespace grcube3
 
                 Stp AUFStep;
 
-                Cube::SolveLL(AlgEPLL[sp][n], CasesEPLL[sp][n], AUFStep, AlgSets::EPLL, CubeCOLL);
+                Collection::SolveLL(AlgEPLL[sp][n], CasesEPLL[sp][n], AUFStep, AlgSets::EPLL, CubeCOLL);
 
                 AlgEPLL[sp][n].Append(AUFStep);
             }
@@ -807,7 +808,7 @@ namespace grcube3
 	{
         Cube CAux = C;
         CAux.SetSpin(spin);
-        if (!CAux.EO()) return false;
+        if (!CAux.CheckOrientation(Pgr::ALL_EDGES)) return false;
 
         switch (spin)
         {
@@ -859,7 +860,7 @@ namespace grcube3
 	{
         Cube CAux = C;
         CAux.SetSpin(spin);
-        if (!CAux.EO()) return false;
+        if (!CAux.CheckOrientation(Pgr::ALL_EDGES)) return false;
 
         switch (Cube::GetDownSliceLayer(spin))
         {
@@ -898,7 +899,7 @@ namespace grcube3
     // Check if ZZ EO223 is built
     bool ZZ::IsEO223Built(const Cube& C, const Spn spin)
     {
-        if (!IsEOCrossBuilt(C, spin)) return false;
+        if (!IsEOArrowBuilt(C, spin)) return false;
         Cube CAux = C;
         CAux.SetSpin(spin);
         return CAux.IsSolved(Cube::FromAbsPosition(App::BL, spin)) &&
@@ -1439,8 +1440,8 @@ namespace grcube3
     std::string ZZ::GetBestReport(const bool Cancellations) const
     {
         float M, min_M = 0.0f;
-		uint Bestn;
-        Spn BestSpin;
+		uint Bestn = 0u;
+        Spn BestSpin = Spn::Default;
 
         for (int sp = 0; sp < 24; sp++)
         {

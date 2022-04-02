@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1033</width>
+    <width>1269</width>
     <height>800</height>
    </rect>
   </property>
@@ -79,7 +79,7 @@
          <number>1</number>
         </property>
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic; text-decoration: underline; color:#ff5500;&quot;&gt;SpeedSolving Master&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#ff0000;&quot;&gt;S&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#00aa00;&quot;&gt;p&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#ecec00;&quot;&gt;ee&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#ff5500;&quot;&gt;d&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#ff0000;&quot;&gt;S&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#00aa00;&quot;&gt;ol&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#ecec00;&quot;&gt;vi&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#ff5500;&quot;&gt;ng &lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#00007f;&quot;&gt;Master&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
       </item>
@@ -121,6 +121,33 @@
        </widget>
       </item>
       <item>
+       <widget class="Line" name="line_License">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_Help">
+        <property name="text">
+         <string>Help</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_Debug">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Debug</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer_Cache">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -132,6 +159,46 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBox_Cache">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Cache</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_Cache">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_Cores">
+        <property name="text">
+         <string>Cores</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBox_Cores"/>
+      </item>
+      <item>
+       <widget class="Line" name="line_Cores">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_Language">
@@ -180,13 +247,57 @@
       <item>
        <widget class="QLineEdit" name="lineEdit_Scramble"/>
       </item>
-     </layout>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_Controls">
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
+      <item>
+       <widget class="QLabel" name="label_Eval">
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255);
+border-color: rgb(0, 0, 0);</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::Box</enum>
+        </property>
+        <property name="lineWidth">
+         <number>1</number>
+        </property>
+        <property name="text">
+         <string>No evaluation</string>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_Eval">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBox_ScrambleLength">
+        <property name="minimum">
+         <number>4</number>
+        </property>
+        <property name="value">
+         <number>21</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_RandomScramble">
+        <property name="text">
+         <string>Random</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line_Random">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QPushButton" name="pushButton_CopyScramble">
         <property name="text">
@@ -208,8 +319,447 @@
         </property>
        </widget>
       </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="Line" name="line_Report">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_Method">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
       <item>
-       <spacer name="horizontalSpacer_Controls">
+       <layout class="QVBoxLayout" name="verticalLayout_Method">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_Method">
+          <property name="text">
+           <string>Method</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox_Method">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>Layer by layer</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>CFOP</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Roux</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Petrus</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>ZZ</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>CEOR</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Mehta</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line_Method">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_Variant">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_Variant">
+          <property name="text">
+           <string>Variant</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox_Variant">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <item>
+           <property name="text">
+            <string>None</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line_Variant">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_Option">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_Option">
+          <property name="text">
+           <string>Option</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox_Option">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <item>
+           <property name="text">
+            <string>None</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line_Option">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_Speed">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_Speed">
+          <property name="text">
+           <string>Speed</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox_Speed">
+          <item>
+           <property name="text">
+            <string>Fast</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Medium</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Slow</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Very slow</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line_Speed">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_Orientations">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_Orientation">
+          <property name="text">
+           <string>Orientations</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox_Orientation">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>All</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>U &amp; D Layers up</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>F &amp; B Layers up</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>R &amp; L Layers up</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>U Layer up</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>D Layer up</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>F Layer up</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>B Layer up</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>R Layer up</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>L Layer up</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line_Orientation">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_Amount">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_Amount">
+          <property name="text">
+           <string>Amount of solves</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox_Amount">
+          <item>
+           <property name="text">
+            <string>Minimum</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Low</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Medium</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>High</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Huge</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line_Amount">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_Metric">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_Metric">
+          <property name="text">
+           <string>Metric</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBox_Metric">
+          <property name="currentIndex">
+           <number>3</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>Movements</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>HTM (FTM)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>QTM</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>STM</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>QSTM</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>ETM</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>ATM</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>PTM</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1.5HTM</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>OBTM</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line_Metric">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_Regrips">
+        <property name="leftMargin">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="QCheckBox" name="checkBox_Regrips">
+          <property name="text">
+           <string>Regrips</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_Cancellations">
+          <property name="text">
+           <string>Cancellations</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_Method">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -222,1389 +772,35 @@
        </spacer>
       </item>
       <item>
-       <widget class="QSpinBox" name="spinBox_ScrambleLength">
-        <property name="minimum">
-         <number>4</number>
+       <widget class="QPushButton" name="pushButton_StartSearch">
+        <property name="enabled">
+         <bool>true</bool>
         </property>
-        <property name="value">
-         <number>20</number>
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_RandomScramble">
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(31, 31, 255);
+selection-background-color: rgb(0, 85, 0);
+font: 75 12pt &quot;Droid Sans&quot;;
+color: rgb(255, 255, 255);</string>
+        </property>
         <property name="text">
-         <string>Random</string>
+         <string>Start</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
     <item>
-     <widget class="Line" name="line_Report">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QTabWidget" name="tabWidgetMethods">
-      <property name="enabled">
+     <widget class="QTextBrowser" name="textBrowser_report">
+      <property name="openExternalLinks">
        <bool>true</bool>
       </property>
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="tabCFOP">
-       <attribute name="title">
-        <string>CFOP</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_CFOP_Top">
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="label_CFOP_Crosses">
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cross in&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="comboBox_CFOP_Orientation">
-            <item>
-             <property name="text">
-              <string>all layers</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>layers U &amp; D</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>layers F &amp; B</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>layers R &amp; L</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>layer U</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>layer D</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>layer F</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>layer B</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>layer R</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>layer L</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_CFOP_Inspections">
-            <property name="text">
-             <string>Max. Inspections</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBox_CFOP_Inspections">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_CFOP_Top">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_CFOP_CrossDepth">
-            <property name="text">
-             <string>Cross search depth</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBox_CFOP_Cross">
-            <property name="minimum">
-             <number>4</number>
-            </property>
-            <property name="maximum">
-             <number>9</number>
-            </property>
-            <property name="value">
-             <number>7</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_CFOP_Down">
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QGroupBox" name="horizontalGroupBox_CFOP_LL">
-            <layout class="QHBoxLayout" name="horizontalLayout">
-             <item>
-              <widget class="QRadioButton" name="radioButton_CFOP_2LLL">
-               <property name="text">
-                <string>OLL+PLL</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_CFOP_1LLL">
-               <property name="text">
-                <string>1LLL</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_CFOP_EO">
-               <property name="text">
-                <string>EO+ZBLL</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_CFOP_BestSolve">
-            <property name="text">
-             <string>Show best solve</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_CFOP_Cancellations">
-            <property name="text">
-             <string>Show cancellations</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_CFOP_Regrips">
-            <property name="text">
-             <string>Add regrips</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_CFOP_Down">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_CFOP_Help">
-            <property name="text">
-             <string>Help</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabRoux">
-       <attribute name="title">
-        <string>Roux</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_Roux_Top">
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="label_Roux_Orientation">
-            <property name="text">
-             <string>Orientation</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="comboBox_Roux_Orientation">
-            <item>
-             <property name="text">
-              <string>All</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>U &amp; D layers up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>F &amp; B layers up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>R &amp; L layers up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>U layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>D layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>F layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>B layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>R layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>L layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>UF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>UB</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>UR</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>UL</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DB</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DR</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DL</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FU</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FD</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FR</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FL</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BU</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BD</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BR</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BL</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RU</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RD</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RB</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>LU</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>LD</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>LF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>LB</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_Roux_Inspections">
-            <property name="text">
-             <string>Max. Inspections</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBox_Roux_Inspections">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_Roux_Top">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_Roux_FBDepth">
-            <property name="text">
-             <string>First block depth</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBox_Roux_FB">
-            <property name="minimum">
-             <number>4</number>
-            </property>
-            <property name="maximum">
-             <number>9</number>
-            </property>
-            <property name="value">
-             <number>7</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_Roux_SBDepth">
-            <property name="text">
-             <string>Second block depth</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBox_Roux_SB">
-            <property name="minimum">
-             <number>4</number>
-            </property>
-            <property name="maximum">
-             <number>9</number>
-            </property>
-            <property name="value">
-             <number>6</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_Roux_Down">
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QGroupBox" name="horizontalGroupBox_Roux_CxLL">
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <item>
-              <widget class="QRadioButton" name="radioButton_Roux_CMLL">
-               <property name="text">
-                <string>CMLL</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_Roux_COLL">
-               <property name="text">
-                <string>COLL</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="horizontalGroupBox_Roux_L6E">
-            <layout class="QHBoxLayout" name="horizontalLayout_Roux_L6E">
-             <item>
-              <widget class="QRadioButton" name="radioButton_Roux_FullL6E">
-               <property name="text">
-                <string>Full L6E</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_Roux_StepsL6E">
-               <property name="text">
-                <string>L6E Step By Step</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_Roux_BestSolve">
-            <property name="text">
-             <string>Show best solve</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_Roux_Cancellations">
-            <property name="text">
-             <string>Show Cancellations</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_Roux_Regrips">
-            <property name="text">
-             <string>Add Regrips</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_Roux_Down">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_Roux_Help">
-            <property name="text">
-             <string>Help</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabPetrus">
-       <attribute name="title">
-        <string>Petrus</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_Petrus_Top">
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="label_Petrus_Orientation">
-            <property name="text">
-             <string>Orientation</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="comboBox_Petrus_Orientation">
-            <item>
-             <property name="text">
-              <string>All</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>U &amp; D layers up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>F &amp; B layers up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>R &amp; L layers up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>U layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>D layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>F layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>B layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>R layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>L layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>UF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>UB</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>UR</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>UL</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DB</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DR</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DL</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FU</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FD</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FR</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FL</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BU</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BD</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BR</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BL</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RU</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RD</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RB</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>LU</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>LD</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>LF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>LB</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_Petrus_Inspections">
-            <property name="text">
-             <string>Max. Inspections</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBox_Petrus_Inspections">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_Petrus_Top">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_Petrus_BlockDepth">
-            <property name="text">
-             <string>Block depth</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBox_Petrus_BlockDepth">
-            <property name="minimum">
-             <number>4</number>
-            </property>
-            <property name="maximum">
-             <number>9</number>
-            </property>
-            <property name="value">
-             <number>7</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_Petrus_F2LDepth">
-            <property name="text">
-             <string>F2L depth</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBox_Petrus_F2LDepth">
-            <property name="minimum">
-             <number>4</number>
-            </property>
-            <property name="maximum">
-             <number>8</number>
-            </property>
-            <property name="value">
-             <number>7</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_Petrus_Down">
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QGroupBox" name="horizontalGroupBox_Petrus_LL">
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <item>
-              <widget class="QRadioButton" name="radioButton_Petrus_ZBLL">
-               <property name="text">
-                <string>ZBLL</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_Petrus_OCLL_PLL">
-               <property name="text">
-                <string>OCLL+PLL</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_Petrus_COLL_EPLL">
-               <property name="text">
-                <string>COLL+EPLL</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_Petrus_BestSolve">
-            <property name="text">
-             <string>Show best solve</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_Petrus_Cancellations">
-            <property name="text">
-             <string>Show Cancellations</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_Petrus_Regrips">
-            <property name="text">
-             <string>Add Regrips</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_Petrus_Down">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_Petrus_Help">
-            <property name="text">
-             <string>Help</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabZZ">
-       <attribute name="title">
-        <string>ZZ</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_6">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_ZZ_Top">
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="label_ZZ_Orientation">
-            <property name="text">
-             <string>Orientation</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="comboBox_ZZ_Orientation">
-            <item>
-             <property name="text">
-              <string>All</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>U &amp; D layers up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>F &amp; B layers up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>R &amp; L layers up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>U layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>D layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>F layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>B layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>R layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>L layer up</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>UF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>UB</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>UR</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>UL</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DB</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DR</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>DL</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FU</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FD</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FR</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>FL</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BU</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BD</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BR</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>BL</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RU</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RD</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RB</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>LU</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>LD</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>LF</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>LB</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_ZZ_Inspections">
-            <property name="text">
-             <string>Max. Inspections</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBox_ZZ_Inspections">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_ZZ_Top">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_ZZ_EODepth">
-            <property name="text">
-             <string>EOX depth</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBox_ZZ_EODepth">
-            <property name="minimum">
-             <number>4</number>
-            </property>
-            <property name="maximum">
-             <number>9</number>
-            </property>
-            <property name="value">
-             <number>7</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_ZZ_Down">
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QGroupBox" name="horizontalGroupBox_ZZ_LL">
-            <layout class="QHBoxLayout" name="horizontalLayout_4">
-             <item>
-              <widget class="QRadioButton" name="radioButton_ZZ_ZBLL">
-               <property name="text">
-                <string>ZBLL</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_ZZ_OCLL_PLL">
-               <property name="text">
-                <string>OCLL+PLL</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_ZZ_COLL_EPLL">
-               <property name="text">
-                <string>COLL+EPLL</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_ZZ_BestSolve">
-            <property name="text">
-             <string>Show best solve</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_ZZ_Cancellations">
-            <property name="text">
-             <string>Show Cancellations</string>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="checkBox_ZZ_Regrips">
-            <property name="text">
-             <string>Add Regrips</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_ZZ_Down">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_ZZ_Help">
-            <property name="text">
-             <string>Help</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabLBL">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <attribute name="title">
-        <string>LBL</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_LBL_Top">
-          <item>
-           <widget class="QGroupBox" name="horizontalGroupBox">
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <item>
-              <widget class="QLabel" name="label_LBL_Cross">
-               <property name="text">
-                <string>First layer:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_LBL_U">
-               <property name="text">
-                <string>Up</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_LBL_D">
-               <property name="text">
-                <string>Down</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_LBL_F">
-               <property name="text">
-                <string>Front</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_LBL_B">
-               <property name="text">
-                <string>Back</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_LBL_R">
-               <property name="text">
-                <string>Right</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="radioButton_LBL_L">
-               <property name="text">
-                <string>Left</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_LBL_Top">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_LBL_Down">
-          <item>
-           <spacer name="horizontalSpacer_LBL_Down">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pushButton_LBL_Help">
-            <property name="text">
-             <string>Help</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
      </widget>
-    </item>
-    <item>
-     <widget class="QTextBrowser" name="textBrowser_report"/>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_Report">
@@ -1641,7 +837,7 @@
        </widget>
       </item>
       <item>
-       <widget class="Line" name="line_2">
+       <widget class="Line" name="line_Zoom">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
@@ -1684,11 +880,17 @@
        </widget>
       </item>
       <item>
-       <widget class="Line" name="line_History">
+       <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Vertical</enum>
+         <enum>Qt::Horizontal</enum>
         </property>
-       </widget>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item>
        <widget class="QLabel" name="label_History">
@@ -1711,130 +913,6 @@
        <widget class="QPushButton" name="pushButton_ClearHistory">
         <property name="text">
          <string>Clear history</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_Metric">
-        <property name="text">
-         <string>Metric</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="comboBox_Metric">
-        <property name="currentIndex">
-         <number>3</number>
-        </property>
-        <item>
-         <property name="text">
-          <string>Movements</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>HTM (FTM)</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>QTM</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>STM</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>QSTM</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>ETM</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>ATM</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>PTM</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>1.5HTM</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>OBTM</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item>
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="checkBox_Cache">
-        <property name="text">
-         <string>Use cache</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="Line" name="line_Start">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_Cores">
-        <property name="text">
-         <string>Cores:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QSpinBox" name="spinBox_Cores"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButton_StartSearch">
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(31, 31, 255);
-selection-background-color: rgb(0, 85, 0);
-font: 75 12pt &quot;Droid Sans&quot;;
-color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="text">
-         <string>Start</string>
         </property>
        </widget>
       </item>

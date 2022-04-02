@@ -157,6 +157,7 @@ namespace grcube3
 		// Check if the first Roux blocks are built
 		static bool IsFBBuilt(const Cube &); // First block (left)
 		static bool IsFBBuilt(const Cube&, const Spn); // First block with given spin
+		static bool IsFBSquareBuilt(const Cube&, const Spn); // First block square with given spin
 		static bool IsSBBuilt(const Cube&); // Second block (right)
 		static bool IsFBAndSBSquareBuilt(const Cube&);
 		static bool AreFirstBlocksBuilt(const Cube& c) { return IsFBBuilt(c) && IsSBBuilt(c); }

@@ -33,6 +33,27 @@ using namespace tinyxml2;
 
 namespace grcube3
 {
+    // Load algorithms collections needed
+	const Collection Collection::OLL_Algorithms("OLL.xml", true);
+    const Collection Collection::PLL_Algorithms("PLL.xml", true);
+    const Collection Collection::Algorithms_1LLL("1LLL.xml", true);
+    const Collection Collection::ZBLL_Algorithms("ZBLL.xml", true);
+    const Collection Collection::OCLL_Algorithms("OCLL.xml", true);
+    const Collection Collection::CMLL_Algorithms("CMLL.xml", true);
+	const Collection Collection::COLL_Algorithms("COLL.xml", true);
+	const Collection Collection::EPLL_Algorithms("EPLL.xml", true);
+    const Collection Collection::Algorithms_2GLL("2GLL.xml", true);
+
+    const Collection Collection::EOLE_Algorithms("EOLE.xml", true);
+    const Collection Collection::Algorithms_6CO("6CO.xml", true);
+    const Collection Collection::Algorithms_6CP("6CP.xml", true);
+    const Collection Collection::APDR_Algorithms("APDR.xml", true);
+    const Collection Collection::CDRLL_Algorithms("CDRLL.xml", true);
+    const Collection Collection::DCAL_Algorithms("DCAL.xml", true);
+    const Collection Collection::JTLE_Algorithms("JTLE.xml", true);
+    const Collection Collection::L5EP_Algorithms("L5EP.xml", true);
+    const Collection Collection::TDR_Algorithms("TDR.xml", true);
+
 	// Load a collection of algorithms from an XML file
     bool Collection::LoadXMLCollectionFile(const std::string& XMLFilename, const bool clean)
     {
@@ -59,7 +80,7 @@ namespace grcube3
                 Case AuxCase;
 
                 const char* s_CaseName = pElementCase->GetText();
-                AuxCase.Name = s_CaseName;
+                AuxCase.Name = s_CaseName == nullptr ? "No case name" : s_CaseName;
 
                 XMLElement* pElementAlg = pElementCase->FirstChildElement("Algorithm");
                 while (pElementAlg != nullptr)
@@ -71,7 +92,7 @@ namespace grcube3
                         const Algorithm Aux(s_Algorithm);
 						if(clean)
 						{
-							A = Aux.GetDeveloped();
+							A = Aux.GetDeveloped(false); // No parentheses
 							while (A.GetSize() > 2u && (Algorithm::IsyTurn(A.First()) || Algorithm::IsUMov(A.First()))) A.EraseFirst();
 							while (A.GetSize() > 2u && (Algorithm::IsyTurn(A.Last()) || Algorithm::IsUMov(A.Last()))) A.EraseLast();
 						}
@@ -90,7 +111,7 @@ namespace grcube3
     }
 
     // Save a collection of algorithms to an XML file
-    bool Collection::SaveXMLCollectionFile(const std::string& XMLFilename)
+    bool Collection::SaveXMLCollectionFile(const std::string& XMLFilename) const
     {
         XMLDocument col_xml;
 
@@ -259,4 +280,290 @@ namespace grcube3
 
         col_xml.SaveFile(XMLFilename.c_str());
     }
+
+    // Search an algorithm from a collection to orientate the last layer
+	bool Collection::OrientateLL(Algorithm& LLSolve, std::string &LLCase, const AlgSets AlgSet, const Cube& CubeBase)
+	{
+		LLSolve.Clear();
+		LLCase.clear();	
+		
+		Collection LL_Algorithms;
+		
+		switch (AlgSet) // Only orientation algorithm collections
+		{
+			case AlgSets::OLL: LL_Algorithms = OLL_Algorithms; break;
+			case AlgSets::OCLL: LL_Algorithms = OCLL_Algorithms; break;
+			default: return false;
+		}
+		
+		const Lyr UpLayer = Cube::GetUpSliceLayer(CubeBase.GetSpin()),
+				  MidLayer = Cube::AdjacentLayer(UpLayer),
+				  DownLayer = Cube::GetDownSliceLayer(CubeBase.GetSpin());
+
+		bool LL_Found = false;
+        Spn Spin1, Spin2; // Cube spins before and after applying algorithm
+        Stp StepS1, StepS2; // Steps to return cube to the start spin
+
+        for (uint LL_Index = 0u; LL_Index < LL_Algorithms.GetCasesNumber(); LL_Index++)
+        {
+            for (const auto yLL: Algorithm::yTurns) // y turn before algorithm
+            {
+				Cube CubeLL = CubeBase;
+				CubeLL.ApplyStep(yLL);
+				Spin1 = CubeLL.GetSpin();
+				CubeLL.ApplyAlgorithm(LL_Algorithms[LL_Index]);
+				Spin2 = CubeLL.GetSpin();
+				if (Spin1 != Spin2)
+				{
+					Cube::GetSpinsSteps(Spin2, Spin1, StepS1, StepS2);
+					if (StepS1 != Stp::NONE) CubeLL.ApplyStep(StepS1);
+					if (StepS2 != Stp::NONE) CubeLL.ApplyStep(StepS2);
+				}
+				else StepS1 = StepS2 = Stp::NONE;
+
+				LL_Found = CubeLL.IsSolved(DownLayer) && CubeLL.IsSolved(MidLayer) && CubeLL.IsFaceOriented(UpLayer);
+
+				if (LL_Found)
+				{
+					LLCase = LL_Algorithms.GetCaseName(LL_Index);
+
+					if (yLL != Stp::NONE)
+					{
+						// LLSolve.Append(Stp::PARENTHESIS_OPEN);
+						LLSolve.Append(yLL);
+						// LLSolve.Append(Stp::PARENTHESIS_CLOSE_1_REP);
+					}
+					LLSolve.Append(LL_Algorithms[LL_Index]);
+					
+					// If the algorithm changes cube orientation, add a turn to recover up layer
+					if (Cube::GetUpSliceLayer(Spin1) != Cube::GetUpSliceLayer(Spin2))
+					{
+						// LLSolve.Append(Stp::PARENTHESIS_OPEN);
+						LLSolve.Append(StepS1);
+						if (StepS2 != Stp::NONE) LLSolve.Append(StepS2);
+						// LLSolve.Append(Stp::PARENTHESIS_CLOSE_1_REP);
+					}
+
+					break;
+				}
+            }
+            if (LL_Found) break; // Release for loop
+        }
+
+        return LL_Found;
+	}
+	
+	// Search an algorithm from a collection to solve the last layer
+	bool Collection::SolveLL(Algorithm& LLSolve, std::string &LLCase, Stp& AUFStep, const AlgSets AlgSet, const Cube& CubeBase)
+	{	
+		LLSolve.Clear();
+		LLCase.clear();	
+		AUFStep = Stp::NONE;
+		
+		Collection LL_Algorithms;
+		
+		switch (AlgSet)
+		{
+			case AlgSets::_1LLL: LL_Algorithms = Algorithms_1LLL; break;
+			case AlgSets::PLL: LL_Algorithms = PLL_Algorithms; break;
+			case AlgSets::ZBLL: LL_Algorithms = ZBLL_Algorithms; break;
+			case AlgSets::EPLL: LL_Algorithms = EPLL_Algorithms; break;
+            case AlgSets::_2GLL: LL_Algorithms = Algorithms_2GLL; break;
+			default: return false; 
+		}
+
+		bool LL_Found = false;
+        Spn Spin1, Spin2; // Cube spins before and after applying algorithm
+        Stp StepS1, StepS2; // Steps to return cube to the start spin
+
+        for (uint LL_Index = 0u; LL_Index < LL_Algorithms.GetCasesNumber(); LL_Index++)
+        {
+            if (AlgSet == AlgSets::_2GLL)
+            {
+                for (const auto ULL1 : Algorithm::UMovs) // U movement before algorithm
+                {
+                    for (const auto ULL2 : Algorithm::UMovs) // U movement after algorithm (AUF)
+                    {
+                        Cube CubeLL = CubeBase;
+                        CubeLL.ApplyStep(ULL1);
+                        Spin1 = CubeLL.GetSpin();
+                        CubeLL.ApplyAlgorithm(LL_Algorithms[LL_Index]);
+                        Spin2 = CubeLL.GetSpin();
+                        if (Spin1 != Spin2)
+                        {
+                            Cube::GetSpinsSteps(Spin2, Spin1, StepS1, StepS2);
+                            if (StepS1 != Stp::NONE) CubeLL.ApplyStep(StepS1);
+                            if (StepS2 != Stp::NONE) CubeLL.ApplyStep(StepS2);
+                        }
+                        else StepS1 = StepS2 = Stp::NONE;
+                        CubeLL.ApplyStep(ULL2);
+
+                        LL_Found = CubeLL.IsSolved();
+
+                        if (LL_Found)
+                        {
+                            LLCase = LL_Algorithms.GetCaseName(LL_Index);
+
+                            if (ULL1 != Stp::NONE)
+                            {
+                                // LLSolve.Append(Stp::PARENTHESIS_OPEN);
+                                LLSolve.Append(ULL1);
+                                // LLSolve.Append(Stp::PARENTHESIS_CLOSE_1_REP);
+                            }
+                            LLSolve.Append(LL_Algorithms[LL_Index]);
+                            if (Cube::GetUpSliceLayer(Spin1) != Cube::GetUpSliceLayer(Spin2))
+                            {
+                                // LLSolve.Append(Stp::PARENTHESIS_OPEN);
+                                LLSolve.Append(StepS1);
+                                if (StepS2 != Stp::NONE) LLSolve.Append(StepS2);
+                                // LLSolve.Append(Stp::PARENTHESIS_CLOSE_1_REP);
+                            }
+                            AUFStep = ULL2;
+                            break;
+                        }
+                    }
+                    if (LL_Found) break; // Release for loop
+                }
+            }
+            else
+            {
+                for (const auto yLL : Algorithm::yTurns) // y turn before algorithm
+                {
+                    for (const auto ULL : Algorithm::UMovs) // U movement after algorithm (AUF)
+                    {
+                        Cube CubeLL = CubeBase;
+                        CubeLL.ApplyStep(yLL);
+                        Spin1 = CubeLL.GetSpin();
+                        CubeLL.ApplyAlgorithm(LL_Algorithms[LL_Index]);
+                        Spin2 = CubeLL.GetSpin();
+                        if (Spin1 != Spin2)
+                        {
+                            Cube::GetSpinsSteps(Spin2, Spin1, StepS1, StepS2);
+                            if (StepS1 != Stp::NONE) CubeLL.ApplyStep(StepS1);
+                            if (StepS2 != Stp::NONE) CubeLL.ApplyStep(StepS2);
+                        }
+                        else StepS1 = StepS2 = Stp::NONE;
+                        CubeLL.ApplyStep(ULL);
+
+                        LL_Found = CubeLL.IsSolved();
+
+                        if (LL_Found)
+                        {
+                            LLCase = LL_Algorithms.GetCaseName(LL_Index);
+
+                            if (yLL != Stp::NONE)
+                            {
+                                // LLSolve.Append(Stp::PARENTHESIS_OPEN);
+                                LLSolve.Append(yLL);
+                                // LLSolve.Append(Stp::PARENTHESIS_CLOSE_1_REP);
+                            }
+                            LLSolve.Append(LL_Algorithms[LL_Index]);
+                            if (Cube::GetUpSliceLayer(Spin1) != Cube::GetUpSliceLayer(Spin2))
+                            {
+                                // LLSolve.Append(Stp::PARENTHESIS_OPEN);
+                                LLSolve.Append(StepS1);
+                                if (StepS2 != Stp::NONE) LLSolve.Append(StepS2);
+                                // LLSolve.Append(Stp::PARENTHESIS_CLOSE_1_REP);
+                            }
+                            AUFStep = ULL;
+                            break;
+                        }
+                    }
+                    if (LL_Found) break; // Release for loop
+                }
+            }
+
+            if (LL_Found) break; // Release for loop
+        }
+
+        return LL_Found;
+	}
+	
+	// Search an algorithm from a collection (CMLL or COLL) to solve the last layer corners 
+	bool Collection::CornersLL(Algorithm& LLSolve, std::string &LLCase, Stp& AUFStep, const AlgSets AlgSet, const Cube& CubeBase)
+	{
+		LLSolve.Clear();
+		LLCase.clear();
+        AUFStep = Stp::NONE;
+		
+		Collection LL_Algorithms;
+		
+		switch (AlgSet) // Only corners algorithm collections
+		{
+			case AlgSets::CMLL: LL_Algorithms = CMLL_Algorithms; break;
+			case AlgSets::COLL: LL_Algorithms = COLL_Algorithms; break;
+			default: return false; 
+		}
+		
+		const Lyr UpLayer = Cube::GetUpSliceLayer(CubeBase.GetSpin()),
+				  MidLayer = Cube::AdjacentLayer(UpLayer);
+				  
+		Pgr UpLayerCorners, DownLayerCorners;
+		switch(UpLayer)
+		{
+        case Lyr::U: UpLayerCorners = Pgr::CORNERS_U; DownLayerCorners = Pgr::CORNERS_D; break;
+		case Lyr::D: UpLayerCorners = Pgr::CORNERS_D; DownLayerCorners = Pgr::CORNERS_U; break;
+		case Lyr::F: UpLayerCorners = Pgr::CORNERS_F; DownLayerCorners = Pgr::CORNERS_B; break;
+		case Lyr::B: UpLayerCorners = Pgr::CORNERS_B; DownLayerCorners = Pgr::CORNERS_F; break;
+		case Lyr::R: UpLayerCorners = Pgr::CORNERS_R; DownLayerCorners = Pgr::CORNERS_L; break;
+		case Lyr::L: UpLayerCorners = Pgr::CORNERS_L; DownLayerCorners = Pgr::CORNERS_R; break;
+		default: return false;
+		}
+
+		bool LL_Found = false;
+        Spn Spin1, Spin2; // Cube spins before and after applying algorithm
+        Stp StepS1, StepS2; // Steps to return cube to the start spin
+
+        for (uint LL_Index = 0u; LL_Index < LL_Algorithms.GetCasesNumber(); LL_Index++)
+        {
+            for (const auto ULL1: Algorithm::UMovs) // U movement before algorithm
+            {
+                for (const auto ULL2: Algorithm::UMovs) // U movement after algorithm (AUF)
+                {
+                    Cube CubeLL = CubeBase;
+                    CubeLL.ApplyStep(ULL1);
+                    Spin1 = CubeLL.GetSpin();
+                    CubeLL.ApplyAlgorithm(LL_Algorithms[LL_Index]);
+                    Spin2 = CubeLL.GetSpin();
+                    if (Spin1 != Spin2)
+                    {
+                        Cube::GetSpinsSteps(Spin2, Spin1, StepS1, StepS2);
+                        if (StepS1 != Stp::NONE) CubeLL.ApplyStep(StepS1);
+                        if (StepS2 != Stp::NONE) CubeLL.ApplyStep(StepS2);
+                    }
+                    else StepS1 = StepS2 = Stp::NONE;
+                    CubeLL.ApplyStep(ULL2);
+
+					LL_Found = CubeLL.IsSolved(DownLayerCorners) && CubeLL.IsSolved(MidLayer) && CubeLL.IsSolved(UpLayerCorners) &&
+                               CubeLL.IsSolved(Cube::FromAbsPosition(App::DR, CubeLL.GetSpin())) && CubeLL.IsSolved(Cube::FromAbsPosition(App::DL, CubeLL.GetSpin()));
+
+                    if (LL_Found)
+                    {
+                        LLCase = LL_Algorithms.GetCaseName(LL_Index);
+
+                        if (ULL1 != Stp::NONE)
+                        {
+                            // LLSolve.Append(Stp::PARENTHESIS_OPEN);
+                            LLSolve.Append(ULL1);
+                            // LLSolve.Append(Stp::PARENTHESIS_CLOSE_1_REP);
+                        }
+                        LLSolve.Append(LL_Algorithms[LL_Index]);
+						if (Cube::GetUpSliceLayer(Spin1) != Cube::GetUpSliceLayer(Spin2))
+						{
+							// LLSolve.Append(Stp::PARENTHESIS_OPEN);
+							LLSolve.Append(StepS1);
+							if (StepS2 != Stp::NONE) LLSolve.Append(StepS2);
+							// LLSolve.Append(Stp::PARENTHESIS_CLOSE_1_REP);
+						}
+                        AUFStep = ULL2;
+                        break;
+                    }
+                }
+                if (LL_Found) break; // Release for loop
+            }
+            if (LL_Found) break; // Release for loop
+        }
+
+        return LL_Found;
+	}
 }

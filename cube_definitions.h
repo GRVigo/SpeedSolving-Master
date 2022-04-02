@@ -65,22 +65,15 @@ namespace grcube3
 	
 	using S64 = std::uint64_t; // 64 bits status
 	using M16 = std::uint16_t; // 16 bits masks
-	using Ci16 = std::uint16_t; // 16 bits corner index
-	using Cd16 = std::uint16_t; // 16 bits corner direction index
-	using Ei16 = std::uint16_t; // 16 bits edge index (not used)
-	using Ed16 = std::uint16_t; // 16 bits edge direction index
 	using uint = unsigned int;
 	
 	// Enumerators
 	
 	enum class Spn // All cube possible spins as faces oriented to up and front
 	{ 
-		UF, UR, UB, UL,
-		DF, DR, DB, DL,
-		FU, FR, FD, FL,
-		BU, BR, BD, BL,
-		RU, RF, RD, RB,
-		LU, LF, LD, LB,
+		UF, UR, UB, UL, DF, DR, DB, DL,
+		FU, FR, FD, FL, BU, BR, BD, BL,
+		RU, RF, RD, RB, LU, LF, LD, LB,
 		Default = UF
 	};
 	
@@ -142,15 +135,11 @@ namespace grcube3
 		Last_Edge = NEG, Last_Corner = RL
 	};
 
-	enum class Ctr // Rubik's cube center pieces
-	{
-		U, D, F, B, R, L
-	};
+	// Rubik's cube center pieces
+	enum class Ctr { U, D, F, B, R, L };
 
-	enum class Ctp // Rubik's cube center piece positions
-	{
-		U, D, F, B, R, L
-	};
+	// Rubik's cube center piece positions
+	enum class Ctp { U, D, F, B, R, L };
 	
 	enum class Ctd // Rubik's cube center piece directions
 	{
@@ -403,6 +392,11 @@ namespace grcube3
 		CPLINE_UF, CPLINE_UB, CPLINE_UR, CPLINE_UL, CPLINE_DF, CPLINE_DB, CPLINE_DR, CPLINE_DL,
 		CPLINE_FU, CPLINE_FD, CPLINE_FR, CPLINE_FL, CPLINE_BU, CPLINE_BD, CPLINE_BR, CPLINE_BL,
 		CPLINE_RU, CPLINE_RD, CPLINE_RF, CPLINE_RB, CPLINE_LU, CPLINE_LD, CPLINE_LF, CPLINE_LB,
+
+		// Mehta three edges belts
+		BELT_UD_1, BELT_UD_2, BELT_UD_3, BELT_UD_4,
+		BELT_FB_1, BELT_FB_2, BELT_FB_3, BELT_FB_4,
+		BELT_RL_1, BELT_RL_2, BELT_RL_3, BELT_RL_4,
 	};
 
 	// Groups of steps for search
@@ -410,18 +404,21 @@ namespace grcube3
 	{
 		NONE,
 		SINGLE_ALL, // U, U', U2, ..., L', L2
-        SINGLE_U, SINGLE_D, SINGLE_F, SINGLE_B, SINGLE_R, SINGLE_L, // Single movements in given external layer
-        SINGLE_M, SINGLE_S, SINGLE_E, // Single movements in given internal layer
+		SINGLE_U, SINGLE_D, SINGLE_F, SINGLE_B, SINGLE_R, SINGLE_L, // Single movements in given external layer
+		SINGLE_M, SINGLE_S, SINGLE_E, // Single movements in given internal layer
 		SINGLE_UR, // Single movements in U and R layers
-        SINGLE_UM, // Single movements in U and M layers
+		SINGLE_UM, // Single movements in U and M layers
 		LATERAL_UD, LATERAL_FB, LATERAL_RL, // Lateral movements, only 90 degrees both directions
-        ROUX_SB, // Movements for Roux second block search
-        LATERAL_SINGLE_FBp, // Movements F or B' only
-        PETRUS_EB, // Petrus extended block movements
+		ROUX_SB, // Movements for Roux second block search
+		LATERAL_SINGLE_FBp, // Movements F or B' only
+		PETRUS_EB, // Petrus extended block movements
 		PETRUS_OR_U, PETRUS_OR_R, // Petrus edges orientation return movements 
 		PETRUS_UD_R, // Petrus lateral movements for B', R, R' and F
 		ZZ_LATERAL, // ZZ Lateral movements for F2L (R, R', L, L')
 		ZZ_LATERAL2, // ZZ Lateral movements for F2L (R, R', R2, L, L', L2)
+		YRURU_urUR, // YruRU movements for CP-Line
+		YRURU_rUR, // YruRU movements for pEO Extension
+		YRURU_UR, // YruRU movements for  EOBF / F2L
 	};
 	
 	// Search evaluation policies
@@ -430,16 +427,4 @@ namespace grcube3
 		BEST_SOLVES, // Maximum amount of pieces solved
 		SHORT // Minimum amount of steps
 	};
-	
-	// Algorithm sets (collections)
-	enum class AlgSets
-	{
-		_1LLL, OLL, PLL, ZBLL, OCLL, CMLL, COLL, EPLL
-	};
-
-    // Metrics
-    enum class Metrics
-    {
-        Movements, HTM, QTM, STM, QSTM, ETM, ATM, PTM, HTM15, OBTM
-    };
 }

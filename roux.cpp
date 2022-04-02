@@ -22,6 +22,7 @@
 
 #include "roux.h"
 #include "cfop.h"
+#include "collection.h"
 
 #include <chrono>
 #include <algorithm>
@@ -211,6 +212,8 @@ namespace grcube3
 			case Spn::LD: B1 = Pgr::LD_B1; B2S1 = Pgr::LD_B2S1; B2S2 = Pgr::LD_B2S2; break;
 			case Spn::LF: B1 = Pgr::LF_B1; B2S1 = Pgr::LF_B2S1; B2S2 = Pgr::LF_B2S2; break;
 			case Spn::LB: B1 = Pgr::LB_B1; B2S1 = Pgr::LB_B2S1; B2S2 = Pgr::LB_B2S2; break;
+
+			default: return; // Should not happend
 			}
 
 			uint n = 0u;
@@ -311,6 +314,8 @@ namespace grcube3
 			case Spn::LD: B1 = Pgr::LD_B1; B2 = Pgr::LD_B2; break;
 			case Spn::LF: B1 = Pgr::LF_B1; B2 = Pgr::LF_B2; break;
 			case Spn::LB: B1 = Pgr::LB_B1; B2 = Pgr::LB_B2; break;
+
+			default: return; // Should not happend
 			}
 			
 			for (uint n = 0u; n < FirstBlocks[sp].size(); n++)
@@ -387,7 +392,7 @@ namespace grcube3
 
 				Stp LastUStep;
 
-                Cube::CornersLL(AlgCMLL[sp][n], CasesCMLL[sp][n], LastUStep, AlgSets::CMLL, CubeRoux);
+                Collection::CornersLL(AlgCMLL[sp][n], CasesCMLL[sp][n], LastUStep, AlgSets::CMLL, CubeRoux);
 
 				if (AddLastUMovement) AlgCMLL[sp][n].Append(LastUStep);
             }
@@ -425,7 +430,7 @@ namespace grcube3
 
 				Stp LastUStep;
 
-                Cube::CornersLL(AlgCOLL[sp][n], CasesCOLL[sp][n], LastUStep, AlgSets::COLL, CubeRoux);
+                Collection::CornersLL(AlgCOLL[sp][n], CasesCOLL[sp][n], LastUStep, AlgSets::COLL, CubeRoux);
 
 				if (AddLastUMovement) AlgCOLL[sp][n].Append(LastUStep);
 			}
@@ -568,6 +573,8 @@ namespace grcube3
 			case Spn::LD: B1 = Pgr::LD_B1; B2 = Pgr::LD_B2; CORNERS = Pgr::CORNERS_L; EDGES = Pgr::ROUX_L6E_LD; break;
 			case Spn::LF: B1 = Pgr::LF_B1; B2 = Pgr::LF_B2; CORNERS = Pgr::CORNERS_L; EDGES = Pgr::ROUX_L6E_LF; break;
 			case Spn::LB: B1 = Pgr::LB_B1; B2 = Pgr::LB_B2; CORNERS = Pgr::CORNERS_L; EDGES = Pgr::ROUX_L6E_LB; break;
+
+			default: return; // Should not happend
 			}
 
 			for (uint n = 0u; n < FirstBlocks[sp].size(); n++)
@@ -662,6 +669,8 @@ namespace grcube3
 			case Spn::RB:
 			case Spn::LF:
 			case Spn::LB: LR = Pgr::LAYER_U; LL = Pgr::LAYER_D; LM = Pgr::LAYER_E; break;
+
+			default: return; // Should not happend
 			}
 
 			for (uint n = 0u; n < FirstBlocks[sp].size(); n++)
@@ -800,6 +809,46 @@ namespace grcube3
 		case Spn::LD: return C.IsSolved(Pgr::LD_B1);
 		case Spn::LF: return C.IsSolved(Pgr::LF_B1);
 		case Spn::LB: return C.IsSolved(Pgr::LB_B1);
+
+		default: return false; // Should not happend
+		}
+	}
+
+	// Check if the first Roux square block is built with the given spin
+	bool Roux::IsFBSquareBuilt(const Cube& C, const Spn S)
+	{
+		// Roux cube with desired spin
+		switch (S)
+		{
+		case Spn::UF: return C.IsSolved(Pgr::UF_B1S2);
+		case Spn::UB: return C.IsSolved(Pgr::UB_B1S2);
+		case Spn::UR: return C.IsSolved(Pgr::UR_B1S2);
+		case Spn::UL: return C.IsSolved(Pgr::UL_B1S2);
+
+		case Spn::DF: return C.IsSolved(Pgr::DF_B1S2);
+		case Spn::DB: return C.IsSolved(Pgr::DB_B1S2);
+		case Spn::DR: return C.IsSolved(Pgr::DR_B1S2);
+		case Spn::DL: return C.IsSolved(Pgr::DL_B1S2);
+
+		case Spn::FU: return C.IsSolved(Pgr::FU_B1S2);
+		case Spn::FD: return C.IsSolved(Pgr::FD_B1S2);
+		case Spn::FR: return C.IsSolved(Pgr::FR_B1S2);
+		case Spn::FL: return C.IsSolved(Pgr::FL_B1S2);
+
+		case Spn::BU: return C.IsSolved(Pgr::BU_B1S2);
+		case Spn::BD: return C.IsSolved(Pgr::BD_B1S2);
+		case Spn::BR: return C.IsSolved(Pgr::BR_B1S2);
+		case Spn::BL: return C.IsSolved(Pgr::BL_B1S2);
+
+		case Spn::RU: return C.IsSolved(Pgr::RU_B1S2);
+		case Spn::RD: return C.IsSolved(Pgr::RD_B1S2);
+		case Spn::RF: return C.IsSolved(Pgr::RF_B1S2);
+		case Spn::RB: return C.IsSolved(Pgr::RB_B1S2);
+
+		case Spn::LU: return C.IsSolved(Pgr::LU_B1S2);
+		case Spn::LD: return C.IsSolved(Pgr::LD_B1S2);
+		case Spn::LF: return C.IsSolved(Pgr::LF_B1S2);
+		case Spn::LB: return C.IsSolved(Pgr::LB_B1S2);
 
 		default: return false; // Should not happend
 		}
@@ -1162,7 +1211,7 @@ namespace grcube3
 
 			if (!CheckSolveConsistency(spin)) continue;
 
-			for (uint n = 0u; n < FirstBlocks[sp].size(); n++)
+			for (uint n = 0u; n < Inspections[sp].size(); n++)
 			{
 				ReportLine.clear();
 
@@ -1172,7 +1221,7 @@ namespace grcube3
 
 				if (IsFBBuilt(C))
 				{
-					ReportLine += "[" + C.GetSpinText() + "|" + Algorithm::GetMetricValue(GetMetricSolve(C.GetSpin(), n));
+					ReportLine += "[" + Cube::GetSpinText(spin) + "|" + Algorithm::GetMetricValue(GetMetricSolve(spin, n));
 					if (cancellations) ReportLine += "(" + Algorithm::GetMetricValue(GetMetricCancellations(spin, n)) + ")";
 					ReportLine += " " + Algorithm::GetMetricString(Metric) +  "]: ";
 					if (!Inspections[sp][n].Empty()) ReportLine += "(" + Inspections[sp][n].ToString() + ") ";
@@ -1182,10 +1231,10 @@ namespace grcube3
 				{
 					if (debug)
 					{
-						ReportLine += "[" + C.GetSpinText() + "]: ";
-						if (Inspections[sp][n].GetSize() > 0u) ReportLine += "(" + Inspections[sp][n].ToString() + ") ";
+						ReportLine += "[" + Cube::GetSpinText(spin) + "]: ";
+						if (!Inspections[sp][n].Empty()) ReportLine += "(" + Inspections[sp][n].ToString() + ") ";
 						ReportLine += "First block not built in " + std::to_string(MaxDepthFB) + " steps";
-						if (FirstBlocks[sp][n].GetSize() > 0u) ReportLine += ": (" + FirstBlocks[sp][n].ToString() + ")\n";
+						if (!FirstBlocks[sp][n].Empty()) ReportLine += ": (" + FirstBlocks[sp][n].ToString() + ")\n";
 						else ReportLine.push_back('\n');
 					}
 					if (debug) Report += ReportLine;
@@ -1198,7 +1247,7 @@ namespace grcube3
 				else
 				{
 					ReportLine += "First square for second block not built in " + std::to_string(MaxDepthSBFS) + " steps";
-					if (SecondBlocksFS[sp][n].GetSize() > 0u) ReportLine += ": (" + SecondBlocksFS[sp][n].ToString() + ")\n";
+					if (!SecondBlocksFS[sp][n].Empty()) ReportLine += ": (" + SecondBlocksFS[sp][n].ToString() + ")\n";
 					else ReportLine.push_back('\n');
 					if (debug) Report += ReportLine;
 					continue;
@@ -1212,7 +1261,7 @@ namespace grcube3
 					else
 					{
 						ReportLine += "Second square for second block not built in " + std::to_string(MaxDepthSBSS) + " steps";
-						if (SecondBlocksSS[sp][n].GetSize() > 0u) ReportLine += ": (" + SecondBlocksSS[sp][n].ToString() + ")\n";
+						if (!SecondBlocksSS[sp][n].Empty()) ReportLine += ": (" + SecondBlocksSS[sp][n].ToString() + ")\n";
 						else ReportLine.push_back('\n');
 						if (debug) Report += ReportLine;
 						continue;
@@ -1223,32 +1272,32 @@ namespace grcube3
 				{
 					C.ApplyAlgorithm(AlgCMLL[sp][n]);
                     if (debug) ReportLine += " {CMLL: " + CasesCMLL[sp][n] + "}";
-					if (AlgCMLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgCMLL[sp][n].ToString() + ")";
+					if (!AlgCMLL[sp][n].Empty()) ReportLine += " (" + AlgCMLL[sp][n].ToString() + ")";
 				}
 
 				if (!AlgCOLL[sp].empty())
 				{
 					C.ApplyAlgorithm(AlgCOLL[sp][n]);
                     if (debug) ReportLine += " {COLL: " + CasesCOLL[sp][n] + "}";
-					if (AlgCOLL[sp][n].GetSize() > 0u) ReportLine += " (" + AlgCOLL[sp][n].ToString() + ")";
+					if (!AlgCOLL[sp][n].Empty()) ReportLine += " (" + AlgCOLL[sp][n].ToString() + ")";
 				}
 
                 if (!AlgL6EO[sp].empty())
 				{
                     C.ApplyAlgorithm(AlgL6EO[sp][n]);
-                    if (AlgL6EO[sp][n].GetSize() > 0u) ReportLine += " (" + AlgL6EO[sp][n].ToString() + ")";
+                    if (!AlgL6EO[sp][n].Empty()) ReportLine += " (" + AlgL6EO[sp][n].ToString() + ")";
 				}
 				else if (debug) ReportLine += " [No L6E orient.]"; // Debug code
 
                 if (!AlgL6E2E[sp].empty())
 				{
                     C.ApplyAlgorithm(AlgL6E2E[sp][n]);
-                    if (AlgL6E2E[sp][n].GetSize() > 0u) ReportLine += " (" + AlgL6E2E[sp][n].ToString() + ")";
+                    if (!AlgL6E2E[sp][n].Empty()) ReportLine += " (" + AlgL6E2E[sp][n].ToString() + ")";
 				}
 				else if (debug) ReportLine += " [No L6E URUL]"; // Debug code
 
 				C.ApplyAlgorithm(AlgL6E[sp][n]);
-				if (AlgL6E[sp][n].GetSize() > 0u) ReportLine += " (" + AlgL6E[sp][n].ToString() + ")";
+				if (!AlgL6E[sp][n].Empty()) ReportLine += " (" + AlgL6E[sp][n].ToString() + ")";
 
 				if (debug)
 				{
@@ -1467,8 +1516,8 @@ namespace grcube3
 	std::string Roux::GetBestReport(const bool Cancellations) const
 	{
 		float M, min_M = 0.0f;
-		uint Bestn;
-		Spn BestSpin;
+		uint Bestn = 0u;
+		Spn BestSpin = Spn::Default;
 
 		for (int sp = 0; sp < 24; sp++)
 		{

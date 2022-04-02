@@ -436,7 +436,7 @@ namespace grcube3
     }
 
 	// Search the best solve algorithms with the given search depth
-	void DeepSearch::SearchBase(const uint MaxDepth, const int cores)
+	void DeepSearch::SearchBase(const uint MaxDepth, const Plc pol, const int cores)
 	{
 		ResetSolvedPieces();
 		ResetSearchLevels();
@@ -450,36 +450,6 @@ namespace grcube3
 		AddToOptionalPieces(Pgr::CROSS_R);
 		AddToOptionalPieces(Pgr::CROSS_L);
 
-		AddToOptionalPieces(Pgr::UF_B1);
-		AddToOptionalPieces(Pgr::UB_B1);
-		AddToOptionalPieces(Pgr::UR_B1);
-		AddToOptionalPieces(Pgr::UL_B1);
-
-		AddToOptionalPieces(Pgr::DF_B1);
-		AddToOptionalPieces(Pgr::DB_B1);
-		AddToOptionalPieces(Pgr::DR_B1);
-		AddToOptionalPieces(Pgr::DL_B1);
-
-		AddToOptionalPieces(Pgr::FU_B1);
-		AddToOptionalPieces(Pgr::FD_B1);
-		AddToOptionalPieces(Pgr::FR_B1);
-		AddToOptionalPieces(Pgr::FL_B1);
-
-		AddToOptionalPieces(Pgr::BU_B1);
-		AddToOptionalPieces(Pgr::BD_B1);
-		AddToOptionalPieces(Pgr::BR_B1);
-		AddToOptionalPieces(Pgr::BL_B1);
-
-		AddToOptionalPieces(Pgr::RU_B1);
-		AddToOptionalPieces(Pgr::RD_B1);
-		AddToOptionalPieces(Pgr::RF_B1);
-		AddToOptionalPieces(Pgr::RB_B1);
-
-		AddToOptionalPieces(Pgr::LU_B1);
-		AddToOptionalPieces(Pgr::LD_B1);
-		AddToOptionalPieces(Pgr::LF_B1);
-		AddToOptionalPieces(Pgr::LB_B1);
-
 		AddToOptionalPieces(Pgr::PETRUS_UFR);
 		AddToOptionalPieces(Pgr::PETRUS_UFL);
 		AddToOptionalPieces(Pgr::PETRUS_UBR);
@@ -490,20 +460,86 @@ namespace grcube3
 		AddToOptionalPieces(Pgr::PETRUS_DBR);
 		AddToOptionalPieces(Pgr::PETRUS_DBL);
 
-		AddToOptionalPieces(Pgr::CPLINE_UF);
-		AddToOptionalPieces(Pgr::CPLINE_UB);
-		AddToOptionalPieces(Pgr::CPLINE_UR);
-		AddToOptionalPieces(Pgr::CPLINE_UL);
+		if (pol == Plc::SHORT)
+		{
+			AddToOptionalPieces(Pgr::UF_B1);
+			AddToOptionalPieces(Pgr::UB_B1);
+			AddToOptionalPieces(Pgr::UR_B1);
+			AddToOptionalPieces(Pgr::UL_B1);
 
-		AddToOptionalPieces(Pgr::CPLINE_DF);
-		AddToOptionalPieces(Pgr::CPLINE_DB);
-		AddToOptionalPieces(Pgr::CPLINE_DR);
-		AddToOptionalPieces(Pgr::CPLINE_DL);
+			AddToOptionalPieces(Pgr::DF_B1);
+			AddToOptionalPieces(Pgr::DB_B1);
+			AddToOptionalPieces(Pgr::DR_B1);
+			AddToOptionalPieces(Pgr::DL_B1);
 
-		AddToOptionalPieces(Pgr::CPLINE_FU);
-		AddToOptionalPieces(Pgr::CPLINE_FD);
-		AddToOptionalPieces(Pgr::CPLINE_RD);
-		AddToOptionalPieces(Pgr::CPLINE_LU);
+			AddToOptionalPieces(Pgr::FU_B1);
+			AddToOptionalPieces(Pgr::FD_B1);
+			AddToOptionalPieces(Pgr::FR_B1);
+			AddToOptionalPieces(Pgr::FL_B1);
+
+			AddToOptionalPieces(Pgr::BU_B1);
+			AddToOptionalPieces(Pgr::BD_B1);
+			AddToOptionalPieces(Pgr::BR_B1);
+			AddToOptionalPieces(Pgr::BL_B1);
+
+			AddToOptionalPieces(Pgr::RU_B1);
+			AddToOptionalPieces(Pgr::RD_B1);
+			AddToOptionalPieces(Pgr::RF_B1);
+			AddToOptionalPieces(Pgr::RB_B1);
+
+			AddToOptionalPieces(Pgr::LU_B1);
+			AddToOptionalPieces(Pgr::LD_B1);
+			AddToOptionalPieces(Pgr::LF_B1);
+			AddToOptionalPieces(Pgr::LB_B1);
+		}
+
+		else // Plc::BEST_SOLVES => Exhaustive search
+		{
+			AddToOptionalPieces(Pgr::UF_B1S2);
+			AddToOptionalPieces(Pgr::UB_B1S2);
+			AddToOptionalPieces(Pgr::UR_B1S2);
+			AddToOptionalPieces(Pgr::UL_B1S2);
+
+			AddToOptionalPieces(Pgr::DF_B1S2);
+			AddToOptionalPieces(Pgr::DB_B1S2);
+			AddToOptionalPieces(Pgr::DR_B1S2);
+			AddToOptionalPieces(Pgr::DL_B1S2);
+
+			AddToOptionalPieces(Pgr::FU_B1S2);
+			AddToOptionalPieces(Pgr::FD_B1S2);
+			AddToOptionalPieces(Pgr::FR_B1S2);
+			AddToOptionalPieces(Pgr::FL_B1S2);
+
+			AddToOptionalPieces(Pgr::BU_B1S2);
+			AddToOptionalPieces(Pgr::BD_B1S2);
+			AddToOptionalPieces(Pgr::BR_B1S2);
+			AddToOptionalPieces(Pgr::BL_B1S2);
+
+			AddToOptionalPieces(Pgr::RU_B1S2);
+			AddToOptionalPieces(Pgr::RD_B1S2);
+			AddToOptionalPieces(Pgr::RF_B1S2);
+			AddToOptionalPieces(Pgr::RB_B1S2);
+
+			AddToOptionalPieces(Pgr::LU_B1S2);
+			AddToOptionalPieces(Pgr::LD_B1S2);
+			AddToOptionalPieces(Pgr::LF_B1S2);
+			AddToOptionalPieces(Pgr::LB_B1S2);
+
+			AddToOptionalPieces(Pgr::CPLINE_UF);
+			AddToOptionalPieces(Pgr::CPLINE_UB);
+			AddToOptionalPieces(Pgr::CPLINE_UR);
+			AddToOptionalPieces(Pgr::CPLINE_UL);
+
+			AddToOptionalPieces(Pgr::CPLINE_DF);
+			AddToOptionalPieces(Pgr::CPLINE_DB);
+			AddToOptionalPieces(Pgr::CPLINE_DR);
+			AddToOptionalPieces(Pgr::CPLINE_DL);
+
+			AddToOptionalPieces(Pgr::CPLINE_FU);
+			AddToOptionalPieces(Pgr::CPLINE_FD);
+			AddToOptionalPieces(Pgr::CPLINE_RD);
+			AddToOptionalPieces(Pgr::CPLINE_LU);
+		}
 
 		const SearchUnit URoot(SequenceType::DOUBLE);
 		const SearchUnit U(SequenceType::SINGLE);

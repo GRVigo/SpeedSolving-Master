@@ -24,6 +24,7 @@
 #include "cfop.h"
 
 #include <chrono>
+#include <algorithm>
 
 namespace grcube3
 {
@@ -829,6 +830,22 @@ namespace grcube3
 		
 		return CubeSL.IsSolved(FirstLayer) && CubeSL.IsSolved(Cube::AdjacentLayer(FirstLayer));
     }
+	
+	// Check full solve
+    bool LBL::IsSolved() const
+    {
+        Cube CubeLBL = CubeBase;
+        CubeLBL.ApplyAlgorithm(Inspections[FLi]);
+        for (const auto& Cross_Alg : FLCross) CubeLBL.ApplyAlgorithm(Cross_Alg);
+		for (const auto& A : FLCorners) CubeLBL.ApplyAlgorithm(A);
+        for (const auto& A : SLEdges) CubeLBL.ApplyAlgorithm(A);
+		CubeLBL.ApplyAlgorithm(LLCross1);
+		CubeLBL.ApplyAlgorithm(LLCross2);
+		CubeLBL.ApplyAlgorithm(LLCorners1);
+		CubeLBL.ApplyAlgorithm(LLCorners2);
+		
+		return CubeLBL.IsSolved();
+    }
 
 	// Returns the shorter LBL last layer corners orientation algorithm from the solves
 	uint LBL::EvaluateLLCOResult(Algorithm& ShortSolve, const std::vector<Algorithm>& Solves)
@@ -984,6 +1001,280 @@ namespace grcube3
 
         return Report;
     }
+
+    std::string LBL::GetHtmlReport() const
+    {
+        std::string HtmlReport = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n";
+        HtmlReport += "<html>\n";
+        HtmlReport += "\t<head>\n";
+        HtmlReport +=  "\t\t<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"content-type\">\n";
+        HtmlReport +=  "\t\t<title>Layer by layer solve</title>\n";
+        HtmlReport += "\t</head>\n";
+        HtmlReport += "\t</body>\n";
+        HtmlReport += "\t\t<a href=";
+        HtmlReport += GetSolveLink();
+        HtmlReport += "><strong>Layer by layer search for scramble (";
+        HtmlReport += std::to_string(GetLengthScramble());
+        HtmlReport += "): ";
+        HtmlReport += GetTextScramble();
+        HtmlReport += "</strong></a>\n";
+        HtmlReport += "\t\t<br>\n";
+        HtmlReport += "\t\t<br>\n";
+
+        if (IsSolved())
+        {
+            // Show inspection
+            const std::string Inspection = GetTextInspection();
+            if (!Inspection.empty())
+            {
+                HtmlReport += "\t\tInspection: <span style=\"color: rgb(102, 0, 0);\">";
+                HtmlReport += Inspection;
+                HtmlReport += "</span>\n";
+                HtmlReport += "\t\t<br>\n";
+                HtmlReport += "\t\t<br>\n";
+            }
+
+            // Show first layer cross solves
+            HtmlReport += "\t\tFirst layer cross (";
+            HtmlReport += Algorithm::GetMetricValue(GetMetricFLCross());
+            HtmlReport += "): ";
+            std::string CrossString = GetTextFLEdge_1();
+            if (!CrossString.empty())
+            {
+                HtmlReport += "(<span style=\"color: rgb(204, 0, 0);\">";
+                HtmlReport += CrossString;
+                HtmlReport += "</span>) ";
+            }
+            CrossString = GetTextFLEdge_2();
+            if (!CrossString.empty())
+            {
+                HtmlReport += "(<span style=\"color: rgb(204, 0, 0);\">";
+                HtmlReport += CrossString;
+                HtmlReport += "</span>) ";
+            }
+            CrossString = GetTextFLEdge_3();
+            if (!CrossString.empty())
+            {
+                HtmlReport += "(<span style=\"color: rgb(204, 0, 0);\">";
+                HtmlReport += CrossString;
+                HtmlReport += "</span>) ";
+            }
+            CrossString = GetTextFLEdge_4();
+            if (!CrossString.empty())
+            {
+                HtmlReport += "(<span style=\"color: rgb(204, 0, 0);\">";
+                HtmlReport += CrossString;
+                HtmlReport += "</span>)";
+            }
+            HtmlReport += "\t\t<br>\n";
+
+            // Show first layer corners solves
+            HtmlReport += "\t\tFirst layer corners (";
+            HtmlReport += Algorithm::GetMetricValue(GetMetricFLCorners()).c_str();
+            HtmlReport += "): ";
+            std::string FLString = GetTextFLCorner_1();
+            if (!FLString.empty())
+            {
+                HtmlReport += "(<span style=\"color: rgb(204, 102, 0);\">";
+                HtmlReport += FLString;
+                HtmlReport += "</span>) ";
+            }
+            FLString = GetTextFLCorner_2();
+            if (!FLString.empty())
+            {
+                HtmlReport += "(<span style=\"color: rgb(204, 102, 0);\">";
+                HtmlReport += FLString;
+                HtmlReport += "</span>) ";
+            }
+            FLString = GetTextFLCorner_3();
+            if (!FLString.empty())
+            {
+                HtmlReport += "(<span style=\"color: rgb(204, 102, 0);\">";
+                HtmlReport += FLString;
+                HtmlReport += "</span>) ";
+            }
+            FLString = GetTextFLCorner_4();
+            if (!FLString.empty())
+            {
+                HtmlReport += "(<span style=\"color: rgb(204, 102, 0);\">";
+                HtmlReport += FLString;
+                HtmlReport += "</span>)";
+            }
+            HtmlReport += "\t\t<br>\n";
+
+            // Show second layer edges solves
+            HtmlReport += "\t\tSecond layer edges (";
+            HtmlReport += Algorithm::GetMetricValue(GetMetricSL());
+            HtmlReport += "): ";
+            std::string SLString = GetTextSLEdge_1();
+            if (!SLString.empty())
+            {
+                HtmlReport += "(<span style=\"color: rgb(153, 153, 0);\">";
+                HtmlReport += SLString;
+                HtmlReport += "</span>) ";
+            }
+            SLString = GetTextSLEdge_2();
+            if (!SLString.empty())
+            {
+                HtmlReport += "(<span style=\"color: rgb(153, 153, 0);\">";
+                HtmlReport += SLString;
+                HtmlReport += "</span>) ";
+            }
+            SLString = GetTextSLEdge_3();
+            if (!SLString.empty())
+            {
+                HtmlReport += "(<span style=\"color: rgb(153, 153, 0);\">";
+                HtmlReport += SLString;
+                HtmlReport += "</span>) ";
+            }
+            SLString = GetTextSLEdge_4();
+            if (!SLString.empty())
+            {
+                HtmlReport += "(<span style=\"color: rgb(153, 153, 0);\">";
+                HtmlReport += SLString;
+                HtmlReport += "</span>)";
+            }
+            HtmlReport += "\t\t<br>\n";
+
+            // Show last layer solves
+            std::string LLString = GetTextLLCross_1(false);
+            if (!LLString.empty())
+            {
+                HtmlReport += "\t\tLast layer cross orientation (";
+                HtmlReport += Algorithm::GetMetricValue(GetMetricLLCross1());
+                HtmlReport += "): <span style=\"color: rgb(0, 153, 0);\">";
+                HtmlReport += LLString;
+                HtmlReport += "</span>\n";
+                HtmlReport += "\t\t<br>\n";
+            }
+            LLString = GetTextLLCross_2(false);
+            if (!SLString.empty())
+            {
+                HtmlReport += "\t\tLast layer cross permutation (";
+                HtmlReport += Algorithm::GetMetricValue(GetMetricLLCross2());
+                HtmlReport += "): <span style=\"color: rgb(0, 153, 0);\">";
+                HtmlReport += LLString;
+                HtmlReport += "</span>\n";
+                HtmlReport += "\t\t<br>\n";
+            }
+            LLString = GetTextLLCorners_1(false);
+            if (!SLString.empty())
+            {
+                HtmlReport += "\t\tLast layer corners permutation (";
+                HtmlReport += Algorithm::GetMetricValue(GetMetricLLCorners1());
+                HtmlReport += "): <span style=\"color: rgb(0, 0, 153);\">";
+                HtmlReport += LLString;
+                HtmlReport += "</span>\n";
+                HtmlReport += "\t\t<br>\n";
+            }
+            LLString = GetTextLLCorners_2(true);
+            if (!SLString.empty())
+            {
+                HtmlReport += "\t\tLast layer corners orientation (";
+                HtmlReport += Algorithm::GetMetricValue(GetMetricLLCorners2());
+                HtmlReport += "): <span style=\"color: rgb(0, 0, 153);\">";
+                HtmlReport += LLString;
+                HtmlReport += "</span>\n";
+                HtmlReport += "\t\t<br>\n";
+            }
+            HtmlReport += "\t\t<br>\n";
+
+            // Show metric
+            HtmlReport += "\t\tSolve metric: ";
+            HtmlReport += Algorithm::GetMetricValue(GetMetricSolve());
+            HtmlReport += " ";
+            HtmlReport += Algorithm::GetMetricString(GetMetric());
+            HtmlReport += "\t\t<br>\n";
+        }
+        else
+        {
+            HtmlReport += "\t\tCube not solved!\n";
+            HtmlReport += "\t\t<br>\n";
+            HtmlReport += "\t\t<br>\n";
+            HtmlReport += "\t\tSearch time: ";
+            HtmlReport += GetTime();
+            HtmlReport += " s\n";
+            HtmlReport += "\t\t<br>\n";
+        }
+        HtmlReport += "\t</body>\n";
+        HtmlReport += "</html>\n";
+
+        return HtmlReport;
+    }
+	
+	// Get alg.cubing.net link for the solve
+	std::string LBL::GetSolveLink() const
+	{
+		std::string Link = "https://alg.cubing.net/";
+		
+		Link += "?setup=";
+		
+		std::string Txt = GetTextScramble();
+		std::replace(Txt.begin(), Txt.end(), ' ', '_');
+		std::replace(Txt.begin(), Txt.end(), '\'', '-');
+		Link += Txt;
+		
+        Link += "&alg=";
+		
+		Txt = GetTextInspection();
+        if (!Txt.empty())
+		{
+			std::replace(Txt.begin(), Txt.end(), ' ', '_');
+			std::replace(Txt.begin(), Txt.end(), '\'', '-');
+			Link += Txt + "_%2F%2F_Inspection%0A";
+		}
+
+        Txt = "(" + GetTextFLEdge_1() + ")(" + GetTextFLEdge_2() + ")(" + GetTextFLEdge_3() + ")(" + GetTextFLEdge_4() + ")";
+		std::replace(Txt.begin(), Txt.end(), ' ', '_');
+		std::replace(Txt.begin(), Txt.end(), '\'', '-');
+		Link += Txt + "_%2F%2F_First_layer_edges%0A";
+
+        Txt = "(" + GetTextFLCorner_1() + ")(" + GetTextFLCorner_2() + ")(" + GetTextFLCorner_3() + ")(" + GetTextFLCorner_4() + ")";
+		std::replace(Txt.begin(), Txt.end(), ' ', '_');
+		std::replace(Txt.begin(), Txt.end(), '\'', '-');
+		Link += Txt + "_%2F%2F_First_layer_corners%0A";
+		
+        Txt = "(" + GetTextSLEdge_1() + ")(" + GetTextSLEdge_2() + ")(" + GetTextSLEdge_3() + ")(" + GetTextSLEdge_4() + ")";
+		std::replace(Txt.begin(), Txt.end(), ' ', '_');
+		std::replace(Txt.begin(), Txt.end(), '\'', '-');
+		Link += Txt + "_%2F%2F_Second_layer_edges%0A";
+		
+		Txt = GetTextLLCross_1(false);
+		if (!Txt.empty())
+		{
+			std::replace(Txt.begin(), Txt.end(), ' ', '_');
+			std::replace(Txt.begin(), Txt.end(), '\'', '-');
+			Link += Txt + "_%2F%2FLast_layer_edges_orientation%0A";
+		}
+		
+		Txt = GetTextLLCross_2(false);
+		if (!Txt.empty())
+		{
+			std::replace(Txt.begin(), Txt.end(), ' ', '_');
+			std::replace(Txt.begin(), Txt.end(), '\'', '-');
+			Link += Txt + "_%2F%2FLast_layer_edges_permutation%0A";
+		}
+		Txt = GetTextLLCorners_1(false);
+		if (!Txt.empty())
+		{
+			std::replace(Txt.begin(), Txt.end(), ' ', '_');
+			std::replace(Txt.begin(), Txt.end(), '\'', '-');
+			Link += Txt + "_%2F%2FLast_layer_corners_permutation%0A";
+		}
+		
+		Txt = GetTextLLCorners_2(false);
+		if (!Txt.empty())
+		{
+			std::replace(Txt.begin(), Txt.end(), ' ', '_');
+			std::replace(Txt.begin(), Txt.end(), '\'', '-');
+			Link += Txt + "_%2F%2FLast_layer_corners_orientation%0A";
+		}
+		
+        Link += "&view=playback";
+		
+		return Link;
+	}
+
 	
 	// Get the solve metric
     float LBL::GetMetricSolve() const

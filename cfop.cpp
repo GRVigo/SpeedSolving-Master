@@ -21,6 +21,7 @@
 */
 
 #include "cfop.h"
+#include "collection.h"
 
 #include <chrono>
 #include <algorithm>
@@ -330,7 +331,7 @@ namespace grcube3
                 Cube CubeF2L = CubeBase;
                 CubeF2L.ApplyAlgorithm(Alg);
 
-                Cube::OrientateLL(A_OLL[CLI][n], CasesOLL[CLI][n], AlgSets::OLL, CubeF2L);
+                Collection::OrientateLL(A_OLL[CLI][n], CasesOLL[CLI][n], AlgSets::OLL, CubeF2L);
             }
         }
 
@@ -369,7 +370,7 @@ namespace grcube3
 
                 Stp AUFStep;
 
-                Cube::SolveLL(A_PLL[CLI][n], CasesPLL[CLI][n], AUFStep, AlgSets::PLL, CubeOLL);
+                Collection::SolveLL(A_PLL[CLI][n], CasesPLL[CLI][n], AUFStep, AlgSets::PLL, CubeOLL);
 
                 Algorithm Aux;
                 Aux.Append(AUFStep);
@@ -411,7 +412,7 @@ namespace grcube3
 
                 Stp AUFStep;
 
-                Cube::SolveLL(A_1LLL[CLI][n], Cases1LLL[CLI][n], AUFStep, AlgSets::_1LLL, CubeF2L);
+                Collection::SolveLL(A_1LLL[CLI][n], Cases1LLL[CLI][n], AUFStep, AlgSets::_1LLL, CubeF2L);
 
                 Algorithm Aux;
                 Aux.Append(AUFStep);
@@ -457,7 +458,7 @@ namespace grcube3
 
                 Cube CubeF2L(Alg);
 
-                if (!IsF2LBuilt(CubeF2L, CrossLayer) || CubeF2L.EO()) continue;
+                if (!IsF2LBuilt(CubeF2L, CrossLayer) || CubeF2L.CheckOrientation(Pgr::ALL_EDGES)) continue;
 
                 DeepSearch DSEO(Alg, Plc::SHORT); // Deep search for edges orientation
 
@@ -523,7 +524,7 @@ namespace grcube3
 
                 Stp AUFStep;
 
-                Cube::SolveLL(A_ZBLL[CLI][n], CasesZBLL[CLI][n], AUFStep, AlgSets::ZBLL, CubeEOLL);
+                Collection::SolveLL(A_ZBLL[CLI][n], CasesZBLL[CLI][n], AUFStep, AlgSets::ZBLL, CubeEOLL);
 
                 Algorithm Aux;
                 Aux.Append(AUFStep);
@@ -969,6 +970,33 @@ namespace grcube3
         case Lyr::B: return C.IsSolved(Pgr::CROSS_B);
         case Lyr::R: return C.IsSolved(Pgr::CROSS_R);
         case Lyr::L: return C.IsSolved(Pgr::CROSS_L);
+        default: return false;
+        }
+    }
+
+    // Check if the CFOP first xcross is built
+    bool CFOP::IsXCrossBuilt(const Cube& C, const Lyr CrossLayer)
+    {
+        switch (CrossLayer)
+        {
+        case Lyr::U: return C.IsSolved(Pgr::CROSS_U) && 
+                            (C.IsSolved(Pgr::F2L_U_UFR) || C.IsSolved(Pgr::F2L_U_UFL) || 
+                             C.IsSolved(Pgr::F2L_U_UBR) || C.IsSolved(Pgr::F2L_U_UBL));
+        case Lyr::D: return C.IsSolved(Pgr::CROSS_D) && 
+                            (C.IsSolved(Pgr::F2L_D_DFR) || C.IsSolved(Pgr::F2L_D_DFL) || 
+                             C.IsSolved(Pgr::F2L_D_DBR) || C.IsSolved(Pgr::F2L_D_DBL));
+        case Lyr::F: return C.IsSolved(Pgr::CROSS_F) && 
+                            (C.IsSolved(Pgr::F2L_F_UFR) || C.IsSolved(Pgr::F2L_F_UFL) || 
+                             C.IsSolved(Pgr::F2L_F_DFR) || C.IsSolved(Pgr::F2L_F_DFL));
+        case Lyr::B: return C.IsSolved(Pgr::CROSS_B) && 
+                            (C.IsSolved(Pgr::F2L_B_UBR) || C.IsSolved(Pgr::F2L_B_UBL) || 
+                             C.IsSolved(Pgr::F2L_B_DBR) || C.IsSolved(Pgr::F2L_B_DBL));
+        case Lyr::R: return C.IsSolved(Pgr::CROSS_R) && 
+                            (C.IsSolved(Pgr::F2L_R_UFR) || C.IsSolved(Pgr::F2L_R_UBR) || 
+                             C.IsSolved(Pgr::F2L_R_DFR) || C.IsSolved(Pgr::F2L_R_DBR));
+        case Lyr::L: return C.IsSolved(Pgr::CROSS_L) && 
+                            (C.IsSolved(Pgr::F2L_L_UFL) || C.IsSolved(Pgr::F2L_L_UBL) || 
+                             C.IsSolved(Pgr::F2L_L_DFL) || C.IsSolved(Pgr::F2L_L_DBL));
         default: return false;
         }
     }
@@ -1461,8 +1489,8 @@ namespace grcube3
     std::string CFOP::GetBestReport(bool Cancellations) const
     {
         float M, min_M = 0.0f;
-		uint Bestn;
-        Lyr BestLayer;
+		uint Bestn = 0u;
+        Lyr BestLayer = Lyr::NONE;
 		
         for (const auto CrossLayer : CrossLayers)
         {

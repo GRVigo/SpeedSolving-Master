@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>HELP</title>
+
+</head>
+<body style="color: rgb(0, 0, 0);" alink="#ee0000" link="#0000ee" vlink="#551a8b">
+<h1 style="background-color: rgb(0, 0, 153);"><span style="color: rgb(204, 0, 0);">&nbsp;S</span><span style="color: rgb(0, 153, 0);">p</span><span style="color: rgb(255, 204, 0);">ee</span><span style="color: rgb(204, 102, 0);">d</span><span style="color: rgb(204, 0, 0);">S</span><span style="color: rgb(0, 153, 0);">ol</span><span style="color: rgb(255, 204, 0);">vi</span><span style="color: rgb(204, 102, 0);">ng</span> <span style="color: white;">Master <small><small><small>beta
+2</small></small></small></span></h1>
+<h3>Credits button</h3>
+Displays important and very interesting&nbsp;information about this
+application.<br>
+<h3>License button</h3>
+Displays the GNU General Public License.<br>
+<h3>Help button</h3>
+Displays this help document.<br>
+<h3>Cache</h3>
+If
+you enable the cache, the first step of the selected method (cross for
+CFOP, first block for Roux, etc.) will be calculated 10-15% slower, as
+a generic search will be done and it will be stored in memory. If you
+perform a new search changing the method or submethod, but you use the
+same scramble and the same or lower speed, it will be much faster, as
+the first step, usually the longer, will be taken from cache. This is
+very useful if you want to analyze the same scramble using different
+methods.<br>
+<br>
+If cache is disabled, each search will always perform all the steps.<br>
+<br>
+So,
+if you plan to analyze the same scramble several times with a slow o
+very slow speed, enable cache. If you plan to evaluate a new scramble
+each time, or you have a fast or medium speed, disable it.<br>
+<br>
+Plase note that <span style="text-decoration: underline;">cache
+can require a high use of memory</span>.<br>
+<h3>Cores</h3>
+This
+parameter specifies the amount of CPU cores (threads) used in the
+search. A zero value means all available cores will be used.<br>
+<h3>Language</h3>
+Select the translation for the application -only english language
+(default) is avaliable at this release-.<br>
+<h3>Scramble</h3>
+You can write here your own scramble. With the <span style="font-weight: bold;">Random</span>
+button you can generate a random scramble of the specified length. You
+also can copy and paste scrambles from your favourite scramble
+generator.<br>
+<br>
+Next to the scramble an <span style="font-weight: bold;">evaluation</span>
+is showed. This is an experimental feature and gives you an idea of how
+difficult the solve will be. Evaluation depends on the orientation. If
+all orientations are selected, the evaluation will be the average of
+the evaluations of all the orientations. If you plan to solve the
+scramble in a specific orientation, select it to get his evaluation.<br>
+<h3>Method, Variant and Option</h3>
+<h4><a href="https://www.speedsolving.com/wiki/index.php/Layer_by_layer">Layer
+by layer</a></h4>
+The&nbsp;Layer by layer method or beginners method is based on
+solving the
+layers of the cube one by one. The first layer is solved in two steps:
+first the cross, indicating the movements needed to solve each<br>
+edge, and then the corners, one by one.<br>
+<br>
+For the second layer, the movements required to complete each of its
+edges are shown.<br>
+<br>
+The
+last layer is solved in four steps: orientation of the cross,
+permutation of the cross, corners permutation and, finally, corners
+orientation. Each step&nbsp;uses only one algorithm (shown in
+parentheses each time it appears).<br>
+<br>
+Speed, amount of solves, regrips and cancellations don't affect to this
+method.<br>
+<h4><a href="https://www.speedsolving.com/wiki/index.php/CFOP_method">CFOP</a></h4>
+The
+cross is searched on each of the specified orientations, chosen among
+all the possible ones evaluating its number of movements, but also
+taking into account that the arrangement of the pieces for F2L is as
+favorable as possible.<br>
+<br>
+The first two layers (F2L) search is fast,
+about 2 or 3 seconds per inspection on a modern processor, and it will
+try to get the shortest possible solution for each solve.<br>
+<br>
+The
+next step is to get the appropriate algorithms for OLL and PLL. These
+algorithms are predefined and their search is very fast. It is also
+possible to complete the last layer in a single algorithm (1LLL), or
+even with edges orientation and ZBLL algorithms (EO+ZBLL) -edges
+orientation search lasts a bit more time-.<br>
+<h4><a href="https://www.speedsolving.com/wiki/index.php/Roux_method">Roux</a></h4>
+The
+first block is searched for each possible orientations of the cube and
+is taken among all possible ones by evaluating its number of movements,
+but also taking into account that the&nbsp;arrangement of the
+pieces to
+form the second block is as favorable as possible.<br>
+<br>
+The search
+for the second block will be done in a similar way to the first, trying
+to form it completely. If this is not possible, the search will be
+carried out in two steps, searching in each of them for the sub-blocks
+(squares) that form the second&nbsp;block.<br>
+<br>
+The appropriate
+algorithm is then found to orient the upper corners (CMLL or COLL, as
+selected). These algorithms are predefined and their search is very
+fast.<br>
+<br>
+Finally, the last six edges are solved using movements of
+the U and M layers. It can be obtained in a single step (more
+efficient) or can be divided into three searches (option):<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; -
+orientation of the last six edges<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; -
+resolution of the edges in the UR and UL positions<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; - final
+resolution.<br>
+<h4><a href="https://www.speedsolving.com/wiki/index.php/Petrus_method">Petrus</a></h4>
+The
+first block is searched for each possible orientations of the cube, and
+the solves are taken among all possible ones by evaluating its number
+of movements, but also taking into account that the arrangement of the
+pieces to expand the block is as&nbsp;favorable as possible.<br>
+<br>
+The search for the expanded block will be done in a similar way. Then
+the edges orientation will be performed.<br>
+<br>
+The next step is to complete the first two layers (F2L).<br>
+<br>
+Finally
+the last layer will be solved using ZBLL, COLL+EPLL or OCLL+PLL
+algorithms. These&nbsp;algorithms are predefined and their search
+is
+very fast.<br>
+<h4><a href="https://www.speedsolving.com/wiki/index.php/ZZ_Method">ZZ</a></h4>
+The
+search starts trying to find one of this structures: EOLine, EOArrow,
+EOCross, XEOLine, XEOCross and EO223. The solution is chosen for the
+most complex structure, among all the possible ones, evaluating also
+its number of movements and taking into account that the arrangement of
+the pieces for F2L is as favorable as possible.<br>
+<br>
+The first two layers
+(F2L) search is fast, about 2 or 3 seconds per inspection on a modern
+CPU, and it will try to get the shortest possible solution for each
+solve.<br>
+<br>
+Finally the last layer will be solved using ZBLL,
+COLL+EPLL or OCLL+PLL algorithms. These algorithms are predefined and
+their search is very fast.<br>
+<h4><a href="https://www.speedsolving.com/wiki/index.php/CEOR">CEOR</a>
+(YruRU)</h4>
+The implementation of the CEOR-YruRU method is as explained in this <a href="https://devagio.github.io/YruRU/index.html">YruRU link</a>.<br>
+<br>
+As
+the CP step is commonly solved in a sixth of the first line solves,
+there is an
+option for avoid select a CP skip solve as the most favorable.
+<h4><a href="https://www.speedsolving.com/wiki/index.php/Mehta">Mehta</a></h4>
+The implementation of the Mehta method is as explained in the link.<br>
+<h3>Speed</h3>
+With
+this parameter you can control the amount of time necessary&nbsp;to get
+the solves. Faster speeds get less solves than slower speeds.
+Slower speeds perform&nbsp;deeper and more complex searchs.<br>
+<br>
+Plase note that the very slow speed&nbsp;can last an hour of time
+or more. <span style="text-decoration: underline;">There
+is no cancel button, so if you want to interrupt the search, you'll
+have to kill the application.</span><br>
+<h3>Orientation</h3>
+Choose here the cube orientation for the required solves. Selections
+with many orientations (<span style="font-style: italic;">All</span>,
+<span style="font-style: italic;">U &amp; D</span>,
+etc.) requires more processing time than specific orientations (<span style="font-style: italic;">U</span>, <span style="font-style: italic;">D</span>, etc.)<br>
+<br>
+The orientations refer to the position of the cube when you perform the
+scramble.<br>
+<h3>Amount of solves</h3>
+Is
+the number of solves that will be analyzed for each orientation. It's
+possible not to reach the required number of solves, as not
+all&nbsp;orientations provide the same amount of solves, or even
+not
+solves at all.<br>
+<br>
+Increasing the amount of solves, the search lasts more time, but can
+give you more and better solves.<br><br>If you increase the amount of solves, but you don't get more solves, then you need to select a slower speed.<br>
+<h3>Metric</h3>
+Select here the <a href="https://www.speedsolving.com/wiki/index.php/Metric">metric</a>
+for the solves measure.<br>
+<h3>Regrips</h3>
+If regrips are enabled, turns will be added to the solutions to get
+more comfortable movements.<br>
+<h3>Cancellations</h3>
+If
+the cancellation option is enabled, cancellation of movements will be
+applyed to each solution in order to get the lower metric (STM by
+default). Cancellations metric will be shown surrounded by parentheses
+at the begining of each solve, near the&nbsp;regular metric. This
+metric will be used to evaluate the best solve.<br>
+<h3>Report</h3>
+You can change the size of the solve report, copy, save and clear it.<br>
+<h3>History</h3>
+Each
+time you get a search result, the report will be saved in the history,
+so you can perform several searches without losing your results.<br>
+</body></html>

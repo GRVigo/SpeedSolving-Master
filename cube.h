@@ -26,7 +26,6 @@
 #include "edges.h"
 #include "corners.h"
 #include "algorithm.h"
-#include "collection.h"
 
 namespace grcube3
 {
@@ -111,6 +110,9 @@ namespace grcube3
         // Check if some groups of pieces are in solve condition
 		bool IsSolved(const std::vector<Pgr>&) const;
 
+        // Check if some piece positions are in solve condition
+		bool IsSolved(const std::vector<Pcp>&) const;
+
         // Check if all pieces in the given layer are in solve condition
 		bool IsSolved(const Lyr) const;
 
@@ -169,16 +171,18 @@ namespace grcube3
 		bool ArePiecesInLayer(const std::vector<Pce>&, const Lyr) const;
 
 		// Functions to check orientation using the faces
-        bool EO(const Edp) const; // Edge in given edge position orientated
-        bool EO() const;
+        bool EO_POS(const Edp) const; // Edge in given edge position orientated
+        bool EO() const; // Check if all edges are oriented
         bool CO_UD(const Cnp) const; // Corner in given corner position orientated UD
         bool CO_FB(const Cnp) const; // Corner in given corner position orientated FB
         bool CO_RL(const Cnp) const; // Corner in given corner position orientated RL
-        bool CO() const;
-		
+        bool CO() const; // Check if all corners are oriented
+
         // Get given pieces report for current cube
         std::string GetReport(const Pgr) const;
 
+        const static std::array<Lyr, 6u> ExtLayers; // Array of external layers
+        
         // Get a given cube spin as text
         static std::string GetSpinText(const Spn s) { return string_Spins[static_cast<int>(s)]; }
 
@@ -338,33 +342,6 @@ namespace grcube3
 		
 		// Get the absolut sticker position from an sticker position for the given spin
 		static Asp AbsFromPosition(const Sps as, const Spn sp) { return asp_Positions[static_cast<int>(sp)][static_cast<int>(as)]; }
-		
-		// Algorithm search from a collection
-		static bool OrientateLL(Algorithm&, std::string&, const AlgSets, const Cube&);
-		static bool SolveLL(Algorithm&, std::string&, Stp&, const AlgSets, const Cube&);
-		static bool CornersLL(Algorithm&, std::string&, Stp&, const AlgSets, const Cube&);
-
-        // Get number of collections cases
-        static uint GetOLLCases() { return OLL_Algorithms.GetCasesNumber(); }
-        static uint GetPLLCases() { return PLL_Algorithms.GetCasesNumber(); }
-        static uint Get1LLLCases() { return Algorithms_1LLL.GetCasesNumber(); }
-        static uint GetZBLLCases() { return ZBLL_Algorithms.GetCasesNumber(); }
-        static uint GetOCLLCases() { return OCLL_Algorithms.GetCasesNumber(); }
-        static uint GetCMLLCases() { return CMLL_Algorithms.GetCasesNumber(); }
-        static uint GetCOLLCases() { return COLL_Algorithms.GetCasesNumber(); }
-        static uint GetEPLLCases() { return EPLL_Algorithms.GetCasesNumber(); }
-
-        const static std::array<Lyr, 6u> ExtLayers; // Array of external layers
-
-        // Static collections with solve algorithms (by case)
-        const static Collection OLL_Algorithms,
-                                PLL_Algorithms,
-                                Algorithms_1LLL,
-                                ZBLL_Algorithms,
-                                OCLL_Algorithms,
-                                CMLL_Algorithms,
-                                COLL_Algorithms,
-                                EPLL_Algorithms;
 		
 	private:
 		

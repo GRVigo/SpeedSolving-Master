@@ -1,0 +1,45 @@
+<Collection Name="L5EP" Description="Last 5 Edges Permutation" CasesNumber="41">
+    <Case Index="0">I Right<Algorithm>S R2' S' R2</Algorithm></Case>
+	<Case Index="1">I Front<Algorithm>(U') M' U2 M</Algorithm></Case>
+	<Case Index="2">I Back<Algorithm>(U) M U2 M'</Algorithm></Case>
+	<Case Index="3">Ua<Algorithm>M2 U M U2 M' U M2</Algorithm></Case>
+	<Case Index="4">Ub<Algorithm>M2 U' M U2 M' U' M2</Algorithm></Case>
+	<Case Index="5">Pa Right<Algorithm>R U R' U' R' U' R' U R</Algorithm></Case>
+	<Case Index="6">Pa Front<Algorithm>(U') M U2 M U' M' U2 M'</Algorithm></Case>
+	<Case Index="7">Pa Back<Algorithm>(U) M' U2 M' U' M U2 M</Algorithm></Case>
+	<Case Index="8">Pb Right<Algorithm>R' U' R U R U R U' R'</Algorithm></Case>
+	<Case Index="9">Pb Front<Algorithm>(U') M U2 M U M' U2 M'</Algorithm></Case>
+	<Case Index="10">Pb Back<Algorithm>(U) M' U2 M' U M U2 M</Algorithm></Case>
+	<Case Index="11">H<Algorithm>M2 U M2 U2 M2 U M2</Algorithm></Case>
+	<Case Index="12">Z<Algorithm>M2 U2 M U M2 U M2 U M</Algorithm>
+					  <Algorithm>M' U M2 U M2 U M' U2 M2</Algorithm></Case>
+	<Case Index="13">Ca Right<Algorithm>R U R' U R' U' R2 U' R' U2 R U R U' R'</Algorithm>
+					         <Algorithm>r2 B2 U' R2 B2 r2 U' B2</Algorithm></Case>
+	<Case Index="14">Ca Front<Algorithm>(U) M U2 M' U M' U2 M' U' M2</Algorithm></Case>
+	<Case Index="15">Ca Back<Algorithm>(U') M2 U M' U2 M' U' M' U2 M</Algorithm></Case>
+	<Case Index="16">Cb Right<Algorithm>F2 U' r2 F2 R2 U' F2 r2</Algorithm></Case>
+	<Case Index="17">Cb Front<Algorithm>(U) M U2 M' U' M' U2 M' U M2</Algorithm></Case>
+	<Case Index="18">Cb Back<Algorithm>(U') M2 U' M' U2 M' U M' U2 M</Algorithm></Case>
+	<Case Index="19">D Right<Algorithm>R U2 R2 U2 R2 U2 R</Algorithm></Case>
+	<Case Index="20">D Front<Algorithm>(U) M U M2 U2 M2 U M'</Algorithm></Case>
+	<Case Index="21">D Back<Algorithm>(U') M' U' M2 U2 M2 U' M</Algorithm></Case>
+	<Case Index="22">Wa Right<Algorithm>S R2' S' R2 U' S R2' S' R2</Algorithm></Case>
+	<Case Index="23">Wa Front<Algorithm>(U') M' U2 M U M' U2 M</Algorithm></Case>
+	<Case Index="24">Wa Back<Algorithm>(U) M U2 M' U M U2 M'</Algorithm></Case>
+	<Case Index="25">Wb Right<Algorithm>S R2' S' R2 U S R2' S' R2</Algorithm></Case>
+	<Case Index="26">Wb Front<Algorithm>(U') M' U2 M U' M' U2 M</Algorithm></Case>
+	<Case Index="27">Wb Back<Algorithm>(U) M U2 M' U' M U2 M'</Algorithm></Case>
+	<Case Index="28">Qa Right<Algorithm>R U R' U R' U' R' U' R2 U2 R</Algorithm></Case>
+	<Case Index="29">Qa Front<Algorithm>(U) M' U2 M' U M' U2 M U M2</Algorithm></Case>
+	<Case Index="30">Qa Back<Algorithm>(U') M2 U' M U2 M' U' M' U2 M'</Algorithm></Case>
+	<Case Index="31">Qb Right<Algorithm>R' U' R U' R U R U R2 U2 R'</Algorithm></Case>
+	<Case Index="32">Qb Front<Algorithm>(U) M' U2 M' U' M' U2 M U' M2</Algorithm></Case>
+	<Case Index="33">Qb Back<Algorithm>(U') M2 U M U2 M' U M' U2 M'</Algorithm></Case>
+	<Case Index="34">Oa Right<Algorithm>R' U' R U' R U R U' R2 U2 R</Algorithm></Case>
+	<Case Index="35">Oa Front<Algorithm>(U) M2 U M2 U M U2 M'</Algorithm></Case>
+	<Case Index="36">Oa Back<Algorithm>(U') M2 U M2 U M' U2 M</Algorithm></Case>
+	<Case Index="37">Ob Right<Algorithm>R U R' U R' U' R' U R2 U2 R'</Algorithm></Case>
+	<Case Index="38">Ob Front<Algorithm>(U) M2 U' M2 U' M U2 M'</Algorithm></Case>
+	<Case Index="39">Ob Back<Algorithm>(U') M2 U' M2 U' M' U2 M</Algorithm></Case>
+	<Case Index="40">Skip<Algorithm></Algorithm></Case>
+</Collection>

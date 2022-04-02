@@ -1,6 +1,6 @@
 /*  This file is part of "SpeedSolving Master"
 
-    Copyright (C) 2020 German Ramos Rodriguez
+    Copyright (C) 2022 German Ramos Rodriguez
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
 
 #include <QMainWindow>
 #include <QMap>
+
+#include "cube_definitions.h"
 
 using LangMap = QMap<QString, QString>;
 
@@ -67,12 +69,6 @@ private slots:
 
     void on_pushButton_License_clicked();
 
-    void on_pushButton_CFOP_Help_clicked();
-
-    void on_pushButton_Roux_Help_clicked();
-
-    void on_pushButton_LBL_Help_clicked();
-
     void on_comboBox_History_currentIndexChanged(int index);
 
     void on_comboBox_History_activated(int index);
@@ -81,13 +77,17 @@ private slots:
 
     void on_checkBox_Cache_stateChanged(int arg1);
 
-    void on_pushButton_Petrus_Help_clicked();
-
-    void on_pushButton_ZZ_Help_clicked();
-
     void on_pushButton_ZoomPlus_clicked();
 
     void on_pushButton_ZoomMinus_clicked();
+
+    void on_comboBox_Method_currentIndexChanged(const QString &arg1);
+
+    void on_comboBox_Orientation_currentIndexChanged(int index);
+
+    void on_pushButton_Help_clicked();
+
+    void on_pushButton_Debug_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -106,11 +106,15 @@ private:
     void UpdateFixedTexts(const LangMap&);
     bool CheckXMLLanguageFile(const QString&);
 
-    double UpdateRefTime(const int);
-    double GetCFOPEstimatedTime(const uint, const uint);
-    double GetRouxEstimatedTime(const uint, const uint, const uint);
-    double GetPetrusEstimatedTime(const uint, const uint, const uint);
-    double GetZZEstimatedTime(const uint, const uint);
-	double GetLBLEstimatedTime();
+    void GetSearchSpins(std::vector<grcube3::Spn>&);
+
+    void sLBL(const std::string&);
+    void sCFOP(const std::string&);
+    void sRoux(const std::string&);
+    void sPetrus(const std::string&);
+    void sZZ(const std::string&);
+    void sCEOR(const std::string&);
+    void sMehta(const std::string&);
+
 };
 #endif // MAINWINDOW_H

@@ -51,9 +51,13 @@ namespace grcube3
 		// Set the metric for evaluations
 		void SetMetric(const Metrics m) { Metric = m; }
 		
+		// Get the current metric for evaluations
+		Metrics GetMetric() const { return Metric; }
+		
         bool IsFLCrossSolved() const; // Check if the first layer cross is solved	
         bool IsFLSolved() const; // Check if first layer is solved
         bool IsSLSolved() const; // Check if second layer is solved
+		bool IsSolved() const; // Check full solve
 
 		// Get search algorithms texts
         std::string GetTextScramble() const { return Scramble.ToString(); }
@@ -184,8 +188,13 @@ namespace grcube3
         // Get a solve report
         std::string GetReport() const;
 
+        std::string GetHtmlReport() const;
+
         // Get a solve time report
         std::string GetTimeReport() const;
+		
+		// Get alg.cubing.net link for the solve
+		std::string GetSolveLink() const;
 
 		// Get used cores in the solve
 		int GetUsedCores() const { return Cores; }

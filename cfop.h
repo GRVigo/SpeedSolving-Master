@@ -168,6 +168,7 @@ namespace grcube3
 		static bool EvaluateF2LResult(std::vector<Algorithm>&, const uint, const std::vector<Algorithm>&, const Cube&, const Lyr, const Plc, const bool = true);
 
         static bool IsCrossBuilt(const Cube&, const Lyr); // Check if the CFOP first cross is built
+        static bool IsXCrossBuilt(const Cube&, const Lyr); // Check if the CFOP first cross is built + first F2L pair
         static bool IsF2LBuilt(const Cube&, const Lyr); // Check if first two layers are built
 
 		// Check if the last layer is oriented (OLL search completed)

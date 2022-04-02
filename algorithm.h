@@ -30,6 +30,9 @@
 
 namespace grcube3
 {
+	// Supported metrics
+    enum class Metrics { Movements, HTM, QTM, STM, QSTM, ETM, ATM, PTM, HTM15, OBTM };
+
 	class Algorithm
 	{
 	public:
@@ -199,7 +202,7 @@ namespace grcube3
 		
 		// static arrays with all turns, y turns, all single movements and U slice movements
 		const static std::array<Stp, 9u> Turns;
-		const static std::array<Stp, 4u> yTurns, UMovs;
+		const static std::array<Stp, 4u> yTurns, UMovs, DMovs, EMovs;
 		const static std::array<Stp, 18u> SingleMovs;
 
 	private:

@@ -22,6 +22,7 @@
 
 #include "petrus.h"
 #include "cfop.h"
+#include "collection.h"
 
 #include <chrono>
 #include <algorithm>
@@ -185,6 +186,8 @@ namespace grcube3
 			case Spn::LD: EXPBLOCK = Pgr::PETRUS_UBR_Y; break;
 			case Spn::LF: EXPBLOCK = Pgr::PETRUS_DBR_Z; break;
 			case Spn::LB: EXPBLOCK = Pgr::PETRUS_UFR_Z; break;
+
+			default: return; // Should not happend
 			}
 
 			uint n = 0u;
@@ -283,6 +286,8 @@ namespace grcube3
 			case Spn::LD: ExpBlock = Pgr::PETRUS_UBR_Y; EO_Edge = Pcp::FR; break;
 			case Spn::LF: ExpBlock = Pgr::PETRUS_DBR_Z; EO_Edge = Pcp::UR; break;
 			case Spn::LB: ExpBlock = Pgr::PETRUS_UFR_Z; EO_Edge = Pcp::DR; break;
+
+			default: return; // Should not happend
 			}
 
 			for (uint n = 0u; n < Blocks[sp].size(); n++)
@@ -293,7 +298,7 @@ namespace grcube3
 				AlgStart.Append(ExpandedBlocks[sp][n]);
 				Cube CubePetrus(AlgStart);
 
-				if (!IsExpandedBlockBuilt(CubePetrus) || CubePetrus.EO()) // Edges already oriented or not expanded block
+				if (!IsExpandedBlockBuilt(CubePetrus) || CubePetrus.CheckOrientation(Pgr::ALL_EDGES)) // Edges already oriented or not expanded block
 				{
 					EO[sp].push_back(Algorithm(""));
 					continue;
@@ -318,7 +323,7 @@ namespace grcube3
 				else
 				{
 					CubePetrus.ApplyAlgorithm(Solves[0]);
-					if (CubePetrus.EO()) EO[sp].push_back(Solves[0]);
+					if (CubePetrus.CheckOrientation(Pgr::ALL_EDGES)) EO[sp].push_back(Solves[0]);
 					else EO[sp].push_back(Algorithm(""));
 				}
 			}
@@ -373,7 +378,7 @@ namespace grcube3
 				AlgStart.Append(EO[sp][n]);
 				const Cube C(AlgStart);
 
-				if (C.EO() && C.IsSolved(DownLayer) && C.IsSolved(MiddleLayer))
+				if (C.CheckOrientation(Pgr::ALL_EDGES) && C.IsSolved(DownLayer) && C.IsSolved(MiddleLayer))
 				{
 					F2L[sp].push_back(Algorithm(""));
 					continue; // F2L already solved
@@ -561,6 +566,7 @@ namespace grcube3
 				F2L_Pair_1 = Pgr::F2L_R_DFR;
 				F2L_Pair_2 = Pgr::F2L_R_DBR;
 				F2L_Edge = Pcp::DR; break;
+			default: return; // Should not happend
 			}
 
 			for (uint n = 0u; n < Blocks[sp].size(); n++)
@@ -664,7 +670,7 @@ namespace grcube3
 
 				Stp AUFStep;
 
-                Cube::SolveLL(AlgZBLL[sp][n], CasesZBLL[sp][n], AUFStep, AlgSets::ZBLL, CubeZBLL);
+                Collection::SolveLL(AlgZBLL[sp][n], CasesZBLL[sp][n], AUFStep, AlgSets::ZBLL, CubeZBLL);
 
 				AlgZBLL[sp][n].Append(AUFStep);
 			}
@@ -700,7 +706,7 @@ namespace grcube3
 				Cube CubeF2L = CubeBase;
 				CubeF2L.ApplyAlgorithm(Alg);
 
-                Cube::OrientateLL(AlgOCLL[sp][n], CasesOCLL[sp][n], AlgSets::OCLL, CubeF2L);
+                Collection::OrientateLL(AlgOCLL[sp][n], CasesOCLL[sp][n], AlgSets::OCLL, CubeF2L);
 			}
 		}
 
@@ -737,7 +743,7 @@ namespace grcube3
 
 				Stp AUFStep;
 
-                Cube::SolveLL(AlgPLL[sp][n], CasesPLL[sp][n], AUFStep, AlgSets::PLL, CubeOCLL);
+                Collection::SolveLL(AlgPLL[sp][n], CasesPLL[sp][n], AUFStep, AlgSets::PLL, CubeOCLL);
 
 				AlgPLL[sp][n].Append(AUFStep);
 			}
@@ -775,7 +781,7 @@ namespace grcube3
 
                 Stp LastStep;
 
-                Cube::CornersLL(AlgCOLL[sp][n], CasesCOLL[sp][n], LastStep, AlgSets::COLL, CubeF2L);
+                Collection::CornersLL(AlgCOLL[sp][n], CasesCOLL[sp][n], LastStep, AlgSets::COLL, CubeF2L);
 
                 AlgCOLL[sp][n].Append(LastStep);
 			}
@@ -814,7 +820,7 @@ namespace grcube3
 
 				Stp AUFStep;
 
-                Cube::SolveLL(AlgEPLL[sp][n], CasesEPLL[sp][n], AUFStep, AlgSets::EPLL, CubeCOLL);
+                Collection::SolveLL(AlgEPLL[sp][n], CasesEPLL[sp][n], AUFStep, AlgSets::EPLL, CubeCOLL);
 
 				AlgEPLL[sp][n].Append(AUFStep);
 			}
@@ -1088,7 +1094,7 @@ namespace grcube3
 
 				if (IsBlockBuilt(C))
 				{
-					ReportLine += "[" + C.GetSpinText() + "|" + Algorithm::GetMetricValue(GetMetricSolve(C.GetSpin(), n));
+					ReportLine += "[" + Cube::GetSpinText(spin) + "|" + Algorithm::GetMetricValue(GetMetricSolve(spin, n));
 					if (cancellations) ReportLine += "(" + Algorithm::GetMetricValue(GetMetricCancellations(spin, n)) + ")";
 					ReportLine += " " + Algorithm::GetMetricString(Metric) +  "]: ";
 					if (!Inspections[sp][n].Empty()) ReportLine += "(" + Inspections[sp][n].ToString() + ") ";
@@ -1098,7 +1104,7 @@ namespace grcube3
 				{
 					if (debug)
 					{
-						ReportLine += "[" + C.GetSpinText() + "]: ";
+						ReportLine += "[" + Cube::GetSpinText(spin) + "]: ";
                         if (!Inspections[sp][n].Empty()) ReportLine += "(" + Inspections[sp][n].ToString() + ") ";
 						ReportLine += "Block not built in " + std::to_string(MaxDepthBlock) + " steps";
                         if (!Blocks[sp][n].Empty()) ReportLine += ": (" + Blocks[sp][n].ToString() + ")\n";
@@ -1126,7 +1132,7 @@ namespace grcube3
 
 				C.ApplyAlgorithm(EO[sp][n]);
 
-				if (IsExpandedBlockBuilt(C) && C.EO())
+				if (IsExpandedBlockBuilt(C) && C.CheckOrientation(Pgr::ALL_EDGES))
 				{
                     if (!EO[sp][n].Empty()) ReportLine += " (" + EO[sp][n].ToString() + ")";
 				}
@@ -1144,7 +1150,7 @@ namespace grcube3
 
 				if (C.IsSolved(Cube::GetDownSliceLayer(spin)) &&
 					C.IsSolved(Cube::AdjacentLayer(Cube::GetDownSliceLayer(spin))) &&
-					C.EO())
+					C.CheckOrientation(Pgr::ALL_EDGES))
 				{
                     if (!F2L[sp][n].Empty()) ReportLine += " (" + F2L[sp][n].ToString() + ")";
 				}
@@ -1261,7 +1267,7 @@ namespace grcube3
                                                       ExpandedBlocks[si][n].ToString() + "\n";
 
 		C.ApplyAlgorithm(EO[si][n]);
-		if (!IsExpandedBlockBuilt(C) || !C.EO())
+		if (!IsExpandedBlockBuilt(C) || !C.CheckOrientation(Pgr::ALL_EDGES))
 		{
 			Report += "Edges not oriented!\n";
 			return Report;
@@ -1403,8 +1409,8 @@ namespace grcube3
     std::string Petrus::GetBestReport(const bool Cancellations) const
     {
 		float M, min_M = 0.0f;
-		uint Bestn;
-		Spn BestSpin;
+		uint Bestn = 0u;
+		Spn BestSpin = Spn::Default;
 
 		for (int sp = 0; sp < 24; sp++)
 		{

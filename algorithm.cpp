@@ -1130,6 +1130,12 @@ namespace grcube3
     // Array with U slice movements
     const std::array<Stp, 4u> Algorithm::UMovs = { Stp::NONE, Stp::U, Stp::U2, Stp::Up };
 	
+	// Array with D slice movements
+    const std::array<Stp, 4u> Algorithm::DMovs = { Stp::NONE, Stp::D, Stp::D2, Stp::Dp };
+
+	// Array with E slice movements
+	const std::array<Stp, 4u> Algorithm::EMovs = { Stp::NONE, Stp::E, Stp::E2, Stp::Ep };
+	
 	// Equal operator
 	bool Algorithm::operator==(const Algorithm& rhalg) const
 	{
@@ -1772,7 +1778,7 @@ namespace grcube3
 		return s;
 	}
 	
-	// Get the same algorithm with single (default) or without parentheses (steps inside parentheses developed)
+	// Get the same algorithm with single or without parentheses (default) - steps inside parentheses developed
 	// Should be used before applying the algorithm to a cube
 	Algorithm Algorithm::GetDeveloped(const bool KeepSingleParentheses) const
 	{
@@ -2383,6 +2389,21 @@ namespace grcube3
 			SL.push_back(Stp::R2); SL.push_back(Stp::L2);
 			SL.push_back(Stp::R); SL.push_back(Stp::Rp);
 			SL.push_back(Stp::L); SL.push_back(Stp::Lp); return true;
+
+		case Sst::YRURU_urUR: // YruRU movements for pEO Extension
+			SL.push_back(Stp::U); SL.push_back(Stp::U2); SL.push_back(Stp::Up);
+			SL.push_back(Stp::R); SL.push_back(Stp::R2); SL.push_back(Stp::Rp);
+			SL.push_back(Stp::u); SL.push_back(Stp::u2); SL.push_back(Stp::up);
+			SL.push_back(Stp::r); SL.push_back(Stp::r2); SL.push_back(Stp::rp); return true;
+
+		case Sst::YRURU_rUR: // YruRU movements for EO-BF
+			SL.push_back(Stp::U); SL.push_back(Stp::U2); SL.push_back(Stp::Up);
+			SL.push_back(Stp::R); SL.push_back(Stp::R2); SL.push_back(Stp::Rp);
+			SL.push_back(Stp::r); SL.push_back(Stp::r2); SL.push_back(Stp::rp); return true;
+
+		case Sst::YRURU_UR: // YruRU movements for F2L
+			SL.push_back(Stp::U); SL.push_back(Stp::U2); SL.push_back(Stp::Up);
+			SL.push_back(Stp::R); SL.push_back(Stp::R2); SL.push_back(Stp::Rp); return true;
 
 		default: return false;
 		}

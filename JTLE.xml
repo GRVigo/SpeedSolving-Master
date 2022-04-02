@@ -1,0 +1,60 @@
+<Collection Name="JTLE" Description="John Tamanas Last Edge (orients U corners + solves DR edge)" CasesNumber="35">
+<Case Index="0">S DR<Algorithm>R U R' U R U2 R'</Algorithm></Case>
+<Case Index="1">S UF<Algorithm>(U') R U2 R2 U2 R' U R' U R</Algorithm></Case>
+<Case Index="2">S UL<Algorithm>R U R' U R' U2 R2 U2 R</Algorithm>
+<Algorithm>(U') R' U' R U R U2 R U2 R'</Algorithm></Case>
+<Case Index="3">S UB<Algorithm>(U') R' U2 R U2 R U R U' R' </Algorithm></Case>
+<Case Index="4">S UR<Algorithm>R U R2 U' R2 U R</Algorithm></Case>
+<Case Index="5">AS DR<Algorithm>(U') R' U' R U' R' U2 R</Algorithm>
+<Algorithm>R U2 R' U' R U' R'</Algorithm></Case>
+<Case Index="6">AS UF<Algorithm>(U') R' U' R2 U R2 U' R'</Algorithm></Case>
+<Case Index="7">AS UL<Algorithm>R U2 R' U2 R' U' R' U R</Algorithm></Case>
+<Case Index="8">AS UB<Algorithm>R U R' U' R' U2 R' U2 R</Algorithm></Case>
+<Case Index="9">AS UR<Algorithm>R' U2 R2 U2 R U' R U' R'</Algorithm>
+<Algorithm>(U) R' U2 D R' U R D' R U' R' U2 R</Algorithm>
+<Algorithm>R' U2 R2 U R2 U' R' U R' U R</Algorithm></Case>
+<Case Index="10">Pi DR<Algorithm>R' U2 R2 U R2 U R2 U2 R'</Algorithm>
+<Algorithm>R U2 R2 U' R2 U' R2 U2 R</Algorithm></Case>
+<Case Index="11">Pi UF<Algorithm>(U) R U R' U R' U2 R' U R' U R</Algorithm></Case>
+<Case Index="12">Pi UL<Algorithm>R' U2 R2 U R' U R U' R U' R'</Algorithm>
+<Algorithm>R' U2 R2 U R U' R' U R' U R</Algorithm>
+<Algorithm>(U2) R U R' U R D' R U' R' U' D R'</Algorithm>
+<Algorithm>(U) F R2 U' R2 U R2 U R2 F'</Algorithm></Case>
+<Case Index="13">Pi UB<Algorithm>(U) R U R' U R' U' R U R2 U2 R'</Algorithm></Case>
+<Case Index="14">Pi UR<Algorithm>R' U2 R2 U R2 U' R2 U2 R</Algorithm></Case>
+<Case Index="15">T DR<Algorithm>(U') R' U' R' D' R U R' D R2 </Algorithm>
+<Algorithm>(U) R U R D R' U' R D' R2</Algorithm>
+<Algorithm>r U R' U' r' F R F'</Algorithm></Case>
+<Case Index="16">T UF<Algorithm>(U) R' U' D R2 U' R' U R2 U D' R</Algorithm></Case>
+<Case Index="17">T UL<Algorithm>(U2) D' R' D R U' R U R' U R' D' R (D)</Algorithm>
+<Algorithm>(U2) F U R' U2 R' U R U R F'</Algorithm></Case>
+<Case Index="18">T UB<Algorithm>R U R' U2 R U D' R U' R' D R'</Algorithm>
+<Algorithm>(U') R U D' R U' R' U R U R' U' D R'</Algorithm></Case>
+<Case Index="19">T UR<Algorithm>F R U R2 U' R' F' R' U R</Algorithm></Case>
+<Case Index="20">U DR<Algorithm>R2 D R' U2 R D' R' U2 R'</Algorithm></Case>
+<Case Index="21">U UF<Algorithm>R' U2 D R' U R U D' R</Algorithm></Case>
+<Case Index="22">U UL<Algorithm>R U D' R U R' U2 D R'</Algorithm></Case>
+<Case Index="23">U UB<Algorithm>(U') R U D' R U R' U' D R' U R U2 R'</Algorithm>
+<Algorithm>(U') R' U' D R' U' R U D' R U' R' U2 R</Algorithm>
+<Algorithm>(U') R' U2 R2 U R' U R2 U' R' U R U2 R'</Algorithm></Case>
+<Case Index="24">U UR<Algorithm>(U2) R' U' D R' U' R U2 D' R</Algorithm></Case>
+<Case Index="25">L DR<Algorithm>(U2) R2 D' R U' R' D R U R </Algorithm>
+<Algorithm>R U2 R D R' U2 R D' R2</Algorithm>
+<Algorithm>F R' F' r U R U' r'</Algorithm></Case>
+<Case Index="26">L UF<Algorithm>(U') R U R2 U' R D' R U R' D R2</Algorithm>
+<Algorithm>R' D R' U' R U D' R U2 R' U R</Algorithm></Case>
+<Case Index="27">L UL<Algorithm>(U') R' U2 D R' U R U' D' R U R' U R</Algorithm>
+<Algorithm>(U2) R' U' R F R U R2 U' R' F'</Algorithm>
+<Algorithm>(U) R U R' U R U' D' R U R' U2 D R'</Algorithm></Case>
+<Case Index="28">L UB<Algorithm>(U2) R' U' R U' R' U D R' U' R U2 D' R </Algorithm>
+<Algorithm>R U2 D' R U' R' U D R' U' R U' R'</Algorithm></Case>
+<Case Index="29">L UR<Algorithm>R' U' R2 U R' D R' U' R D' R2</Algorithm></Case>
+<Case Index="30">H DR<Algorithm>(U') R U R' U R U' R' U R U2 R'</Algorithm>
+<Algorithm>R U2 R' U' R U R' U' R U' R'</Algorithm></Case>
+<Case Index="31">H UF<Algorithm>(U') F R2 U' R2 U' R2 U R2 F'</Algorithm></Case>
+<Case Index="32">H UL<Algorithm>R' U2 R U2 R U2 R U2 R'</Algorithm>
+<Algorithm>R U2 R' U2 R' U2 R' U2 R</Algorithm></Case>
+<Case Index="33">Solved DR (Skip)<Algorithm></Algorithm></Case>
+<Case Index="34">Solved UF<Algorithm>(U) S R2' S' R2</Algorithm></Case>
+
+</Collection>
