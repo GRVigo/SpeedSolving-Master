@@ -1,0 +1,65 @@
+<Collection Name="EPLL" Description="Algorithms collection" CasesNumber="5">
+    <Case Index="0">Skip<Algorithm></Algorithm>
+    </Case>
+    <Case Index="1">H Permutation<Algorithm>M2 U M2 U2 M2 U M2</Algorithm>
+        <Algorithm>M2 U' M2 U2 M2 U' M2</Algorithm>
+        <Algorithm>R2 S2 R2 U' R2 S2 R2</Algorithm>
+        <Algorithm>R2 U2 R' U2 R2 U2 R2 U2 R' U2 R2</Algorithm>
+        <Algorithm>M2 U2 M2 U' M2 U2 M2</Algorithm>
+        <Algorithm>M2 U2 M2 U M2 U2 M2</Algorithm>
+        <Algorithm>R2 U2 R U2 R2 U2 R2 U2 R U2 R2</Algorithm>
+        <Algorithm>L2 U2 L' U2 L2 U2 L2 U2 L' U2 L2</Algorithm>
+        <Algorithm>L R U2 L' R' F' B' U2 F B</Algorithm>
+        <Algorithm>L R U2 L' R' (y) L' R' U2 L R</Algorithm>
+        <Algorithm>S R U2 R2 U2 R2 U2 R S'</Algorithm>
+        <Algorithm>F2 M2 F2 U' F2 M2 F2</Algorithm>
+        <Algorithm>M2 u M2 u2 M2 u M2</Algorithm>
+        <Algorithm>M2 u' M2 u2 M2 u' M2</Algorithm>
+        <Algorithm>M2 U M2 U M2 U M2 U M2 U M2</Algorithm>
+    </Case>
+    <Case Index="2">U1 Permutation<Algorithm>M2 U M' U2 M U M2</Algorithm>
+        <Algorithm>(y2) M2 U M U2 M' U M2</Algorithm>
+        <Algorithm>(y2) R U' R U R U R U' R' U' R2</Algorithm>
+        <Algorithm>(y) R2 U' S' U2 S U' R2</Algorithm>
+        <Algorithm>(y) R2 U' R2 S R2 S' U R2</Algorithm>
+        <Algorithm>R2 U' R' U' R U R U R U' R</Algorithm>
+        <Algorithm>R U R' U R' U' R2 U' R' U R' U R</Algorithm>
+        <Algorithm>(y') M2 u' M u2 M u' M2</Algorithm>
+        <Algorithm>(y) M2 u' M' u2 M' u' M2</Algorithm>
+        <Algorithm>(y2) F2 U' (L R') F2 (L' R) U' F2</Algorithm>
+        <Algorithm>(y2) F2 U' M' U2 M U' F2</Algorithm>
+        <Algorithm>R U R' U' L' U' L U2 R U' R' U' L' U L</Algorithm>
+    </Case>
+    <Case Index="3">U2 Permutation<Algorithm>M2 U' M' U2 M U' M2</Algorithm>
+        <Algorithm>(y2) M2 U' M U2 M' U' M2</Algorithm>
+        <Algorithm>(y2) R2 U R U R' U' R' U' R' U R'</Algorithm>
+        <Algorithm>(y) R2 U' S R2 S' R2 U R2</Algorithm>
+        <Algorithm>R' U R' U' R' U' R' U R U R2</Algorithm>
+        <Algorithm>(y2) L' U L' U' L' U' L' U L U L2</Algorithm>
+        <Algorithm>(y') M2 u M' u2 M' u M2</Algorithm>
+        <Algorithm>(y2) R' U' R U' R U R2 U R U' R U' R'</Algorithm>
+        <Algorithm>(y2) L' U' L U R U R' U2 L' U L U R U' R'</Algorithm>
+        <Algorithm>(z) U2 R U R U' R' U' R' U' R U' (z')</Algorithm>
+        <Algorithm>(y2 z) U' R U' R' U' R' U' R U R U2 (z')</Algorithm>
+        <Algorithm>(y2) F2 U M' U2 M U F2</Algorithm>
+    </Case>
+    <Case Index="4">Z Permutation<Algorithm>(y) M2 U2 M U M2 U M2 U M</Algorithm>
+        <Algorithm>M2 U2 M U' M2 U' M2 U' M</Algorithm>
+        <Algorithm>M2 U M2 U M' U2 M2 U2 M'</Algorithm>
+        <Algorithm>M2 u M2 u' S M2 S'</Algorithm>
+        <Algorithm>M' U' M2 U' M2 U' M' U2 M2</Algorithm>
+        <Algorithm>(y) M' U M2 U M2 U M' U2 M2</Algorithm>
+        <Algorithm>M2 U' M U2 M2 U2 M U M2</Algorithm>
+        <Algorithm>R' U' R2 U R U R' U' R U R U' R U' R'</Algorithm>
+        <Algorithm>R U R' U R' U' R' U R U' R' U' R2 U R</Algorithm>
+        <Algorithm>M2 U2 M' U' M2 U' M2 U' M'</Algorithm>
+        <Algorithm>(y) M2 U2 M' U M2 U M2 U M'</Algorithm>
+        <Algorithm>M' U2 M2 U2 M' U' M2 U' M2</Algorithm>
+        <Algorithm>M2 U M2 U' E2 M' E2 M'</Algorithm>
+        <Algorithm>(y) M2 U' M2 U E2 M' E2 M'</Algorithm>
+        <Algorithm>M2 U M' E2 M' E2 U' M2</Algorithm>
+        <Algorithm>(y) R' U' R U' R U R U' R' U R U R2 U' R'</Algorithm>
+        <Algorithm>M2 U M2 U' M E2 M D2</Algorithm>
+        <Algorithm>E2 M' E2 M' U M2 U' M2</Algorithm>
+    </Case>
+</Collection>

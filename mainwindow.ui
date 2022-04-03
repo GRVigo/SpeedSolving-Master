@@ -66,6 +66,18 @@
           <height>100</height>
          </size>
         </property>
+        <property name="font">
+         <font>
+          <family>Rubik</family>
+          <pointsize>36</pointsize>
+          <weight>9</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
         <property name="styleSheet">
          <string notr="true">font: 75 36pt &quot;Rubik&quot;;</string>
         </property>
@@ -254,10 +266,16 @@
 border-color: rgb(0, 0, 0);</string>
         </property>
         <property name="frameShape">
-         <enum>QFrame::Box</enum>
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
         </property>
         <property name="lineWidth">
          <number>1</number>
+        </property>
+        <property name="midLineWidth">
+         <number>0</number>
         </property>
         <property name="text">
          <string>No evaluation</string>

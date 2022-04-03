@@ -1,0 +1,116 @@
+<Collection Name="OCLL" Description="Algorithms collection" CasesNumber="8">
+    <Case Index="0">Skip<Algorithm></Algorithm>
+    </Case>
+    <Case Index="1">Sune<Algorithm>R U R' U R U2 R'</Algorithm>
+		<Algorithm>(U L U' R') (U L' U' R)</Algorithm>
+        <Algorithm>y' R' U2 R U R' U R</Algorithm>
+        <Algorithm>y L' U2 L U L' U L</Algorithm>
+        <Algorithm>y2 L U L' U L U2 L'</Algorithm>
+        <Algorithm>R U' L' U R' U' L</Algorithm>
+        <Algorithm>U2 r2 U R' U' L' U R U' r' (x')</Algorithm>
+        <Algorithm>y' U R U' L' U R' U' L</Algorithm>
+    </Case>
+    <Case Index="2">Antisune<Algorithm>R' U L U' R U L'</Algorithm>
+        <Algorithm>y2 R' U' R U' R' U2 R</Algorithm>
+        <Algorithm>y' R U2 R' U' R U' R'</Algorithm>
+        <Algorithm>y L U2 L' U' L U' L'</Algorithm>
+        <Algorithm>L' U' L U' L' U2 L</Algorithm>
+        <Algorithm>L' U R U' L U R'</Algorithm>
+        <Algorithm>y' L' U R U' L U R'</Algorithm>
+        <Algorithm>y' R U2 R' U2 R' F R2 U' R' U' R U R' F'</Algorithm>
+    </Case>
+    <Case Index="3">H<Algorithm>R U R' U R U' R' U R U2 R'</Algorithm>
+        <Algorithm>y R U2 R' U' R U R' U' R U' R'</Algorithm>
+        <Algorithm>y R' U2 R U R' U' R U R' U R</Algorithm>
+        <Algorithm>y F (R U R' U')3 F'</Algorithm>
+        <Algorithm>y F (U R U' R')3 F'</Algorithm>
+        <Algorithm>y F' (L' U' L U)3 F</Algorithm>
+        <Algorithm>R' U' R U' R' U R U' R' U2 R</Algorithm>
+        <Algorithm>L U L' U L U' L' U L U2 L'</Algorithm>
+        <Algorithm>y L' U2 L U L' U' L U L' U L</Algorithm>
+        <Algorithm>y (R' U R U) (R' U R U') (R' U R U') R' U' R U2 R' U R</Algorithm>
+        <Algorithm>L' U2 M' (y) R U2 R U2 R' U2 (y') l</Algorithm>
+    </Case>
+    <Case Index="4">Pi<Algorithm>R U2 R2 U' R2 U' R2 U2 R</Algorithm>
+        <Algorithm>f (R U R' U') f' F (R U R' U') F'</Algorithm>
+        <Algorithm>y2 f' (L' U' L U) f F' (L' U' L U) F</Algorithm>
+        <Algorithm>y2 L' U2 L2 U L2 U L2 U2 L'</Algorithm>
+        <Algorithm>R U2 R2 U' R' U R U' R U' R' y M' U2 M</Algorithm>
+        <Algorithm>R' U L U' R U' L' U' L U' L'</Algorithm>
+        <Algorithm>y2 L U' R' U L' U R U R' U R</Algorithm>
+        <Algorithm>y2 L' U R U' L U' R' U' R U' R'</Algorithm>
+        <Algorithm>R U' L' U R' U L U L' U L</Algorithm>
+        <Algorithm>R U R' U R U2 R' y' R U R' U R U2 R'</Algorithm>
+        <Algorithm>R U R' U' R' F R2 U R' U' R U R' U' F'</Algorithm>
+        <Algorithm>(R' U L U' R U L') U2 (R' U L U' R U L')</Algorithm>
+    </Case>
+    <Case Index="5">U<Algorithm>R2 D' R U2 R' D R U2 R</Algorithm>
+        <Algorithm>R' U2 R F U' R' U' R U F'</Algorithm>
+        <Algorithm>F R U' R' U R U R' U R U' R' F'</Algorithm>
+        <Algorithm>(y') R U R' U' (R U' R' U2) (R U' R' U2) R U R'</Algorithm>
+        <Algorithm>(R' U' R U') R' U2 R2 U (R' U R U2 R')</Algorithm>
+        <Algorithm>R' U L' U R U' L U2 R' U R</Algorithm>
+        <Algorithm>(y2) F (R U R' U') (R' F R F2) (L' U2 L)</Algorithm>
+        <Algorithm>L2 D L' U2 L D' L' U2 L'</Algorithm>
+        <Algorithm>l2 U' R D2 R' U R D2 R</Algorithm>
+        <Algorithm>l2 U' z' U R2 U' L U R2 z' L</Algorithm>
+        <Algorithm>(y2) R' F2 R U2 R U2 R' F2 R U2 R'</Algorithm>
+        <Algorithm>(y2) R2 D R' U2 R D' R' U2 R'</Algorithm>
+        <Algorithm>R2 B2 R F2 R' B2 R F2 R</Algorithm>
+        <Algorithm>(y2) R d' R' U R d R' (y) R' U2 R</Algorithm>
+        <Algorithm>(x) R' B2 (R U' R' U) B2 (U' R U)</Algorithm>
+        <Algorithm>(y2) R U R' U R U2 R2 U' R U' R' U2 R</Algorithm>
+        <Algorithm>(R U R' U')3 (R' F R F')3</Algorithm>
+        <Algorithm>(R' F) (R U' R' U' R U R' F') (R U R' U') (R' F R F') R</Algorithm>
+    </Case>
+    <Case Index="6">T<Algorithm>L F R' F' L' F R F'</Algorithm>
+        <Algorithm>r U R' U' L' U R U' x'</Algorithm>
+        <Algorithm>r U R' U' r' F R F'</Algorithm>
+        <Algorithm>r U R' U' r' x U R U'</Algorithm>
+        <Algorithm>(y' x') R U R' D R U' R' D'</Algorithm>
+        <Algorithm>(y') F R U R' U' R U' R' U' R U R' F'</Algorithm>
+        <Algorithm>R U R2 U' R2 U' R2 U2 R U' R U' R'</Algorithm>
+        <Algorithm>(y') R U' R' (U2 R U R') (U2 R U R') (U R U' R')</Algorithm>
+        <Algorithm>(y x) D' R' U R D R' U' R x'</Algorithm>
+        <Algorithm>(y x) D L U' L' D' L U L' x'</Algorithm>
+        <Algorithm>(y x') U' R' D R U R' D' R x</Algorithm>
+        <Algorithm>(y2) R' F' L F R F' L' F</Algorithm>
+        <Algorithm>(y2) R' F' r U R U' r' F</Algorithm>
+        <Algorithm>(y2) l' U' L U R U' r' F</Algorithm>
+        <Algorithm>(y') l U l' F R B' R' F'</Algorithm>
+        <Algorithm>R U' R' F R U R' U' R' F' R2 U' R' U2 R U' R'</Algorithm>
+        <Algorithm>(y) R U R D R' U' R D' R2</Algorithm>
+        <Algorithm>(y') R' U' R' D' R U R' D R2</Algorithm>
+        <Algorithm>(R' F R F')3 (R U R' U')3</Algorithm>
+    </Case>
+    <Case Index="7">L<Algorithm>R' F' L' F R F' L F</Algorithm>
+		<Algorithm>R U2 R' U' (R U R' U') (R U R' U') R U' R'</Algorithm>
+        <Algorithm>R U R' U (R U' R' U) (R U' R' U) R U2 R'</Algorithm>
+        <Algorithm>y2 R' F R B' R' F' R B</Algorithm>
+        <Algorithm>y2 F R' F' L F R F' L'</Algorithm>
+        <Algorithm>y F' L F R' F' L' F R</Algorithm>
+        <Algorithm>y' F' r U R' U' r' F R</Algorithm>
+        <Algorithm>y' x U R' U' L U R U' r'</Algorithm>
+        <Algorithm>y R' U' (R U R' F') (R U R' U') (R' F R2)</Algorithm>
+        <Algorithm>y2 R U2 R D R' U2 R D' R2</Algorithm>
+        <Algorithm>y2 F R' F' r U R U' r'</Algorithm>
+        <Algorithm>y2 l' U R D' R' U' R D x'</Algorithm>
+        <Algorithm>x' D R U R' D' R U' l'</Algorithm>
+        <Algorithm>x' U L' U' R U L U' l'</Algorithm>
+        <Algorithm>x' R' D R U' R' D' R U x</Algorithm>
+        <Algorithm>x R' U R D' R' U' R D x'</Algorithm>
+        <Algorithm>y2 x L U' L' D L U L' D' x'</Algorithm>
+        <Algorithm>l' U' L' U R U' L U x'</Algorithm>
+        <Algorithm>U r U R U' L' U R' U' x'</Algorithm>
+        <Algorithm>y2 L' R U R' U' L U R U' R'</Algorithm>
+        <Algorithm>F R B R' F' l U' l'</Algorithm>
+        <Algorithm>U R U2 R' L' U' L U' R U' R' L' U2 L</Algorithm>
+        <Algorithm>F R U' R' U' R U2 R' U' F'</Algorithm>
+        <Algorithm>y R U R' U' R' F R U R U' R' F'</Algorithm>
+        <Algorithm>y' R U (R U R' U') (R' F) (R2 U') (R' U' R U) (R' F') U' R'</Algorithm>
+        <Algorithm>x U R' U' r x' U R U' r'</Algorithm>
+        <Algorithm>y' R2 D R' U R D' R' U' R'</Algorithm>
+        <Algorithm>R2 D' R U' R' D R U R</Algorithm>
+        <Algorithm>(y') R2 D R' U R D' R' U' R'</Algorithm>
+    </Case>
+</Collection>

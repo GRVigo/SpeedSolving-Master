@@ -201,7 +201,7 @@ namespace grcube3
 		}
         else // Without multithreading (for debugging, slower)
 		{
-			for (int n = 0; n < Roots.size(); n++) RunEvaluation(Roots[n], RootFlags[n]);
+            for (uint n = 0; n < Roots.size(); n++) RunEvaluation(Roots[n], RootFlags[n]);
 			UsedCores = -1;
 		}
 	}

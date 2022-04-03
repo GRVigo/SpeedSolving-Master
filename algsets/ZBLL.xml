@@ -1,0 +1,990 @@
+<Collection Name="ZBLL" Description="ZBLL algorithms collection" CasesNumber="494">
+    <Case Index="0">T 72<Algorithm>R U R' U R U2 R' U2 R' U' R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="1">T 71<Algorithm>R U2 R2 U' R2 U' R2 U2 R U2 R U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="2">T 70<Algorithm>R' U2 R U R' U R2 U2 R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="3">T 69<Algorithm>R U2 R' U' R U' R2 U2 R U R' U R</Algorithm>
+    </Case>
+    <Case Index="4">T 62<Algorithm>R' U R U2 R' U' R U2 R' U' R U' R' U R</Algorithm>
+    </Case>
+    <Case Index="5">T 61<Algorithm>R' U' R U' R' U2 R U R' U2 R U R' U R</Algorithm>
+    </Case>
+    <Case Index="6">T 65<Algorithm>R' U R2 U R' U R' U' R U' R' U' R U R U' R'</Algorithm>
+    </Case>
+    <Case Index="7">T 63<Algorithm>R U R' U R U' R' U R' U' R2 U' R2 U2 R</Algorithm>
+    </Case>
+    <Case Index="8">T 66<Algorithm>R' U2 R U R' U R U' R' U' R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="9">T 64<Algorithm>R U2 R' U' R U' R' U R U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="10">T 67<Algorithm>R' U' R2 U R2 U R2 U2 R' U R' U R</Algorithm>
+    </Case>
+    <Case Index="11">T 68<Algorithm>R U R2 U' R2 U' R2 U2 R U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="12">T 60<Algorithm>R U R' U R U R2 D' r U2 r' D R2 U R'</Algorithm>
+    </Case>
+    <Case Index="13">T 51<Algorithm>R' U' R U' R' U' R2 D r' U2 r D' R2 U' R</Algorithm>
+    </Case>
+    <Case Index="14">T 55<Algorithm>R U' R2 D' r U2 r' D R2 U R'</Algorithm>
+    </Case>
+    <Case Index="15">T 56<Algorithm>R' U R2 D r' U2 r D' R2 U' R</Algorithm>
+    </Case>
+    <Case Index="16">T 57<Algorithm>R' U' R U2 R D R' U' R D' R2 U R U' R' U R</Algorithm>
+    </Case>
+    <Case Index="17">T 52<Algorithm>R U R' U2 R' D' R U R' D R2 U' R' U R U' R'</Algorithm>
+    </Case>
+    <Case Index="18">T 49<Algorithm>R' U' R U R2 D' R U2 R' D R2 U2 R' U2 R</Algorithm>
+    </Case>
+    <Case Index="19">T 59<Algorithm>R2 U' R U F' U2 R' U2 R F U' R</Algorithm>
+    </Case>
+    <Case Index="20">T 58<Algorithm>R U' R' U2 R D' R U R' U2 R U R' D R'</Algorithm>
+    </Case>
+    <Case Index="21">T 50<Algorithm>F U' R2 U R' U R U2 R2 U' R U2 R' F'</Algorithm>
+    </Case>
+    <Case Index="22">T 53<Algorithm>R U R D R' U R D' R' U L' U R' U' L</Algorithm>
+    </Case>
+    <Case Index="23">T 54<Algorithm>r U r' R U R' U' R U R' U' r U' r' F R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="24">T 25<Algorithm>R' U R U2 L' R' U R U' L</Algorithm>
+    </Case>
+    <Case Index="25">T 27<Algorithm>R U' R' U2 L R U' R' U L'</Algorithm>
+    </Case>
+    <Case Index="26">T 32<Algorithm>R' U' R2 U R' F' R U R' U' R' F R2 U' R' U' R' U R</Algorithm>
+    </Case>
+    <Case Index="27">T 31<Algorithm>r U' r U2 R' F R U2 r2 F</Algorithm>
+    </Case>
+    <Case Index="28">T 28<Algorithm>R' F' U F U R U R2 F R F' R</Algorithm>
+    </Case>
+    <Case Index="29">T 26<Algorithm>R U R2 F R F' R U' R' F' U F</Algorithm>
+    </Case>
+    <Case Index="30">T 36<Algorithm>L' U2 R U2 R' U2 L U R U R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="31">T 35<Algorithm>F U R U2 R' U R U R' F' R' U2 R U R' U R</Algorithm>
+    </Case>
+    <Case Index="32">T 33<Algorithm>R' U' R U' R' U R F U' R' U2 R U F'</Algorithm>
+    </Case>
+    <Case Index="33">T 34<Algorithm>R U R' U R U' R' U' L' U2 R U2 R' U2 L</Algorithm>
+    </Case>
+    <Case Index="34">T 30<Algorithm>R' U2 R U R' U R F U R U2 R' U R U R' F'</Algorithm>
+    </Case>
+    <Case Index="35">T 29<Algorithm>r' U' l' U2 R U' R' U2 l R U' R' U2 r</Algorithm>
+    </Case>
+    <Case Index="36">T 41<Algorithm>l' U2 R' D2 R U2 R' D2 R2 x'</Algorithm>
+    </Case>
+    <Case Index="37">T 42<Algorithm>R' U2 R U' R' F R U R' U' R' F' R U' R</Algorithm>
+    </Case>
+    <Case Index="38">T 38<Algorithm>R' U2 R' D' R U2 R' D R' U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="39">T 40<Algorithm>R U2 R D R' U2 R D' R U' R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="40">T 46<Algorithm>R U R' U R U2 R' U r U R' U' r' F R F'</Algorithm>
+    </Case>
+    <Case Index="41">T 45<Algorithm>R' U' F' U F R U' R' F R U R' U' F' U R</Algorithm>
+    </Case>
+    <Case Index="42">T 47<Algorithm>r U R' U' r' F R F' R' U2 R U R' U R</Algorithm>
+    </Case>
+    <Case Index="43">T 48<Algorithm>R U' R2 D' R U' R' D R U' R U R' U R U R'</Algorithm>
+    </Case>
+    <Case Index="44">T 39<Algorithm>R' U' R U' F U' R' U R U F' R' U R</Algorithm>
+    </Case>
+    <Case Index="45">T 37<Algorithm>R' D' R U R' D R2 U R' U2 R U' R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="46">T 43<Algorithm>F R U R' U' R U' R' U' R U R' F'</Algorithm>
+    </Case>
+    <Case Index="47">T 44<Algorithm>r U2 R2 F R F' U2 r' F R U R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="48">T 17<Algorithm>r U R' U' r' F R F'</Algorithm>
+    </Case>
+    <Case Index="49">T 21<Algorithm>R U2 R' U2 R' F R U R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="50">T 13<Algorithm>R U R D R' U R r' U2 r D' R2</Algorithm>
+    </Case>
+    <Case Index="51">T 14<Algorithm>R' D' R U R' D R2 U' R' U R U R' U' R U R'</Algorithm>
+    </Case>
+    <Case Index="52">T 22<Algorithm>F' U' r' F2 r U' r' F' r F</Algorithm>
+    </Case>
+    <Case Index="53">T 20<Algorithm>R U R' U' R U' R' L U' R U R' L'</Algorithm>
+    </Case>
+    <Case Index="54">T 15<Algorithm>R U R' U R U R' U2 L R U' R' U L'</Algorithm>
+    </Case>
+    <Case Index="55">T 18<Algorithm>R' U' R U' R2 F' R U R U' R' F U R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="56">T 24<Algorithm>R U' R' U R' D' r U2 r' D R U R U R'</Algorithm>
+    </Case>
+    <Case Index="57">T 19<Algorithm>r U' r' U' r F R U' R' F' r' U F</Algorithm>
+    </Case>
+    <Case Index="58">T 16<Algorithm>F R U R' U' R' F' U2 R U R U' R2 U2 R</Algorithm>
+    </Case>
+    <Case Index="59">T 23<Algorithm>R U' R' U2 M' F' U2 F M</Algorithm>
+    </Case>
+    <Case Index="60">T 6<Algorithm>l' U' L U l F' L' F</Algorithm>
+    </Case>
+    <Case Index="61">T 10<Algorithm>R U R' U' R' F' R U2 R U2 R' F</Algorithm>
+    </Case>
+    <Case Index="62">T 3<Algorithm>R2 F2 R U2 R U2 R' F2 R U' R' U R</Algorithm>
+    </Case>
+    <Case Index="63">T 4<Algorithm>R D R' U' R D' R2 U R U' R' U' R U R' U' R</Algorithm>
+    </Case>
+    <Case Index="64">T 9<Algorithm>F U R U2 R' U R U R' F'</Algorithm>
+    </Case>
+    <Case Index="65">T 8<Algorithm>R U R' U' R U' R' U' F R U R' U' R' F' R</Algorithm>
+    </Case>
+    <Case Index="66">T 1<Algorithm>R' U' R U' R' U' R U2 L' R' U R U' L</Algorithm>
+    </Case>
+    <Case Index="67">T 5<Algorithm>F R U R' U' R U R' U' F' R U R' U' R' F R F'</Algorithm>
+    </Case>
+    <Case Index="68">T 11<Algorithm>F U R' U' R F' R' U' R U R' U R</Algorithm>
+    </Case>
+    <Case Index="69">T 7<Algorithm>R' U2 R F U' R' U R U F' R' U R</Algorithm>
+    </Case>
+    <Case Index="70">T 2<Algorithm>R' U2 R2 U R' U' R' U2 F' R U2 R U2 R' F</Algorithm>
+    </Case>
+    <Case Index="71">T 12<Algorithm>R' U R U R' U' R' D' R U2 R' D R U R</Algorithm>
+    </Case>
+    <Case Index="72">U 72<Algorithm>R U2 R' U' R U' R' U2 R' U2 R U R' U R</Algorithm>
+    </Case>
+    <Case Index="73">U 71<Algorithm>R U R' U' R U' R U2 R2 U' R U R' U' R2 U' R2</Algorithm>
+    </Case>
+    <Case Index="74">U 69<Algorithm>R' U' R U' R' U2 R2 U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="75">U 70<Algorithm>R U R' U R U2 R2 U' R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="76">U 62<Algorithm>R U R' U' R U' R' U2 R U' R' U2 R U R'</Algorithm>
+    </Case>
+    <Case Index="77">U 61<Algorithm>R' U' R U R' U R U2 R' U R U2 R' U' R</Algorithm>
+    </Case>
+    <Case Index="78">U 66<Algorithm>R U2 R2 U' R2 U' R' U R' U' R U R' U R</Algorithm>
+    </Case>
+    <Case Index="79">U 64<Algorithm>R' U2 R2 U R2 U R U' R U R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="80">U 65<Algorithm>R' U2 R U R' U R U R' U' R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="81">U 63<Algorithm>R U2 R' U' R U' R' U' R U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="82">U 68<Algorithm>R' U' R U' R U R' U R U2 R' U2 R' U2 R</Algorithm>
+    </Case>
+    <Case Index="83">U 67<Algorithm>R U R' U R' U' R U' R' U2 R U2 R U2 R'</Algorithm>
+    </Case>
+    <Case Index="84">U 60<Algorithm>R' U' R U' F U' R' U R U R' U R U' F'</Algorithm>
+    </Case>
+    <Case Index="85">U 51<Algorithm>R U R' U L' U R U' M' x' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="86">U 55<Algorithm>F R U R' U' R U R' U' F' U2 F R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="87">U 56<Algorithm>R' U2 R F U' R' U R U R' U R U' F'</Algorithm>
+    </Case>
+    <Case Index="88">U 57<Algorithm>R2 D R' U' R D' R' U' R' U R U R'</Algorithm>
+    </Case>
+    <Case Index="89">U 52<Algorithm>R' U2 R F U' R' U' R U F'</Algorithm>
+    </Case>
+    <Case Index="90">U 49<Algorithm>R U' R' U' R U R D R' U R D' R2</Algorithm>
+    </Case>
+    <Case Index="91">U 59<Algorithm>F U' R' U R U F' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="92">U 58<Algorithm>M' U R' U' F' U F R2 U R' U R U2 r'</Algorithm>
+    </Case>
+    <Case Index="93">U 50<Algorithm>F R U R' U' R U R' U' F' U' R' F' U' F U R</Algorithm>
+    </Case>
+    <Case Index="94">U 53<Algorithm>F R U' R' U' R U2 R' U' R U' R' U' R U2 R' U' F'</Algorithm>
+    </Case>
+    <Case Index="95">U 54<Algorithm>r' U' R' F R U r F R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="96">U 25<Algorithm>R' F R U' R' U' R U R' F' R U R' U' R' F R F' R</Algorithm>
+    </Case>
+    <Case Index="97">U 27<Algorithm>F2 R U' R' U' R U R' F' R U R' U' R' F R F2</Algorithm>
+    </Case>
+    <Case Index="98">U 32<Algorithm>R U' R' U R U' L U r' F U2 R U2 R2 x</Algorithm>
+    </Case>
+    <Case Index="99">U 31<Algorithm>R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="100">U 28<Algorithm>R U' L U L' U R' U' l U2 R U2 R2 x</Algorithm>
+    </Case>
+    <Case Index="101">U 26<Algorithm>R' U L' U' L U' R U l' U2 R' U2 R2 x'</Algorithm>
+    </Case>
+    <Case Index="102">U 36<Algorithm>F R U R U2 R' U' R U' R' U2 R' U2 R U' R' U' F'</Algorithm>
+    </Case>
+    <Case Index="103">U 35<Algorithm>r U R' U' r' F R2 U' R' U' R U2 R' U' F'</Algorithm>
+    </Case>
+    <Case Index="104">U 33<Algorithm>R U R' U R U' R2 F R F' R U' R' U' F' U2 F</Algorithm>
+    </Case>
+    <Case Index="105">U 34<Algorithm>R U2 R' U2 R' F R U R U2 R' U' R U2 R' U' F'</Algorithm>
+    </Case>
+    <Case Index="106">U 30<Algorithm>R' U' R F R2 D' R U R' D R2 U' F'</Algorithm>
+    </Case>
+    <Case Index="107">U 29<Algorithm>r U R' U' r' F R U R' U' R F' R' U R</Algorithm>
+    </Case>
+    <Case Index="108">U 41<Algorithm>x R2 U2 R' D2 R U2 R' D2 R' x'</Algorithm>
+    </Case>
+    <Case Index="109">U 42<Algorithm>F' R U2 R' U2 R' F R U2 R U2 R'</Algorithm>
+    </Case>
+    <Case Index="110">U 38<Algorithm>R U R' U R U' R' U2 R' D' R U2 R' D R2 U' R'</Algorithm>
+    </Case>
+    <Case Index="111">U 40<Algorithm>R' U2 R U R' U R' D R' U2 R D' R' U2 R'</Algorithm>
+    </Case>
+    <Case Index="112">U 46<Algorithm>R U' R' U' R U' R' U R' D' R U R' D R2 U R'</Algorithm>
+    </Case>
+    <Case Index="113">U 45<Algorithm>R' U R U R' U R U' R D R' U' R D' R2 U' R</Algorithm>
+    </Case>
+    <Case Index="114">U 47<Algorithm>R' U2 R U R' U R' D' R U' R' D R U R</Algorithm>
+    </Case>
+    <Case Index="115">U 48<Algorithm>R U' R' U' R U2 R' U2 R' D' R U' R' D R</Algorithm>
+    </Case>
+    <Case Index="116">U 39<Algorithm>R' U' R U2 R' F' R U R' U' R' F R2 U2 R' U R</Algorithm>
+    </Case>
+    <Case Index="117">U 37<Algorithm>R U R' U R U R' U2 R U' R2 D' R U' R' D R</Algorithm>
+    </Case>
+    <Case Index="118">U 43<Algorithm>F R U' R' U R U R' U R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="119">U 44<Algorithm>F' R U R' U' R' F R2 U R' U2 R U R' U2 R U' R'</Algorithm>
+    </Case>
+    <Case Index="120">U 13<Algorithm>R2 D' r U2 r' D R U2 R</Algorithm>
+    </Case>
+    <Case Index="121">U 17<Algorithm>R2 D' R U2 R' D R U2 R</Algorithm>
+    </Case>
+    <Case Index="122">U 20<Algorithm>R U' R' D R' U' R D' R2 U R' U' R' U2 R'</Algorithm>
+    </Case>
+    <Case Index="123">U 15<Algorithm>R U R' U R U2 R' U2 r' F R F' r U R'</Algorithm>
+    </Case>
+    <Case Index="124">U 14<Algorithm>R2 D' R U' R' D R2 U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="125">U 19<Algorithm>R' U R U R' U2 R U2 y R U' R' U2 R U' R'</Algorithm>
+    </Case>
+    <Case Index="126">U 21<Algorithm>R' U2 R U' R' U' R2 D r' U2 r D' R2 U R</Algorithm>
+    </Case>
+    <Case Index="127">U 22<Algorithm>F' r U2 R' U' R U' r' F R U R' U R U' R'</Algorithm>
+    </Case>
+    <Case Index="128">U 18<Algorithm>F U R U2 R' U R U2 R2 F R F' R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="129">U 24<Algorithm>R' U' R U' R' U R U' R' U R F R' U R U' F'</Algorithm>
+    </Case>
+    <Case Index="130">U 16<Algorithm>L' U R U' L U R' U2 R U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="131">U 23<Algorithm>R' U R U' R' U' R U2 R D R' U' R D' R2 U' R</Algorithm>
+    </Case>
+    <Case Index="132">U 3<Algorithm>R2 D r' U2 r D' R' U2 R'</Algorithm>
+    </Case>
+    <Case Index="133">U 6<Algorithm>R2 D R' U2 R D' R' U2 R'</Algorithm>
+    </Case>
+    <Case Index="134">U 8<Algorithm>R' U' R U R U R' U' R' U F R U R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="135">U 1<Algorithm>R U' R' U' R U2 R' U' R' D' R U2 R' D R</Algorithm>
+    </Case>
+    <Case Index="136">U 4<Algorithm>R U R2 D' R U R' D R2 U2 R'</Algorithm>
+    </Case>
+    <Case Index="137">U 7<Algorithm>R U' R' U' R U2 R' U2 y' R' U R U2 R' U R</Algorithm>
+    </Case>
+    <Case Index="138">U 10<Algorithm>R' U R' U' D' R U' R' U2 R U' R' D R U' R</Algorithm>
+    </Case>
+    <Case Index="139">U 9<Algorithm>R U R' U R U' R' U F' R U2 R' U2 R' F R</Algorithm>
+    </Case>
+    <Case Index="140">U 5<Algorithm>R U2 R2 D' R U2 R' D R2 U' R' U2 R U2 R'</Algorithm>
+    </Case>
+    <Case Index="141">U 11<Algorithm>R U R' U R U' R' U R U' R' U' L' U R U' R' L</Algorithm>
+    </Case>
+    <Case Index="142">U 2<Algorithm>R U2 R D R' U2 R D' R' U2 R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="143">U 12<Algorithm>R U' R' U R U R' U2 R' D' R U R' D R2 U R'</Algorithm>
+    </Case>
+    <Case Index="144">L 72<Algorithm>R U2 R' U2 R' U' R U R U' R' U2 R' U2 R</Algorithm>
+    </Case>
+    <Case Index="145">L 71<Algorithm>R U R' U R U' R' U R U' R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="146">L 69<Algorithm>R U2 R' U' R U' R' U2 R U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="147">L 70<Algorithm>R U R' U R U2 R' U2 R U2 R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="148">L 61<Algorithm>R U R' U R U2 R' U R' U2 R U R' U' R U R' U R</Algorithm>
+    </Case>
+    <Case Index="149">L 66<Algorithm>R U R' U R U' R' U R U2 R' R' U' R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="150">L 65<Algorithm>R' U2 R U R' U R U' R U2 R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="151">L 62<Algorithm>R U2 R' U' R U' R' U R' U2 R U R' U R</Algorithm>
+    </Case>
+    <Case Index="152">L 68<Algorithm>R2 U R' U' R' U R U R' U R U' R U' R2</Algorithm>
+    </Case>
+    <Case Index="153">L 64<Algorithm>R2 U' R U R U' R' U' R U' R' U R' U R2</Algorithm>
+    </Case>
+    <Case Index="154">L 63<Algorithm>R U R' U R U2 R' U R' U' R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="155">L 67<Algorithm>R' U' R U' R' U2 R U' R U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="156">L 60<Algorithm>r U R' U R U2 r' U R U2 R2 F R F' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="157">L 58<Algorithm>F R U R2 F R F' R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="158">L 59<Algorithm>L' U2 R U' R' U2 L R U' R'</Algorithm>
+    </Case>
+    <Case Index="159">L 57<Algorithm>R' U' R U R' F' R U R' U' R' F R2</Algorithm>
+    </Case>
+    <Case Index="160">L 55<Algorithm>F R U R' U' R' F R2 U' R' U' R U R' F2</Algorithm>
+    </Case>
+    <Case Index="161">L 56<Algorithm>R' U' R U R' U' R' F R2 U' R' U' R U R' F' U R</Algorithm>
+    </Case>
+    <Case Index="162">L 52<Algorithm>r U2 R r2 F R' F' r2 U2 r'</Algorithm>
+    </Case>
+    <Case Index="163">L 49<Algorithm>r U2 r2 F R F' r2 R' U2 r'</Algorithm>
+    </Case>
+    <Case Index="164">L 54<Algorithm>F R U R' U' F' r U r' U R U' R' r U' r'</Algorithm>
+    </Case>
+    <Case Index="165">L 53<Algorithm>r U r' R U R' U' r U' r' F U R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="166">L 50<Algorithm>R U R' U R U' R' F2 R U2 R' U2 R' F2 R2 U' R'</Algorithm>
+    </Case>
+    <Case Index="167">L 51<Algorithm>R U R2 F2 R U2 R U2 R' F2 R U R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="168">L 29<Algorithm>F' r U R' U' r' F R</Algorithm>
+    </Case>
+    <Case Index="169">L 25<Algorithm>R' U' R U R' F2 R U2 R' U2 R' F2 R2</Algorithm>
+    </Case>
+    <Case Index="170">L 33<Algorithm>F' R U2 R' U2 R' F R U R U' R'</Algorithm>
+    </Case>
+    <Case Index="171">L 27<Algorithm>R' U R U' R' U R U R' U' R2 D R' U R D' R'</Algorithm>
+    </Case>
+    <Case Index="172">L 36<Algorithm>F R U' R' U' R U2 R' U' F'</Algorithm>
+    </Case>
+    <Case Index="173">L 32<Algorithm>R' U' R U2 R' F' R U R' U' R' F R2 U R' U2 R</Algorithm>
+    </Case>
+    <Case Index="174">L 31<Algorithm>R' F R U R U' R' F' U R U R' U R U' R'</Algorithm>
+    </Case>
+    <Case Index="175">L 26<Algorithm>R' U R U2 r' R' F R F r U r' F r</Algorithm>
+    </Case>
+    <Case Index="176">L 30<Algorithm>F R' F' R U R U' R' F U R U' R' U R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="177">L 28<Algorithm>F' R U2 R' U2 R' F U2 R U R U' R2 U2 R</Algorithm>
+    </Case>
+    <Case Index="178">L 34<Algorithm>R' U' R U' R' U R F R' U R U' F'</Algorithm>
+    </Case>
+    <Case Index="179">L 35<Algorithm>R U2 R' U r' F R F' M' U' R U R'</Algorithm>
+    </Case>
+    <Case Index="180">L 18<Algorithm>F R' F' r U R U' r'</Algorithm>
+    </Case>
+    <Case Index="181">L 13<Algorithm>D' R2 U R' U' R' U R' D U' R' U R</Algorithm>
+    </Case>
+    <Case Index="182">L 23<Algorithm>F R U R' U' R' F' R U2 R U2 R'</Algorithm>
+    </Case>
+    <Case Index="183">L 14<Algorithm>R D' R U' R' D R U' R2 U R2 U R2</Algorithm>
+    </Case>
+    <Case Index="184">L 24<Algorithm>R' F' R U R' U' R' F R U' R U R' U R</Algorithm>
+    </Case>
+    <Case Index="185">L 19<Algorithm>r' F' r U R' U2 R U R' U r' F r U' R</Algorithm>
+    </Case>
+    <Case Index="186">L 20<Algorithm>L R U' R' U R L' U R' U R U' R'</Algorithm>
+    </Case>
+    <Case Index="187">L 15<Algorithm>R' U' R' F R F' U R2 U2 R' U2 R' F R F'</Algorithm>
+    </Case>
+    <Case Index="188">L 17<Algorithm>R' U2 R U R' U' F' R U R' U' R' F R2 U R' U R</Algorithm>
+    </Case>
+    <Case Index="189">L 16<Algorithm>R' U2 R2 U R' U' R' U2 F R U R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="190">L 22<Algorithm>R U R' U R U2 R' r U R' U' r' F R F'</Algorithm>
+    </Case>
+    <Case Index="191">L 21<Algorithm>M' F' U2 F M U2 R U R'</Algorithm>
+    </Case>
+    <Case Index="192">L 6<Algorithm>R' U2 R' D' R U2 R' D R2</Algorithm>
+    </Case>
+    <Case Index="193">L 4<Algorithm>R' U2 R' D' r U2 r' D R2</Algorithm>
+    </Case>
+    <Case Index="194">L 2<Algorithm>R D R' U2 R D' R' U' R' U2 R U' R' U' R</Algorithm>
+    </Case>
+    <Case Index="195">L 8<Algorithm>R' U' R U2 R' U' R2 D r' U2 r D' R2 U R</Algorithm>
+    </Case>
+    <Case Index="196">L 7<Algorithm>R U R' U2 R U R' U2 y' R' U2 R U' R' U' R</Algorithm>
+    </Case>
+    <Case Index="197">L 3<Algorithm>R' U2 R U R2 D' R U R' D R2</Algorithm>
+    </Case>
+    <Case Index="198">L 10<Algorithm>R U R' U' R U' R' F' r U R' U R U2 r' F</Algorithm>
+    </Case>
+    <Case Index="199">L 9<Algorithm>R' U' R2 D r' U2 r D' R2 U R U R' U2 R</Algorithm>
+    </Case>
+    <Case Index="200">L 5<Algorithm>R' U2 R U2 R' U' R2 D R' U2 R D' R2 U2 R</Algorithm>
+    </Case>
+    <Case Index="201">L 1<Algorithm>F' R U R' U' R' F R2 U' R' U' R U' R' U R U R'</Algorithm>
+    </Case>
+    <Case Index="202">L 12<Algorithm>F R U' R' U' R2 D R' U R D' R' U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="203">L 11<Algorithm>R' U R2 D R' U R D' R' U2 R' U R U R' U' R</Algorithm>
+    </Case>
+    <Case Index="204">L 41<Algorithm>R U2 R D R' U2 R D' R2</Algorithm>
+    </Case>
+    <Case Index="205">L 40<Algorithm>R' F' R U R' U' R' F R2 U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="206">L 39<Algorithm>L' U R U' L U R2 U2 R U R' U R</Algorithm>
+    </Case>
+    <Case Index="207">L 43<Algorithm>F R U R' U' R' F' U' R U R U' R' U' R' U R</Algorithm>
+    </Case>
+    <Case Index="208">L 44<Algorithm>R' U' R U2 R' U' R y U2 R U2 R' U R U R'</Algorithm>
+    </Case>
+    <Case Index="209">L 38<Algorithm>R U2 R' U' R2 D R' U' R D' R2</Algorithm>
+    </Case>
+    <Case Index="210">L 46<Algorithm>R' F' R U2 R U2 R' F U' R U R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="211">L 47<Algorithm>R' U R' D' R U R' U2 R U R' D U R U' R</Algorithm>
+    </Case>
+    <Case Index="212">L 42<Algorithm>R U2 R' U2 R U R2 D' R U2 R' D R2 U2 R'</Algorithm>
+    </Case>
+    <Case Index="213">L 37<Algorithm>R' U2 R U R' U R L' U R U' L U R'</Algorithm>
+    </Case>
+    <Case Index="214">L 48<Algorithm>R U2 R' U R' F2 R F2 R U R' U r' F r</Algorithm>
+    </Case>
+    <Case Index="215">L 45<Algorithm>R U' R2 D' R U' R' D R U2 R U' R' U' R U R'</Algorithm>
+    </Case>
+    <Case Index="216">H 38<Algorithm>R U2 R' U' R U' R' U' R' U' R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="217">H 37<Algorithm>R' U2 R U R' U R U R U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="218">H 34<Algorithm>R' U' R U' R' U R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="219">H 33<Algorithm>R U R' U R U' R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="220">H 35<Algorithm>R' U2 R U R' U' R U R' U R</Algorithm>
+    </Case>
+    <Case Index="221">H 36<Algorithm>R U2 R' U' R U R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="222">H 40<Algorithm>R U R' U R U' R' U R U' R' U R' U' R2 U' R' U R' U R</Algorithm>
+    </Case>
+    <Case Index="223">H 39<Algorithm>R U R' U R U2 R' U' R' U2 R U R' U R</Algorithm>
+    </Case>
+    <Case Index="224">H 28<Algorithm>x' U' R U' R' U R' F2 R U' R U R' U x</Algorithm>
+    </Case>
+    <Case Index="225">H 27<Algorithm>F R U R' U' R U R' U' R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="226">H 32<Algorithm>R U R' y' U R' U R U' R2 F R F' R</Algorithm>
+    </Case>
+    <Case Index="227">H 25<Algorithm>R' U' R y U' R U' R' U R l U' R' U l'</Algorithm>
+    </Case>
+    <Case Index="228">H 26<Algorithm>F R U R' U' R U R' U' F' U R' F' U' F U R</Algorithm>
+    </Case>
+    <Case Index="229">H 31<Algorithm>R' U' R U' R' U2 R U R' U' R U R' F' R U R' U' R' F R2</Algorithm>
+    </Case>
+    <Case Index="230">H 29<Algorithm>r U2 R2 F R F' R U2 r2 F' r U' r' F2 r</Algorithm>
+    </Case>
+    <Case Index="231">H 30<Algorithm>R U R' U r' F R F' r U2 R2 U2 R U R' U R</Algorithm>
+    </Case>
+    <Case Index="232">H 20<Algorithm>R U R' U R U2 R' F R U' R' U' R U2 R' U' F'</Algorithm>
+    </Case>
+    <Case Index="233">H 24<Algorithm>R U R2 F R F' r U' r' U r U r'</Algorithm>
+    </Case>
+    <Case Index="234">H 23<Algorithm>R' F R' F' R2 U' r' U r U' r' U' r</Algorithm>
+    </Case>
+    <Case Index="235">H 21<Algorithm>R' U' R U' R' U' L U' R U L'</Algorithm>
+    </Case>
+    <Case Index="236">H 22<Algorithm>R U R' U R U L' U R' U' L</Algorithm>
+    </Case>
+    <Case Index="237">H 18<Algorithm>R' U' R U' R' U F' R U R' U' R' F R2 U' R' U R</Algorithm>
+    </Case>
+    <Case Index="238">H 17<Algorithm>F R' F' R U2 R U2 R' U r' U2 R U R' U r</Algorithm>
+    </Case>
+    <Case Index="239">H 16<Algorithm>R' U2 R U R2 D' R U' R' D R2 U R' U R</Algorithm>
+    </Case>
+    <Case Index="240">H 14<Algorithm>R U2 R' U' R2 D R' U R D' R2 U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="241">H 19<Algorithm>F R U' R' U' R U2 R' U' F' U R U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="242">H 15<Algorithm>F U R' F R F' R U' R2 F' R U2 R U2 R'</Algorithm>
+    </Case>
+    <Case Index="243">H 13<Algorithm>R' U2 R U R' U' F' R U R' U' R' F R U2 R</Algorithm>
+    </Case>
+    <Case Index="244">H 2<Algorithm>R U R' U R U2 R' U2 F R' F' r U R U' r'</Algorithm>
+    </Case>
+    <Case Index="245">H 1<Algorithm>R' U' F' U F R U R U R' U' R' F R F'</Algorithm>
+    </Case>
+    <Case Index="246">H 6<Algorithm>r U2 R' U' R U' r' U R U2 R' U2 R' F R F'</Algorithm>
+    </Case>
+    <Case Index="247">H 5<Algorithm>R U2 R' U L' U2 R U2 R' U2 L R U' R'</Algorithm>
+    </Case>
+    <Case Index="248">H 12<Algorithm>F U' R U2 R' U2 R U' R' U' R U R' U F'</Algorithm>
+    </Case>
+    <Case Index="249">H 9<Algorithm>R' F R U R' U' F' R U' R' U R' F R F' U R</Algorithm>
+    </Case>
+    <Case Index="250">H 3<Algorithm>R U2 R' U' R U' R D' R U' R' D R U R</Algorithm>
+    </Case>
+    <Case Index="251">H 4<Algorithm>R U2 R2 F U' R2 U' R2 U F' U R</Algorithm>
+    </Case>
+    <Case Index="252">H 10<Algorithm>R' U2 R U2 R2 F' R U R U' R' F U R</Algorithm>
+    </Case>
+    <Case Index="253">H 11<Algorithm>F' R U2 R' U2 R' F R U R U R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="254">H 7<Algorithm>R' U' R U' R' U R U R' F R U R' U' R' F' R2</Algorithm>
+    </Case>
+    <Case Index="255">H 8<Algorithm>F R U' R' U R U2 R' U' R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="256">Pi 69<Algorithm>R U R' U R U2 R' U' R U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="257">Pi 70<Algorithm>R U R' U' R' U2 R U R' U R2 U2 R'</Algorithm>
+    </Case>
+    <Case Index="258">Pi 62<Algorithm>R' U2 R U R' U R2 U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="259">Pi 67<Algorithm>R U2 R' U' R U' R2 U' R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="260">Pi 63<Algorithm>R U2 R' U2 R U' R' U2 R U' R' U2 R U R'</Algorithm>
+    </Case>
+    <Case Index="261">Pi 64<Algorithm>R' U2 R U2 R' U R U2 R' U R U2 R' U' R</Algorithm>
+    </Case>
+    <Case Index="262">Pi 65<Algorithm>R U' R' U2 R U R' U2 R U R' U2 R U2 R'</Algorithm>
+    </Case>
+    <Case Index="263">Pi 66<Algorithm>R' U R U2 R' U' R U2 R' U' R U2 R' U2 R</Algorithm>
+    </Case>
+    <Case Index="264">Pi 68<Algorithm>R' U2 R2 U R2 U R2 U2 R'</Algorithm>
+    </Case>
+    <Case Index="265">Pi 61<Algorithm>R U2 R2 U' R2 U' R2 U2 R</Algorithm>
+    </Case>
+    <Case Index="266">Pi 72<Algorithm>R U R' U' R' U' R U R U R' U' R' U R U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="267">Pi 71<Algorithm>R U R' U R U2 R' U R U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="268">Pi 58<Algorithm>F R2 U' R U' R U' R' U2 R' U R2 F'</Algorithm>
+    </Case>
+    <Case Index="269">Pi 51<Algorithm>F R2 U' R U2 R U R' U R' U R2 F'</Algorithm>
+    </Case>
+    <Case Index="270">Pi 53<Algorithm>F U R' U' R2 U' R2 U2 R U2 R U R' F'</Algorithm>
+    </Case>
+    <Case Index="271">Pi 50<Algorithm>r' U' R U' R' U R U' R' U R' F R F' U r</Algorithm>
+    </Case>
+    <Case Index="272">Pi 60<Algorithm>R U2 R' U' F' R U2 R' U' R U' R' F R U' R'</Algorithm>
+    </Case>
+    <Case Index="273">Pi 54<Algorithm>R U R' U r' F R F' r U' R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="274">Pi 59<Algorithm>r U R' U R' F R F' R U' R' U R U2 r'</Algorithm>
+    </Case>
+    <Case Index="275">Pi 52<Algorithm>R' U R U F R' U R U' F' U' R' U' R</Algorithm>
+    </Case>
+    <Case Index="276">Pi 57<Algorithm>R U2 R' U R' D' R U R' D R2 U' R' U R U' R'</Algorithm>
+    </Case>
+    <Case Index="277">Pi 49<Algorithm>R' U2 R U' R D R' U' R D' R2 U R U' R' U R</Algorithm>
+    </Case>
+    <Case Index="278">Pi 55<Algorithm>R U R' U R U R' U' R U R D R' U R D' R2</Algorithm>
+    </Case>
+    <Case Index="279">Pi 56<Algorithm>R' U' R U' R' U' R U R' U' R' D' R U' R' D R2</Algorithm>
+    </Case>
+    <Case Index="280">Pi 19<Algorithm>F U R U2 R' U R U R' F' R U2 R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="281">Pi 23<Algorithm>r U' r' U' r U r' U' l R U' R' U l'</Algorithm>
+    </Case>
+    <Case Index="282">Pi 22<Algorithm>r' U r U r' U' r U R2 F R F' R</Algorithm>
+    </Case>
+    <Case Index="283">Pi 18<Algorithm>r' U' R U' R' U2 r U' R U2 R' U2 R' F R F'</Algorithm>
+    </Case>
+    <Case Index="284">Pi 17<Algorithm>R' U' R U R2 F' R U R U' R' F U' R U R' U R</Algorithm>
+    </Case>
+    <Case Index="285">Pi 16<Algorithm>R U2 R D' R U' R' D R' U' R2 U2 R</Algorithm>
+    </Case>
+    <Case Index="286">Pi 15<Algorithm>R' U' R U' R2 D' R U R' D R2 U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="287">Pi 21<Algorithm>L' U R U' L U' R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="288">Pi 24<Algorithm>R U R' U F' R U2 R' U2 R' F R</Algorithm>
+    </Case>
+    <Case Index="289">Pi 13<Algorithm>R' U R U' R' U R U R' U2 r' F R F' r</Algorithm>
+    </Case>
+    <Case Index="290">Pi 14<Algorithm>R2 D R' U2 R D' R2 U' R2 D R' U' R D' R2</Algorithm>
+    </Case>
+    <Case Index="291">Pi 20<Algorithm>R U2 R2 F R U R U2 R' U' R U2 R' U' F' R U R'</Algorithm>
+    </Case>
+    <Case Index="292">Pi 7<Algorithm>R U R' U R U2 R' F U R U2 R' U R U R' F'</Algorithm>
+    </Case>
+    <Case Index="293">Pi 1<Algorithm>R U R' U R U2 R2 F' r U R U' r' F</Algorithm>
+    </Case>
+    <Case Index="294">Pi 2<Algorithm>F R U' R' U' R U R' F' U2 F R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="295">Pi 6<Algorithm>F R U R' U' R' F' R U2 R' U' R2 U' R2 U2 R</Algorithm>
+    </Case>
+    <Case Index="296">Pi 5<Algorithm>R U R' U R' F R F' R' U' F' U F R2 U' R'</Algorithm>
+    </Case>
+    <Case Index="297">Pi 10<Algorithm>F U' R U' R' U R U R' U2 R U2 R' U F'</Algorithm>
+    </Case>
+    <Case Index="298">Pi 11<Algorithm>R U2 R2 F R F' R' U' F' U F R U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="299">Pi 12<Algorithm>R' U' F' R U R' U' R' F R2 U2 R' U2 R</Algorithm>
+    </Case>
+    <Case Index="300">Pi 9<Algorithm>R U R' U R U' R' U' R' F' R U2 R U2 R' F</Algorithm>
+    </Case>
+    <Case Index="301">Pi 3<Algorithm>R' U' R' D' R U R' D R' U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="302">Pi 4<Algorithm>R' U' F U' R2 U R2 U F' R2 U2 R'</Algorithm>
+    </Case>
+    <Case Index="303">Pi 8<Algorithm>F U R U' R' U R U2 R' U' R U R' F'</Algorithm>
+    </Case>
+    <Case Index="304">Pi 44<Algorithm>R' U' F' U F R U' r U' r' U' r U r' F' U F</Algorithm>
+    </Case>
+    <Case Index="305">Pi 42<Algorithm>R' F R U R' F' U' F' U F R F' r U r'</Algorithm>
+    </Case>
+    <Case Index="306">Pi 37<Algorithm>R' F R U R' U' R' F' R2 U' R' U R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="307">Pi 39<Algorithm>F U R U' R' F' r U' r' U' r U r' F' U F</Algorithm>
+    </Case>
+    <Case Index="308">Pi 45<Algorithm>R U R' U R U2 R' U' R U' L' U R' U' L</Algorithm>
+    </Case>
+    <Case Index="309">Pi 48<Algorithm>R U R' U F2 R U2 R' U2 R' F2 R</Algorithm>
+    </Case>
+    <Case Index="310">Pi 46<Algorithm>R' U2 R U R' U R2 U' L' U R' U' L</Algorithm>
+    </Case>
+    <Case Index="311">Pi 47<Algorithm>R U R' U R U' R' U R U' R D R' U' R D' R2</Algorithm>
+    </Case>
+    <Case Index="312">Pi 41<Algorithm>R U R' U' R' F R2 U R' U' R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="313">Pi 43<Algorithm>r U' r' F R' F r U R U2 r' F r U r' F</Algorithm>
+    </Case>
+    <Case Index="314">Pi 38<Algorithm>R U2 R' U' R U R' U2 L' U R U' M' x'</Algorithm>
+    </Case>
+    <Case Index="315">Pi 40<Algorithm>r U R' U' r' F R U R' U' R F' U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="316">Pi 32<Algorithm>R U R' U R U' R2 F R F' R U' R' F' U F</Algorithm>
+    </Case>
+    <Case Index="317">Pi 29<Algorithm>F U R U2 R' U2 R U R2 F' R U2 R U2 R'</Algorithm>
+    </Case>
+    <Case Index="318">Pi 26<Algorithm>F' U' F r U' r' U r U r' F R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="319">Pi 28<Algorithm>R' U2 R U R' U' R U R2 F R U R U' R' F' R</Algorithm>
+    </Case>
+    <Case Index="320">Pi 36<Algorithm>R' F2 R U2 R U2 R' F2 U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="321">Pi 33<Algorithm>R' F R F' r U R' U R U2 r' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="322">Pi 35<Algorithm>R U2 R' U' R U' R' U2 r' F R F' r U R'</Algorithm>
+    </Case>
+    <Case Index="323">Pi 34<Algorithm>R' U' R U' R' U R U' R' U R' D' R U R' D R2</Algorithm>
+    </Case>
+    <Case Index="324">Pi 30<Algorithm>F U R U' R' U R U' R2 F' R U R U' R'</Algorithm>
+    </Case>
+    <Case Index="325">Pi 31<Algorithm>r U' r U' R U' R' F R U R' U r2 F</Algorithm>
+    </Case>
+    <Case Index="326">Pi 25<Algorithm>R U2 R' U' R U R' U2 R' F' R U2 R U2 R' F</Algorithm>
+    </Case>
+    <Case Index="327">Pi 27<Algorithm>R L' U R' U' L U2 R U' R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="328">S 72<Algorithm>R' U R2 U R' U R U2 R U2 R U R' U R2</Algorithm>
+    </Case>
+    <Case Index="329">S 68<Algorithm>R' U2 R2 U R U' R' U R U R2 U' R'</Algorithm>
+    </Case>
+    <Case Index="330">S 67<Algorithm>R U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="331">S 64<Algorithm>R' U2 R U R' U R</Algorithm>
+    </Case>
+    <Case Index="332">S 63<Algorithm>R U R2 U' R2 U' R2 U2 R2 U2 R'</Algorithm>
+    </Case>
+    <Case Index="333">S 71<Algorithm>R' U' R U' R U R2 U R2 U2 R'</Algorithm>
+    </Case>
+    <Case Index="334">S 69<Algorithm>R U R' U' R' U2 R U R U' R' U R' U R</Algorithm>
+    </Case>
+    <Case Index="335">S 70<Algorithm>R' U' R U R U R' U' R' U R U R U' R'</Algorithm>
+    </Case>
+    <Case Index="336">S 62<Algorithm>R U R' U R U' R' U R' U' R2 U' R' U R' U R</Algorithm>
+    </Case>
+    <Case Index="337">S 65<Algorithm>R' U' R U' R U R' U R U2 R' U' R' U R</Algorithm>
+    </Case>
+    <Case Index="338">S 66<Algorithm>R U R' U R' U' R2 U' R' U R' U' R U R' U R</Algorithm>
+    </Case>
+    <Case Index="339">S 61<Algorithm>R U R' U' R' U2 R U R' U R U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="340">S 58<Algorithm>F U' R' U R U F' R U R2 U R2 U2 R'</Algorithm>
+    </Case>
+    <Case Index="341">S 57<Algorithm>R U R' U L' U R U' L U2 R'</Algorithm>
+    </Case>
+    <Case Index="342">S 55<Algorithm>R' U2 R U R' U' R F U' R' U' R U F'</Algorithm>
+    </Case>
+    <Case Index="343">S 59<Algorithm>R' U R U2 R' U R U2 R D R' U' R D' R'</Algorithm>
+    </Case>
+    <Case Index="344">S 56<Algorithm>F U R U' R' U R U' R' F' R' U' F' U F R</Algorithm>
+    </Case>
+    <Case Index="345">S 52<Algorithm>F R U R' U' R U R2 U' F' U R U R U' R'</Algorithm>
+    </Case>
+    <Case Index="346">S 60<Algorithm>R U R' F' R U R' U R U2 R' F R U' R'</Algorithm>
+    </Case>
+    <Case Index="347">S 49<Algorithm>R U2 L' R' U2 R U2 R' U2 L U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="348">S 51<Algorithm>R U' R2 U2 D' R U R' U D R2 U R'</Algorithm>
+    </Case>
+    <Case Index="349">S 50<Algorithm>F U R' F R F' R U' R' U R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="350">S 53<Algorithm>r U R' U' r' F R F' R U' L' U R' U' L</Algorithm>
+    </Case>
+    <Case Index="351">S 54<Algorithm>R U R D' R U' R' D R2 U' R' U2 R2 U2 R'</Algorithm>
+    </Case>
+    <Case Index="352">S 29<Algorithm>R U' L' U R' U' L</Algorithm>
+    </Case>
+    <Case Index="353">S 27<Algorithm>R' U2 R U R' U' R' D' R U2 R' D R2</Algorithm>
+    </Case>
+    <Case Index="354">S 36<Algorithm>R' D U' R' U R U2 D' R2 U R' U' R'</Algorithm>
+    </Case>
+    <Case Index="355">S 33<Algorithm>R' U' R' U R2 D' U2 R U R' U' D R'</Algorithm>
+    </Case>
+    <Case Index="356">S 25<Algorithm>R2 D R' U2 R D' R' U' R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="357">S 30<Algorithm>r U2 R' U' R U R' U' R U R' U2 r' F R F'</Algorithm>
+    </Case>
+    <Case Index="358">S 32<Algorithm>R U R' F' R U R' U R U' R' U' R' F R2 U' R'</Algorithm>
+    </Case>
+    <Case Index="359">S 31<Algorithm>R U' R' U R U' R' F R' F' R U' F' U F</Algorithm>
+    </Case>
+    <Case Index="360">S 26<Algorithm>R' U2 F' R U R' U' R' F R U2 R</Algorithm>
+    </Case>
+    <Case Index="361">S 35<Algorithm>R2 D r' U2 r D' R' U' R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="362">S 28<Algorithm>R U2 R' U2 R' F R2 U R' U' R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="363">S 34<Algorithm>R' U2 R U R' U' R' D' r U2 r' D R2</Algorithm>
+    </Case>
+    <Case Index="364">S 18<Algorithm>F R' U2 R F' R' F U2 F' R</Algorithm>
+    </Case>
+    <Case Index="365">S 23<Algorithm>R U R' U R U' R D R' U' R D' R2</Algorithm>
+    </Case>
+    <Case Index="366">S 13<Algorithm>R U' R' U' R U' R' U2 R U R2 D' R U2 R' D R</Algorithm>
+    </Case>
+    <Case Index="367">S 14<Algorithm>F U R U' R' U R U' l U' R2 D' R U R' x</Algorithm>
+    </Case>
+    <Case Index="368">S 24<Algorithm>R2 D' R U' R' D R U' R U R' U R</Algorithm>
+    </Case>
+    <Case Index="369">S 17<Algorithm>R' U2 R U2 R' U R U2 R' U r' F R F' r</Algorithm>
+    </Case>
+    <Case Index="370">S 19<Algorithm>R' D' R U R' D R2 U' R' U R U R' U' R U2 R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="371">S 20<Algorithm>R U' R' U' R U R D R' U2 R D' R2 U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="372">S 21<Algorithm>R' U2 R' D' R U R' D R U' R U R' U R</Algorithm>
+    </Case>
+    <Case Index="373">S 15<Algorithm>R' U' R U' R2 F' R U R U' R' F U2 R</Algorithm>
+    </Case>
+    <Case Index="374">S 22<Algorithm>R U R' U R' D' R U R' D R U' R U2 R'</Algorithm>
+    </Case>
+    <Case Index="375">S 16<Algorithm>R U2 R2 F R F' R' U' F' U F R2 U' R'</Algorithm>
+    </Case>
+    <Case Index="376">S 40<Algorithm>r U R' F' U F U R U2 R' U M</Algorithm>
+    </Case>
+    <Case Index="377">S 38<Algorithm>R' D' R U R' D R2 U R' U2 R U R'</Algorithm>
+    </Case>
+    <Case Index="378">S 44<Algorithm>R U' R' U' F U R U' R' F' R U' R' U' R' F R F'</Algorithm>
+    </Case>
+    <Case Index="379">S 39<Algorithm>R' U2 R U R2 D' R U' R' D R U2 R</Algorithm>
+    </Case>
+    <Case Index="380">S 43<Algorithm>R2 D' r U2 r' D R2 U R' U R</Algorithm>
+    </Case>
+    <Case Index="381">S 46<Algorithm>R' U2 R U R' U R' D' R U2 R' D R U2 R</Algorithm>
+    </Case>
+    <Case Index="382">S 37<Algorithm>R L' U R' U' L U2 R U2 R'</Algorithm>
+    </Case>
+    <Case Index="383">S 48<Algorithm>R2 D' R U2 R' D R2 U R' U R</Algorithm>
+    </Case>
+    <Case Index="384">S 47<Algorithm>R2 F R U R U' R' F' R U' R' U R</Algorithm>
+    </Case>
+    <Case Index="385">S 45<Algorithm>R U R' U R' U' R' D' R U R' D R' U2 R'</Algorithm>
+    </Case>
+    <Case Index="386">S 42<Algorithm>R' U' F U' R2 U R2 U F' R U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="387">S 41<Algorithm>R' U2 R U R' U R' D' r U2 r' D R U2 R</Algorithm>
+    </Case>
+    <Case Index="388">S 4<Algorithm>R' U' F' U F R U R' F R U R' U' F' U R</Algorithm>
+    </Case>
+    <Case Index="389">S 2<Algorithm>R U R' U R F U' R' U R U F' U R'</Algorithm>
+    </Case>
+    <Case Index="390">S 8<Algorithm>R U R' U R2 D r' U2 r D' R2</Algorithm>
+    </Case>
+    <Case Index="391">S 3<Algorithm>R' U R U2 R' U R2 D R' U R D' R'</Algorithm>
+    </Case>
+    <Case Index="392">S 7<Algorithm>R' U' R U R2 U' R' U' R U D' R U R' D R'</Algorithm>
+    </Case>
+    <Case Index="393">S 10<Algorithm>R U R' U R2 D R' U2 R D' R2</Algorithm>
+    </Case>
+    <Case Index="394">S 1<Algorithm>R' U2 R U F R' U R U' F'</Algorithm>
+    </Case>
+    <Case Index="395">S 12<Algorithm>R U2 R D R' U2 R D' R' U R' U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="396">S 11<Algorithm>F R' U' R2 U' R2 U2 R2 U' R' F'</Algorithm>
+    </Case>
+    <Case Index="397">S 9<Algorithm>R U R' U' R U R2 D' R U R' D R U R U2 R'</Algorithm>
+    </Case>
+    <Case Index="398">S 6<Algorithm>R' U2 R' D R' U R D' R U R U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="399">S 5<Algorithm>R' F R U R' U' R' F' D' R U R' D R2</Algorithm>
+    </Case>
+    <Case Index="400">AS 72<Algorithm>R U' R2 U' R U' R' U2 R' U2 R' U' R U' R2</Algorithm>
+    </Case>
+    <Case Index="401">AS 67<Algorithm>R U2 R2 U' R' U R U' R' U' R2 U R</Algorithm>
+    </Case>
+    <Case Index="402">AS 68<Algorithm>R' U' R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="403">AS 66<Algorithm>R U2 R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="404">AS 65<Algorithm>R' U' R2 U R2 U R2 U2 R2 U2 R</Algorithm>
+    </Case>
+    <Case Index="405">AS 71<Algorithm>R U R' U R' U' R2 U' R2 U2 R</Algorithm>
+    </Case>
+    <Case Index="406">AS 70<Algorithm>R' U' R U R U2 R' U' R' U R U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="407">AS 69<Algorithm>R U R' U' R' U' R U R U' R' U' R' U R</Algorithm>
+    </Case>
+    <Case Index="408">AS 61<Algorithm>R' U' R U' R2 U' R' U' R' U R U R U' R</Algorithm>
+    </Case>
+    <Case Index="409">AS 63<Algorithm>R U R' U R' U' R U' R' U2 R U R U' R'</Algorithm>
+    </Case>
+    <Case Index="410">AS 64<Algorithm>R U R' U R U2 R' U' R U2 R2 U' R2 U' R2 U2 R</Algorithm>
+    </Case>
+    <Case Index="411">AS 62<Algorithm>R' U' R U R U2 R' U' R U' R' U R' U R</Algorithm>
+    </Case>
+    <Case Index="412">AS 50<Algorithm>R U2 R2 U' R2 U' R' F U' R' U' R U F'</Algorithm>
+    </Case>
+    <Case Index="413">AS 52<Algorithm>R' U' R U' L U' R' U L' U2 R</Algorithm>
+    </Case>
+    <Case Index="414">AS 56<Algorithm>R' F' U' F U R F R U R' U' R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="415">AS 49<Algorithm>R U' R' U2 R U' R' U2 R' D' R U R' D R</Algorithm>
+    </Case>
+    <Case Index="416">AS 55<Algorithm>R U R' U R U' R' U r' F R F' r U2 R'</Algorithm>
+    </Case>
+    <Case Index="417">AS 57<Algorithm>F U R U' R' U R' F R2 U' R' F' U r U' r'</Algorithm>
+    </Case>
+    <Case Index="418">AS 51<Algorithm>R U R' F' R U2 R' U' R U' R' F R U' R'</Algorithm>
+    </Case>
+    <Case Index="419">AS 59<Algorithm>R U R' U' R' U' F U R2 U' R' U R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="420">AS 60<Algorithm>R' U R2 U2 D R' U' R U' D' R2 U' R</Algorithm>
+    </Case>
+    <Case Index="421">AS 58<Algorithm>F R U R' U' R U R' F R' F' R U' F'</Algorithm>
+    </Case>
+    <Case Index="422">AS 53<Algorithm>F R' F' R U R U' R2 F R U R' U' F' U R</Algorithm>
+    </Case>
+    <Case Index="423">AS 54<Algorithm>R' U' R' F R F' U R U' F R U R' U' R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="424">AS 30<Algorithm>L' U R U' L U R'</Algorithm>
+    </Case>
+    <Case Index="425">AS 25<Algorithm>R U2 R' U' R U R D R' U2 R D' R2</Algorithm>
+    </Case>
+    <Case Index="426">AS 35<Algorithm>R' U2 F U R U2 R' U R U R' F' U R</Algorithm>
+    </Case>
+    <Case Index="427">AS 34<Algorithm>R2 F R' U R U' F' R2 U2 R' U' R U R</Algorithm>
+    </Case>
+    <Case Index="428">AS 27<Algorithm>R2 D' R U2 R' D R U R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="429">AS 29<Algorithm>R' U' R U' R' U R U' R' U R F U' R' U2 R U F'</Algorithm>
+    </Case>
+    <Case Index="430">AS 32<Algorithm>R' U' R D' R U' R' U R2 U R' U' R2 D</Algorithm>
+    </Case>
+    <Case Index="431">AS 31<Algorithm>R' F R U R' U r U r' U2 F' U' R</Algorithm>
+    </Case>
+    <Case Index="432">AS 28<Algorithm>F U R U' R' U R U' R2 F' R U2 R U2 R'</Algorithm>
+    </Case>
+    <Case Index="433">AS 36<Algorithm>R2 D' r U2 r' D R U R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="434">AS 26<Algorithm>R' U2 R' F' R U R U' R' F U2 R</Algorithm>
+    </Case>
+    <Case Index="435">AS 33<Algorithm>R U2 R' U' R U R D r' U2 r D' R2</Algorithm>
+    </Case>
+    <Case Index="436">AS 5<Algorithm>R' F U2 F' R F R' U2 R F'</Algorithm>
+    </Case>
+    <Case Index="437">AS 12<Algorithm>R' U' R U' R' U R' D' R U R' D R2</Algorithm>
+    </Case>
+    <Case Index="438">AS 3<Algorithm>R U R' U' R' F R U2 F' U' F U' R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="439">AS 4<Algorithm>R' D' R U2 R' D R2 U' R' U2 R U R' U R U R'</Algorithm>
+    </Case>
+    <Case Index="440">AS 11<Algorithm>R2 D R' U R D' R' U R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="441">AS 6<Algorithm>R U2 R' L' U2 R U' R' U2 L R U2 R'</Algorithm>
+    </Case>
+    <Case Index="442">AS 7<Algorithm>R' U' R U' R' U R' D' R U' R' r U2 r' D R2</Algorithm>
+    </Case>
+    <Case Index="443">AS 8<Algorithm>R' U' R U' R U R' U' R' U2 F R U R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="444">AS 10<Algorithm>R U2 R' U R' D' R U' R' D R U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="445">AS 1<Algorithm>R U R' U R' D R2 U' R' U R2 D' R' U2 R'</Algorithm>
+    </Case>
+    <Case Index="446">AS 9<Algorithm>R' U' R U' R' U R' D' R U' R' D R U2 R</Algorithm>
+    </Case>
+    <Case Index="447">AS 2<Algorithm>R' U2 F' R U R' U' R' F R2 U R' U R</Algorithm>
+    </Case>
+    <Case Index="448">AS 38<Algorithm>R U2 R2 D' R U2 R' D R2 U' R' U R U' R'</Algorithm>
+    </Case>
+    <Case Index="449">AS 40<Algorithm>R' U' F' R U R' U' R' F R2 U' R' U R</Algorithm>
+    </Case>
+    <Case Index="450">AS 44<Algorithm>F R U' R' U R U R' F' U R' U' F U R U' R' F' R</Algorithm>
+    </Case>
+    <Case Index="451">AS 37<Algorithm>R U R' F' R U R' U' R' F R2 U R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="452">AS 43<Algorithm>R2 D r' U2 r D' R2 U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="453">AS 45<Algorithm>F R U' R' U' R U2 R' U y' R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="454">AS 39<Algorithm>F U R' U' R F' U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="455">AS 47<Algorithm>R2 D R' U2 R D' R2 U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="456">AS 48<Algorithm>R U R' F' R U2 R' U2 R' F R2 U' R'</Algorithm>
+    </Case>
+    <Case Index="457">AS 46<Algorithm>R' U' R U' R U R D R' U' R D' R U2 R</Algorithm>
+    </Case>
+    <Case Index="458">AS 41<Algorithm>R2 D R' U2 R D' R U' R2 U' R' U R' U R</Algorithm>
+    </Case>
+    <Case Index="459">AS 42<Algorithm>L' U R U' L U R' r U R' U' r' F R F'</Algorithm>
+    </Case>
+    <Case Index="460">AS 14<Algorithm>R U2 R' U' F' R U R' U' R' F R2 U' R'</Algorithm>
+    </Case>
+    <Case Index="461">AS 16<Algorithm>R' U2 R' D' R U R' D R2 U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="462">AS 20<Algorithm>R' U' R U' R2 D' r U2 r' D R2</Algorithm>
+    </Case>
+    <Case Index="463">AS 13<Algorithm>R' U' R U' R2 D' R U R' D R U R</Algorithm>
+    </Case>
+    <Case Index="464">AS 19<Algorithm>R U R' U' R2 U R U R' U' D R' U' R D' R</Algorithm>
+    </Case>
+    <Case Index="465">AS 21<Algorithm>R' U' R U' R2 D' R U2 R' D R2</Algorithm>
+    </Case>
+    <Case Index="466">AS 15<Algorithm>R U2 R' U2 r' F R F' M'</Algorithm>
+    </Case>
+    <Case Index="467">AS 23<Algorithm>R' U' R U' R' U y' R' U2 R U' R' U' R f z'</Algorithm>
+    </Case>
+    <Case Index="468">AS 24<Algorithm>R' U' R U R' F R U R' U' R' F' R2</Algorithm>
+    </Case>
+    <Case Index="469">AS 22<Algorithm>R U2 R' U' R U R' U2 R' F R U R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="470">AS 17<Algorithm>R U R' U R' F U' R2 U' R2 U F' U R</Algorithm>
+    </Case>
+    <Case Index="471">AS 18<Algorithm>F' r U R' U' r' F R L' U R U' L U R'</Algorithm>
+    </Case>
+    <Case Index="472">Skip<Algorithm>U</Algorithm>
+    </Case>
+    <Case Index="473">473<Algorithm>R U' R U R U R U' R' U' R2</Algorithm>
+    </Case>
+    <Case Index="474">474<Algorithm>R2 U R U R' U' R' U' R' U R'</Algorithm>
+    </Case>
+    <Case Index="475">475<Algorithm>M2 U M2 U M' U2 M2 U2 M'</Algorithm>
+    </Case>
+    <Case Index="476">476<Algorithm>M2 U M2 U2 M2 U M2</Algorithm>
+    </Case>
+    <Case Index="477">477<Algorithm>x' R U' R' D R U R' D' R U R' D R U' R' D' x</Algorithm>
+    </Case>
+    <Case Index="478">478<Algorithm>R' U R' U' y R' F' R2 U' R' U R' F R F</Algorithm>
+    </Case>
+    <Case Index="479">479<Algorithm>F R U' R' U' R U R' F' R U R' U' R' F R F'</Algorithm>
+    </Case>
+    <Case Index="480">480<Algorithm>R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'</Algorithm>
+    </Case>
+    <Case Index="481">481<Algorithm>R' U R U' R' F' U' F R U R' F R' F' R U' R</Algorithm>
+    </Case>
+    <Case Index="482">482<Algorithm>x R' U R' D2 R U' R' D2 R2 x'</Algorithm>
+    </Case>
+    <Case Index="483">483<Algorithm>x R2 D2 R U R' D2 R U' R x'</Algorithm>
+    </Case>
+    <Case Index="484">484<Algorithm>L U2 L' U2 L F' L' U' L U L F L2</Algorithm>
+    </Case>
+    <Case Index="485">485<Algorithm>R' U2 R U2 R' F R U R' U' R' F' R2</Algorithm>
+    </Case>
+    <Case Index="486">486<Algorithm>L' U' L F L' U' L U L F' L2 U L</Algorithm>
+    </Case>
+    <Case Index="487">487<Algorithm>R U R' F' R U R' U' R' F R2 U' R'</Algorithm>
+    </Case>
+    <Case Index="488">488<Algorithm>R U R' U' R' F R2 U' R' U' R U R' F'</Algorithm>
+    </Case>
+    <Case Index="489">489<Algorithm>R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R</Algorithm>
+    </Case>
+    <Case Index="490">490<Algorithm>R2 u R' U R' U' R u' R2 y' R' U R</Algorithm>
+    </Case>
+    <Case Index="491">491<Algorithm>R' U' R y R2 u R' U R U' R u' R2</Algorithm>
+    </Case>
+    <Case Index="492">492<Algorithm>R2 u' R U' R U R' u R2 y R U' R'</Algorithm>
+    </Case>
+    <Case Index="493">493<Algorithm>R U R' y' R2 u' R U' R' U R' u R2</Algorithm>
+    </Case>
+</Collection>

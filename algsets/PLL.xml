@@ -1,0 +1,46 @@
+<Collection Name="PLL" Description="Algorithms collection" CasesNumber="22">
+    <Case Index="0">SKIP<Algorithm></Algorithm>
+    </Case>
+    <Case Index="1">Ua<Algorithm>(R2 U' R' U') (R U R U) (R U' R)</Algorithm>
+    </Case>
+    <Case Index="2">Ub<Algorithm>(R' U R' U') (R' U' R' U) (R U R2)</Algorithm>
+    </Case>
+    <Case Index="3">Z<Algorithm>(M2 U' M2 U') (M' U2) (M2 U2) (M' U2)</Algorithm>
+    </Case>
+    <Case Index="4">H<Algorithm>(M2 U') (M2 U2) (M2 U') M2</Algorithm>
+    </Case>
+    <Case Index="5">Aa<Algorithm>L' (B L' F2 L) (B' L' F2 L2)</Algorithm>
+    </Case>
+    <Case Index="6">Ab<Algorithm>(L2 F2 L B) (L' F2 L B') L</Algorithm>
+    </Case>
+    <Case Index="7">E<Algorithm>(R' U L') D2 (L U' R) (L' U R') D2 (R U' L)</Algorithm>
+    </Case>
+    <Case Index="8">Ra<Algorithm>(U R) (U2 R' U2 R) (B' R' U' R) (U R B R2)</Algorithm>
+    </Case>
+    <Case Index="9">Rb<Algorithm>(R' U2 R U2) (R' F) (R U R' U') (R' F' R2 U')</Algorithm>
+    </Case>
+    <Case Index="10">Ja<Algorithm>(R' U2 R U) (R' U2 L U') (R U L')</Algorithm>
+    </Case>
+    <Case Index="11">Jb<Algorithm>(R U R' F') (R U R' U') (R' F R2 U') (R' U')</Algorithm>
+    </Case>
+    <Case Index="12">T<Algorithm>(R U R' U') (R' F R2 U') R' U' (R U R' F')</Algorithm>
+    </Case>
+    <Case Index="13">F<Algorithm>(U' R' U R) (U' R2) (F' U' F U) (R F R' F') R2</Algorithm>
+    </Case>
+    <Case Index="14">V<Algorithm>(R U' R U) x (U F' U F) (U2 R U) (R' U' R')</Algorithm>
+    </Case>
+    <Case Index="15">Y<Algorithm>(U' B' R B) (R' U' R' U) (R2 U R' U') (R' F R F')</Algorithm>
+    </Case>
+    <Case Index="16">Na<Algorithm>U' (L U' R) U2 (L' U R') (L U' R) U2 (L' U R')</Algorithm>
+    </Case>
+    <Case Index="17">Nb<Algorithm>U (R' U L') U2 (R U' L) (R' U L') U2 (R U' L)</Algorithm>
+    </Case>
+    <Case Index="18">Ga<Algorithm>R2 (u R' U R') (U' R u' R2) y' (R' U R)</Algorithm>
+    </Case>
+    <Case Index="19">Gb<Algorithm>(R' U' R) y (R2 u R' U) (R U' R u') R2</Algorithm>
+    </Case>
+    <Case Index="20">Gc<Algorithm>(R2 u' R U') (R U R' u) R2 y (R U' R')</Algorithm>
+    </Case>
+    <Case Index="21">Gd<Algorithm>(R U R') y' (R2 u' R U') (R' U R' u) R2</Algorithm>
+    </Case>
+</Collection>

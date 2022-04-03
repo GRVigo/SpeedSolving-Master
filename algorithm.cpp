@@ -29,8 +29,8 @@ using namespace tinyxml2;
 
 namespace grcube3
 {
-	const std::vector<Algorithm> Algorithm::Cancellations2 = LoadXMLCancellationsFile("cancel2.xml"); // Load two steps cancellations
-	const std::vector<Algorithm> Algorithm::Cancellations3 = LoadXMLCancellationsFile("cancel3.xml"); // Load three steps cancellations
+    const std::vector<Algorithm> Algorithm::Cancellations2 = LoadXMLCancellationsFile("algsets/cancel2.xml"); // Load two steps cancellations
+    const std::vector<Algorithm> Algorithm::Cancellations3 = LoadXMLCancellationsFile("algsets/cancel3.xml"); // Load three steps cancellations
 
 	// Array with subjective score for each movement
 	const uint Algorithm::m_scores[]

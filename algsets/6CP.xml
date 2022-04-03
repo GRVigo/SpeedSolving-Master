@@ -1,0 +1,106 @@
+<Collection Name="6CP" Description="6 Corners' Permutation" CasesNumber="48">
+    <Case Index="0">5-6 1 (Skip)<Algorithm></Algorithm>
+    </Case>
+    <Case Index="1">5-6 2<Algorithm>R U R' F' R U R' U' R' F R2 U' R'</Algorithm></Case>
+    <Case Index="2">5-6 3<Algorithm>R U' R' U R U' D' R2 U R D R U' D' R2 (D)</Algorithm>
+        <Algorithm>F R U' R' U' R U R' F' R U R' U' R' F R F'</Algorithm>
+    </Case>
+	
+    <Case Index="3">6-5 1<Algorithm>F R U R U' R' F' R U' R U R2 U' R</Algorithm></Case>
+    <Case Index="4">6-5 2<Algorithm>R U' R' D' R U R2 D R U' R' D' R (D)</Algorithm></Case>
+    <Case Index="5">6-5 3<Algorithm>R D R' U2 R U' D' R' D' R U R' (D)</Algorithm>
+        <Algorithm>R U' R' U R' U2 R2 U R U R' U' R2</Algorithm>
+        <Algorithm>R2 U R2 U' R2 U R2 U R2 U2 R2</Algorithm>
+    </Case>
+	
+    <Case Index="6">2-6 1<Algorithm>R2 U2 R2 U' R2 U' R2</Algorithm></Case>
+    <Case Index="7">2-6 2<Algorithm>U' D R2 U2 R2 U R2 U R2 (D')</Algorithm>
+		<Algorithm>U D R2 U' R2 U' R2 U2 R2 (D')</Algorithm>
+    </Case>
+	<Case Index="8">2-6 3<Algorithm>U2 x R' U R U' R' U R U' R' U R U' x'</Algorithm>
+		<Algorithm>R' D R U' R D' R' U2 R D R' U R' D' R</Algorithm>
+    </Case>
+	<Case Index="9">2-6 4<Algorithm>D' R2 U R2 U' R2 D R2</Algorithm></Case>
+	<Case Index="10">2-6 5<Algorithm>U R2 D' R2 U R2 U' R2 (D)</Algorithm></Case>
+	<Case Index="11">2-6 6<Algorithm>R2 U R2 U' R2 D R2 U' R2 U R2 (D')</Algorithm>
+		<Algorithm>R U R' B2 R U' R U R2 B2</Algorithm>
+    </Case>
+	
+	<Case Index="12">6-2 1<Algorithm>R2 U2 F U F' R2 F U' F'</Algorithm></Case>
+    <Case Index="13">6-2 2<Algorithm>U' R' F' R U R2 U' R' F R U' R2</Algorithm>
+		<Algorithm>U' F U F' R2 F U' F' U' R2</Algorithm>
+    </Case>
+	<Case Index="14">6-2 3<Algorithm>U2 R2 U' D R2 U' R2 U R2 (D')</Algorithm></Case>
+	<Case Index="15">6-2 4<Algorithm>U' R2 U' R2</Algorithm></Case>
+	<Case Index="16">6-2 5<Algorithm>R2 U' R2 U' R2 D R2 U' R2 U R2 (D')</Algorithm>
+		<Algorithm>U F R' D R' U R2 U' R' D' R F' </Algorithm>
+	</Case>
+	<Case Index="17">6-2 6<Algorithm>U' x R' D' R U2 R' D R U2 x'</Algorithm></Case>
+	
+	<Case Index="18">5-2 1<Algorithm>D' R2 U2 R2 U' R2 U' R2 (D)</Algorithm></Case>
+    <Case Index="19">5-2 2<Algorithm>U' R2 U2 R2 U R2 U R2</Algorithm>
+		<Algorithm>U2 R2 U R2 U R2 U' R2</Algorithm>
+    </Case>
+	<Case Index="20">5-2 3<Algorithm>U2 D' x R' U R U' R' U R U' R' U R U' x' (D)</Algorithm>
+		<Algorithm>U x' U' R U R' U' R U R' U' R U R' x</Algorithm>
+	</Case>
+	<Case Index="21">5-2 4<Algorithm>U2 R2 D R2 U' R2 U R2 (D')</Algorithm></Case>
+	<Case Index="22">5-2 5<Algorithm>U' D R2 U' R2 U R2 D' R2</Algorithm></Case>
+	<Case Index="23">5-2 6<Algorithm>U' R2 U' R2 U R2 D' R2 U R2 U' R2 (D)</Algorithm>
+		<Algorithm>U' R' U' R F2 R' U R' U' R2 F2</Algorithm>
+	</Case>
+	
+	<Case Index="24">2-5 1<Algorithm>U' R2 U R2 D' R2 D R2 U R2 D' R2 (D)</Algorithm>
+		<Algorithm>U' F U F' R2 F U' F' U2 R2</Algorithm>
+	</Case>
+    <Case Index="25">2-5 2<Algorithm>U' R2 U F U F' R2 F U' F'</Algorithm></Case>
+	<Case Index="26">2-5 3<Algorithm>U R2 U D' R2 U R2 U' R2 (D)</Algorithm></Case>
+	<Case Index="27">2-5 4<Algorithm>U R U2 R' D' R' D R' D' R' U2 R' (D)</Algorithm>
+		<Algorithm>D R2 U' R2 U R2 D' R2 U R2 U R2</Algorithm>
+	</Case>
+	<Case Index="28">2-5 5<Algorithm>R2 U R2</Algorithm></Case>
+	<Case Index="29">2-5 6<Algorithm>R U R' U R U' R' D' R U R' U' R U' R' (D)</Algorithm>
+		<Algorithm>U' x U2 R' D' R U2 R' D R x'</Algorithm>
+	</Case>
+	
+	<Case Index="30">2-3 1<Algorithm>U' R2 U2 R2</Algorithm></Case>
+    <Case Index="31">2-3 2<Algorithm>R2 U' R2 U2 R2 U' D' R2 U R2 U' R2 (D)</Algorithm>
+		<Algorithm>R2 D' R2 U R2 U' R2 U' D R2 U R2</Algorithm>
+	</Case>
+	<Case Index="32">2-3 3<Algorithm>U' R F' R2 F R U R' F' R2 F R U R2</Algorithm></Case>
+	<Case Index="33">2-3 4<Algorithm>R2 U R2 U R2 D R2 U' R2 U R2 (D')</Algorithm>
+		<Algorithm>U2 R2 U' D R2 U' R2 U R2 D' R2 U' R2</Algorithm>
+	</Case>
+	<Case Index="34">2-3 5<Algorithm>U D' R U' R' U2 D R2 U2 R2 D' R U R' (D)</Algorithm>
+		<Algorithm>R2 U' D' R2 U R2 U' R2 U D R2 U R2</Algorithm>
+	</Case>
+	<Case Index="35">2-3 6<Algorithm>U2 R2 U R2 U' R2 U' D' R2 U R2 U' R2 (D)</Algorithm>
+		<Algorithm>U' R2 U D R2 U' R2 U R2 D' R2 U R2</Algorithm>
+	</Case>
+	
+	<Case Index="36">3-2 1<Algorithm>U2 D' R U' R U R' D R D' R' U R2 U2 R2 (D)</Algorithm>
+		<Algorithm>U' R2 U R2 U' D R2 U' R2 U R2 D' R2</Algorithm>
+	</Case>
+    <Case Index="37">3-2 2<Algorithm>U2 D' R2 U R2 U D R2 U2 D' R2 (D)</Algorithm></Case>
+	<Case Index="38">3-2 3<Algorithm>R2 U2 D' R2 U R2 U' R2 (D)</Algorithm>
+		<Algorithm>U2 D R2 U' R2 U R2 U' D' R2</Algorithm>
+	</Case>
+	<Case Index="39">3-2 4<Algorithm>F2 D' r2 D r U' r F2 r' U r (D)</Algorithm>
+		<Algorithm>U R' F' R U R2 U' R' F R' U2 R2 U R2</Algorithm>
+	</Case>
+	<Case Index="40">3-2 5<Algorithm>R2 U R2 U' R2 U R2</Algorithm></Case>
+	<Case Index="41">3-2 6<Algorithm>D' R2 U R2 D R2 U' D' R2 (D)</Algorithm>
+		<Algorithm>D' R2 U R2 U' R2 U D R2</Algorithm>
+	</Case>
+	
+	<Case Index="42">1-3 1<Algorithm>R2 U R2 U' R2 U2 R2</Algorithm></Case>
+    <Case Index="43">1-3 2<Algorithm>U R2 U D R2 U' R2 U R2 (D')</Algorithm></Case>
+	<Case Index="44">1-3 3<Algorithm>U2 R2 U' R2 D' R2 D R2 U' R2 D' R2 (D)</Algorithm>
+		<Algorithm>U2 R2 U R2 D' R2 U R2 U' R2 U D R2</Algorithm>
+	</Case>
+	<Case Index="45">1-3 4<Algorithm>U R2 U R2 D' R2 U R2 U R2 U2 R2 (D)</Algorithm>
+		<Algorithm>U R2 U' R2 D R2 U' R2 U R2 U' D' R2</Algorithm>
+	</Case>
+	<Case Index="46">1-3 5<Algorithm>U R D R' D' R2 U R D R2 U' D' R</Algorithm></Case>
+	<Case Index="47">1-3 6<Algorithm>U2 R2 U' D' R2 U R2 U' R2 (D)</Algorithm></Case>
+</Collection>

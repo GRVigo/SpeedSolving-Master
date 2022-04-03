@@ -34,25 +34,25 @@ using namespace tinyxml2;
 namespace grcube3
 {
     // Load algorithms collections needed
-	const Collection Collection::OLL_Algorithms("OLL.xml", true);
-    const Collection Collection::PLL_Algorithms("PLL.xml", true);
-    const Collection Collection::Algorithms_1LLL("1LLL.xml", true);
-    const Collection Collection::ZBLL_Algorithms("ZBLL.xml", true);
-    const Collection Collection::OCLL_Algorithms("OCLL.xml", true);
-    const Collection Collection::CMLL_Algorithms("CMLL.xml", true);
-	const Collection Collection::COLL_Algorithms("COLL.xml", true);
-	const Collection Collection::EPLL_Algorithms("EPLL.xml", true);
-    const Collection Collection::Algorithms_2GLL("2GLL.xml", true);
+    const Collection Collection::OLL_Algorithms("algsets/OLL.xml", true);
+    const Collection Collection::PLL_Algorithms("algsets/PLL.xml", true);
+    const Collection Collection::Algorithms_1LLL("algsets/1LLL.xml", true);
+    const Collection Collection::ZBLL_Algorithms("algsets/ZBLL.xml", true);
+    const Collection Collection::OCLL_Algorithms("algsets/OCLL.xml", true);
+    const Collection Collection::CMLL_Algorithms("algsets/CMLL.xml", true);
+    const Collection Collection::COLL_Algorithms("algsets/COLL.xml", true);
+    const Collection Collection::EPLL_Algorithms("algsets/EPLL.xml", true);
+    const Collection Collection::Algorithms_2GLL("algsets/2GLL.xml", true);
 
-    const Collection Collection::EOLE_Algorithms("EOLE.xml", true);
-    const Collection Collection::Algorithms_6CO("6CO.xml", true);
-    const Collection Collection::Algorithms_6CP("6CP.xml", true);
-    const Collection Collection::APDR_Algorithms("APDR.xml", true);
-    const Collection Collection::CDRLL_Algorithms("CDRLL.xml", true);
-    const Collection Collection::DCAL_Algorithms("DCAL.xml", true);
-    const Collection Collection::JTLE_Algorithms("JTLE.xml", true);
-    const Collection Collection::L5EP_Algorithms("L5EP.xml", true);
-    const Collection Collection::TDR_Algorithms("TDR.xml", true);
+    const Collection Collection::EOLE_Algorithms("algsets/EOLE.xml", true);
+    const Collection Collection::Algorithms_6CO("algsets/6CO.xml", true);
+    const Collection Collection::Algorithms_6CP("algsets/6CP.xml", true);
+    const Collection Collection::APDR_Algorithms("algsets/APDR.xml", true);
+    const Collection Collection::CDRLL_Algorithms("algsets/CDRLL.xml", true);
+    const Collection Collection::DCAL_Algorithms("algsets/DCAL.xml", true);
+    const Collection Collection::JTLE_Algorithms("algsets/JTLE.xml", true);
+    const Collection Collection::L5EP_Algorithms("algsets/L5EP.xml", true);
+    const Collection Collection::TDR_Algorithms("algsets/TDR.xml", true);
 
 	// Load a collection of algorithms from an XML file
     bool Collection::LoadXMLCollectionFile(const std::string& XMLFilename, const bool clean)

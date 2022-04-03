@@ -1,0 +1,104 @@
+<Collection Name="6CO" Description="6 Corners' Orientation" CasesNumber="72">
+    <Case Index="0">DD 1 (Skip)<Algorithm></Algorithm></Case>
+	<Case Index="1">DD 2<Algorithm>R' U2 R U R' U' R U R' U R</Algorithm>
+		<Algorithm>R U2 R' U' R U R' U' R U' R'</Algorithm>
+	</Case>
+	<Case Index="2">DD 3<Algorithm>R' U R' U2 R2 U' R' U2 R</Algorithm></Case>
+	<Case Index="3">DD 4<Algorithm>R U R' U R U2 R'</Algorithm></Case>
+	<Case Index="4">DD 5<Algorithm>R U2 R' U' R U' R'</Algorithm></Case>
+	<Case Index="5">DD 6<Algorithm>(U') F U' R2 U R2 U F'</Algorithm>
+		<Algorithm>R U D' R U R' U2 D R'</Algorithm>
+	</Case>
+	<Case Index="6">DD 7<Algorithm>R D' R U2 R' D R'</Algorithm></Case>
+	<Case Index="7">DD 8<Algorithm>R D' R U' R' D R'</Algorithm></Case>
+	<Case Index="8">RR 1<Algorithm>R U' R' U2 R' U' R U2 R U' R</Algorithm></Case>
+	<Case Index="9">RR 2<Algorithm>R U' R' U' D' R U' R' D R U' R'</Algorithm></Case>
+	<Case Index="10">RR 3<Algorithm>R U' R' D' U' R U2 R' D</Algorithm></Case>
+	<Case Index="11">RR 4<Algorithm>R' U R D U R' U2 R D'</Algorithm>
+		<Algorithm>U2 R U' R U' R' U' R U R' U2 R'</Algorithm>
+	</Case>
+	<Case Index="12">RR 5<Algorithm>R U' R U' R' U R U' R' U2 R'</Algorithm></Case>
+	<Case Index="13">RR 6<Algorithm>R U R2 U' R U2 R U' R</Algorithm></Case>
+	<Case Index="14">RR 7<Algorithm>R U R U2 R' U R'</Algorithm></Case>
+	<Case Index="15">RR 8<Algorithm>R U R U' R' U R U' R' U R'</Algorithm></Case>
+	<Case Index="16">FB 1<Algorithm>R' U' R D R' U' R U' D' R' U' R</Algorithm></Case>
+	<Case Index="17">FB 2<Algorithm>(U) R U R' U2 R U' R U' R' U' R'</Algorithm></Case>
+	<Case Index="18">FB 3<Algorithm>D' R U' R' D U' R U2 R'</Algorithm></Case>
+	<Case Index="19">FB 4<Algorithm>D R' U R D' U R' U2 R</Algorithm></Case>
+	<Case Index="20">FB 5<Algorithm>R2 U2 R' U R' U2 R U R'</Algorithm></Case>
+	<Case Index="21">FB 6<Algorithm>R' U2 R' U' R U R' U' R U' R</Algorithm></Case>
+	<Case Index="22">FB 7<Algorithm>R U' R' D' R U' R' U R U R' D</Algorithm></Case>
+	<Case Index="23">FB 8<Algorithm>R U' R U R' U2 R U' R' U R'</Algorithm></Case>
+	<Case Index="24">RD 1<Algorithm>R' D' R U R' D R</Algorithm>
+		<Algorithm>U2 R' D' R U' R' D R</Algorithm>
+	</Case>
+	<Case Index="25">RD 2<Algorithm>R U2 R U R' U R'</Algorithm></Case>
+	<Case Index="26">RD 3<Algorithm>R' U2 D' R U R' U D R</Algorithm></Case>
+	<Case Index="27">RD 4<Algorithm>R U' R' U R U2 R' U R U' R'</Algorithm>
+		<Algorithm>D R' U' R U2 R' U' R D'</Algorithm>
+		<Algorithm>R' U' D' R U2 R' U' D R</Algorithm>
+	</Case>
+	<Case Index="28">RD 5<Algorithm>R U' R' U2 R U' R'</Algorithm></Case>
+	<Case Index="29">RD 6<Algorithm>R U' D R' U2 R U' D' R'</Algorithm></Case>
+	<Case Index="30">RD 7<Algorithm>R U' R U' R2 U' R2 U R' U2 R'</Algorithm></Case>
+	<Case Index="31">RD 8<Algorithm>R' U2 R U R2 U' R U2 R</Algorithm></Case>
+	<Case Index="32">FD 1<Algorithm>D' R U' R' D R U R'</Algorithm></Case>
+	<Case Index="33">FD 2<Algorithm>R U' D' R U' R' U2 D R'</Algorithm></Case>
+	<Case Index="34">FD 3<Algorithm>R U2 R' U R U R'</Algorithm></Case>
+	<Case Index="35">FD 4<Algorithm>R U R' U2 R U R'</Algorithm>
+		<Algorithm>R S' U2 S R</Algorithm>
+	</Case>
+	<Case Index="36">FD 5<Algorithm>D' R U R' U D R U2 R'</Algorithm></Case>
+	<Case Index="37">FD 6<Algorithm>R2 U R' U R U2 R' U R'</Algorithm></Case>
+	<Case Index="38">FD 7<Algorithm>R U' R' U' R U' R' U R U2 R'</Algorithm></Case>
+	<Case Index="39">FD 8<Algorithm>R U2 R' U R U' R' U' R U' R'</Algorithm></Case>
+	<Case Index="40">DR 1<Algorithm>R D R' U R D' R'</Algorithm>
+		<Algorithm>(U2) R D R' U' R D' R'</Algorithm>
+	</Case>
+	<Case Index="41">DR 2<Algorithm>R' U R U R' U2 R</Algorithm></Case>
+	<Case Index="42">DR 3<Algorithm>D' R U2 R' U R U R' D</Algorithm></Case>
+	<Case Index="43">DR 4<Algorithm>D' R U R' U2 R U R' D</Algorithm></Case>
+	<Case Index="44">DR 5<Algorithm>R' U R U2 R' U R</Algorithm></Case>
+	<Case Index="45">DR 6<Algorithm>F R2 U R2 U' F'</Algorithm></Case>
+	<Case Index="46">DR 7<Algorithm>R U2 R U' R2 U R U2 R'</Algorithm></Case>
+	<Case Index="47">DR 8<Algorithm>R U2 R' U' R2 U R' U2 R'</Algorithm></Case>
+	<Case Index="48">DB 1<Algorithm>R' D R' U' R D' R</Algorithm></Case>
+	<Case Index="49">DB 2<Algorithm>R2 U2 R' U R' U R U2 R'</Algorithm>
+		<Algorithm>(U') D' R U' R' U' R U2 R' D</Algorithm>
+	</Case>
+	<Case Index="50">DB 3<Algorithm>R' U2 R U' R' U' R</Algorithm></Case>
+	<Case Index="51">DB 4<Algorithm>R' U' R U2 R' U' R</Algorithm>
+		<Algorithm>R' S' U2 S R'</Algorithm>
+	</Case>
+	<Case Index="52">DB 5<Algorithm>D' R U' R' U2 R U' R' D</Algorithm></Case>
+	<Case Index="53">DB 6<Algorithm>F U R2 U' R2 F'</Algorithm>
+		<Algorithm>(U) R U2 R' U' D' R U' R' D</Algorithm>
+	</Case>
+	<Case Index="54">DB 7<Algorithm>R' U R U R' U R U' R' U2 R</Algorithm></Case>
+	<Case Index="55">DB 8<Algorithm>R' U2 R U R' U' R U' R' U' R</Algorithm></Case>
+	<Case Index="56">FR 1<Algorithm>R U' R U' R' U2 R'</Algorithm></Case>
+	<Case Index="57">FR 2<Algorithm>R U2 R U' R2 U2 R U R'</Algorithm></Case>
+	<Case Index="58">FR 3<Algorithm>R U R' U R U R U' R' U2 R'</Algorithm></Case>
+	<Case Index="59">FR 4<Algorithm>R U2 R' U D' R U R' D</Algorithm></Case>
+	<Case Index="60">FR 5<Algorithm>R U R' U' R2 U' R2 U' R U R'</Algorithm></Case>
+	<Case Index="61">FR 6<Algorithm>R U2 R' U R' U R2 U' R</Algorithm></Case>
+	<Case Index="62">FR 7<Algorithm>R' U R U' R U' R U R'</Algorithm>
+		<Algorithm>R U R U' R U' R U R</Algorithm>
+	</Case>
+	<Case Index="63">FR 8<Algorithm>R U' R U2 R' U R' U R U R'</Algorithm>
+		<Algorithm>R U2 R' U R2 U2 R2 U2 R U R'</Algorithm>
+	</Case>
+	<Case Index="64">RB 1<Algorithm>R' U R' U R U2 R</Algorithm></Case>
+	<Case Index="65">RB 2<Algorithm>R2 U' R' U R U2 R' U R'</Algorithm></Case>
+	<Case Index="66">RB 3<Algorithm>R2 U' D R' U2 R U D' R' U R'</Algorithm></Case>
+	<Case Index="67">RB 4<Algorithm>D' R U' R' D U2 R U' R'</Algorithm></Case>
+	<Case Index="68">RB 5<Algorithm>R' U' R U2 R' U' D' R U R' D R</Algorithm></Case>
+	<Case Index="69">RB 6<Algorithm>R' U' R U2 D R' U' R D'</Algorithm></Case>
+	<Case Index="70">RB 7<Algorithm>R U' R' U R' U R' U' R</Algorithm>
+		<Algorithm>R U' R' U' R2 U' R' U' R'</Algorithm>
+	</Case>
+	<Case Index="71">RB 8<Algorithm>R' U' D' R U' R' D R U' R' U' R</Algorithm>
+		<Algorithm>R U' R' U R' U R U' R2 U R'</Algorithm>
+	</Case>
+	
+</Collection>

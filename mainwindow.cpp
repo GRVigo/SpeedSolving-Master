@@ -93,6 +93,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->comboBox_Method->setCurrentIndex(1); // CFOP as default method
 
     SolveId = 0u; // Index for solves history
+
+    // Hide unused controls
+    ui->pushButton_Debug->hide();
+    ui->line_Cores->hide();
+    ui->label_Language->hide();
+    ui->comboBox_Language->hide();
 }
 
 MainWindow::~MainWindow()
@@ -1147,12 +1153,12 @@ void MainWindow::on_lineEdit_Scramble_textChanged(const QString &scrInput)
         ui->pushButton_StartSearch->setEnabled(true);
 
         Algorithm A(ui->lineEdit_Scramble->text().toStdString().c_str());
-        A = A.GetSimplified();
-        A = A.GetWithoutTurns();
-        while (A.Shrink());
-        ui->statusBar->showMessage(CurrentLang["ScrambleSimplified"] + QString::fromStdString(A.ToString()));
+        Algorithm B = A.GetSimplified();
+        B = B.GetWithoutTurns();
+        while (B.Shrink());
+        // if (A != B) ui->statusBar->showMessage(CurrentLang["ScrambleSimplified"] + QString::fromStdString(B.ToString()));
 
-        if (A.GetSize() < 12u) // Scramble too short to evaluate
+        if (B.GetSize() < 12u) // Scramble too short to evaluate
         {
             ui->label_Eval->setText(CurrentLang["NoEval"]);
         }
@@ -1163,7 +1169,7 @@ void MainWindow::on_lineEdit_Scramble_textChanged(const QString &scrInput)
             GetSearchSpins(SearchSpins);
 
             // Get the scramble evaluation
-            Evaluation.SetNewScramble(A);
+            Evaluation.SetNewScramble(B);
             Evaluation.StandardGroups(SearchSpins);
             Evaluation.Run();
             float Score = Evaluation.GetScore();
@@ -1500,6 +1506,7 @@ void MainWindow::sCFOP(const std::string& Scr)
     case 9: CrossLayers.push_back(Lyr::R); break;
     default: CrossLayers.push_back(Lyr::U); break;
     }
+    uint nLayers = CrossLayers.size();
 
     uint Depth;
     switch (ui->comboBox_Speed->currentIndex())
@@ -1507,7 +1514,7 @@ void MainWindow::sCFOP(const std::string& Scr)
     case 0: Depth = 6u; break;
     case 1: Depth = 7u; break;
     case 2: Depth = 8u; break;
-    case 3: Depth = 9u; break;
+    case 3: Depth = ui->checkBox_Cache->isChecked() ? 8u : 9u; break;
     default: Depth = 6u; break;
     }
 
@@ -1515,10 +1522,10 @@ void MainWindow::sCFOP(const std::string& Scr)
     switch (ui->comboBox_Amount->currentIndex())
     {
     case 0: Inspections = 1u; break;
-    case 1: Inspections = 4u; break;
-    case 2: Inspections = 16u; break;
-    case 3: Inspections = 32u; break;
-    case 4: Inspections = 64u; break;
+    case 1: if (nLayers > 5u) Inspections = 1u; else if (nLayers > 1u) Inspections = 3u; else Inspections = 6u; break;
+    case 2: if (nLayers > 5u) Inspections = 2u; else if (nLayers > 1u) Inspections = 6u; else Inspections = 12u; break;
+    case 3: if (nLayers > 5u) Inspections = 4u; else if (nLayers > 1u) Inspections = 12u; else Inspections = 24u; break;
+    case 4: if (nLayers > 5u) Inspections = 8u; else if (nLayers > 1u) Inspections = 24u; else Inspections = 48u; break;
     default: Inspections = 1u; break;
     }
 
@@ -1637,6 +1644,7 @@ void MainWindow::sRoux(const std::string& Scr)
     // Read the allowed orientations
     std::vector<Spn> SearchSpins;
     GetSearchSpins(SearchSpins);
+    uint nSpins = SearchSpins.size();
 
     uint Depth1, Depth2;
     switch (ui->comboBox_Speed->currentIndex())
@@ -1652,10 +1660,10 @@ void MainWindow::sRoux(const std::string& Scr)
     switch (ui->comboBox_Amount->currentIndex())
     {
     case 0: Inspections = 1u; break;
-    case 1: Inspections = 4u; break;
-    case 2: Inspections = 16u; break;
-    case 3: Inspections = 32u; break;
-    case 4: Inspections = 64u; break;
+    case 1: if (nSpins > 20u) Inspections = 1u; else if (nSpins > 4u) Inspections = 3u; else Inspections = 6u; break;
+    case 2: if (nSpins > 20u) Inspections = 2u; else if (nSpins > 4u) Inspections = 6u; else Inspections = 12u; break;
+    case 3: if (nSpins > 20u) Inspections = 4u; else if (nSpins > 4u) Inspections = 12u; else Inspections = 24u; break;
+    case 4: if (nSpins > 20u) Inspections = 8u; else if (nSpins > 4u) Inspections = 24u; else Inspections = 48u; break;
     default: Inspections = 1u; break;
     }
 
@@ -1786,14 +1794,15 @@ void MainWindow::sPetrus(const std::string& Scr)
     // Read the allowed orientations
     std::vector<Spn> SearchSpins;
     GetSearchSpins(SearchSpins);
+    uint nSpins = SearchSpins.size();
 
     uint Depth1, Depth2;
     switch (ui->comboBox_Speed->currentIndex())
     {
     case 0: Depth1 = 6u; Depth2 = 6u; break;
     case 1: Depth1 = 7u; Depth2 = 6u; break;
-    case 2: Depth1 = 8u; Depth2 = 7u; break;
-    case 3: Depth1 = 8u; Depth2 = 8u; break;
+    case 2: Depth1 = 7u; Depth2 = 7u; break;
+    case 3: Depth1 = 8u; Depth2 = 7u; break;
     default: Depth1 = 6u; Depth2 = 6u; break;
     }
 
@@ -1801,10 +1810,10 @@ void MainWindow::sPetrus(const std::string& Scr)
     switch (ui->comboBox_Amount->currentIndex())
     {
     case 0: Inspections = 1u; break;
-    case 1: Inspections = 4u; break;
-    case 2: Inspections = 16u; break;
-    case 3: Inspections = 32u; break;
-    case 4: Inspections = 64u; break;
+    case 1: if (nSpins > 20u) Inspections = 1u; else if (nSpins > 4u) Inspections = 3u; else Inspections = 6u; break;
+    case 2: if (nSpins > 20u) Inspections = 2u; else if (nSpins > 4u) Inspections = 6u; else Inspections = 12u; break;
+    case 3: if (nSpins > 20u) Inspections = 4u; else if (nSpins > 4u) Inspections = 12u; else Inspections = 24u; break;
+    case 4: if (nSpins > 20u) Inspections = 8u; else if (nSpins > 4u) Inspections = 24u; else Inspections = 48u; break;
     default: Inspections = 1u; break;
     }
 
@@ -1933,6 +1942,7 @@ void MainWindow::sZZ(const std::string& Scr)
     // Read the allowed orientations
     std::vector<Spn> SearchSpins;
     GetSearchSpins(SearchSpins);
+    uint nSpins = SearchSpins.size();
 
     uint Depth;
     switch (ui->comboBox_Speed->currentIndex())
@@ -1948,10 +1958,10 @@ void MainWindow::sZZ(const std::string& Scr)
     switch (ui->comboBox_Amount->currentIndex())
     {
     case 0: Inspections = 1u; break;
-    case 1: Inspections = 4u; break;
-    case 2: Inspections = 16u; break;
-    case 3: Inspections = 32u; break;
-    case 4: Inspections = 64u; break;
+    case 1: if (nSpins > 20u) Inspections = 1u; else if (nSpins > 4u) Inspections = 3u; else Inspections = 6u; break;
+    case 2: if (nSpins > 20u) Inspections = 2u; else if (nSpins > 4u) Inspections = 6u; else Inspections = 12u; break;
+    case 3: if (nSpins > 20u) Inspections = 4u; else if (nSpins > 4u) Inspections = 12u; else Inspections = 24u; break;
+    case 4: if (nSpins > 20u) Inspections = 8u; else if (nSpins > 4u) Inspections = 24u; else Inspections = 48u; break;
     default: Inspections = 1u; break;
     }
 
@@ -2070,25 +2080,26 @@ void MainWindow::sCEOR(const std::string& Scr)
     // Read the allowed orientations
     std::vector<Spn> SearchSpins;
     GetSearchSpins(SearchSpins);
+    uint nSpins = SearchSpins.size();
 
     uint Depth1, Depth2;
     switch (ui->comboBox_Speed->currentIndex())
     {
-    case 0: Depth1 = 6u; Depth2 = 6u; break;
-    case 1: Depth1 = 7u; Depth2 = 6u; break;
-    case 2: Depth1 = 8u; Depth2 = 7u; break;
-    case 3: Depth1 = 8u; Depth2 = 8u; break;
-    default: Depth1 = 6u; Depth2 = 6u; break;
+    case 0: Depth1 = 6u; Depth2 = 5u; break;
+    case 1: Depth1 = 6u; Depth2 = 6u; break;
+    case 2: Depth1 = 7u; Depth2 = 6u; break;
+    case 3: Depth1 = 7u; Depth2 = 7u; break;
+    default: Depth1 = 6u; Depth2 = 5u; break;
     }
 
     uint Inspections;
     switch (ui->comboBox_Amount->currentIndex())
     {
     case 0: Inspections = 1u; break;
-    case 1: Inspections = 4u; break;
-    case 2: Inspections = 16u; break;
-    case 3: Inspections = 32u; break;
-    case 4: Inspections = 64u; break;
+    case 1: if (nSpins > 20u) Inspections = 1u; else if (nSpins > 4u) Inspections = 3u; else Inspections = 6u; break;
+    case 2: if (nSpins > 20u) Inspections = 2u; else if (nSpins > 4u) Inspections = 6u; else Inspections = 12u; break;
+    case 3: if (nSpins > 20u) Inspections = 4u; else if (nSpins > 4u) Inspections = 12u; else Inspections = 24u; break;
+    case 4: if (nSpins > 20u) Inspections = 8u; else if (nSpins > 4u) Inspections = 24u; else Inspections = 48u; break;
     default: Inspections = 1u; break;
     }
 
@@ -2276,14 +2287,15 @@ void MainWindow::sMehta(const std::string& Scr)
     // Read the allowed orientations
     std::vector<Spn> SearchSpins;
     GetSearchSpins(SearchSpins);
+    uint nSpins = SearchSpins.size();
 
     uint Depth1, Depth2;
     switch (ui->comboBox_Speed->currentIndex())
     {
     case 0: Depth1 = 6u; Depth2 = 6u; break;
     case 1: Depth1 = 7u; Depth2 = 6u; break;
-    case 2: Depth1 = 8u; Depth2 = 7u; break;
-    case 3: Depth1 = 8u; Depth2 = 8u; break;
+    case 2: Depth1 = 7u; Depth2 = 7u; break;
+    case 3: Depth1 = 8u; Depth2 = 7u; break;
     default: Depth1 = 6u; Depth2 = 6u; break;
     }
 
@@ -2291,10 +2303,10 @@ void MainWindow::sMehta(const std::string& Scr)
     switch (ui->comboBox_Amount->currentIndex())
     {
     case 0: Inspections = 1u; break;
-    case 1: Inspections = 4u; break;
-    case 2: Inspections = 16u; break;
-    case 3: Inspections = 32u; break;
-    case 4: Inspections = 64u; break;
+    case 1: if (nSpins > 20u) Inspections = 1u; else if (nSpins > 4u) Inspections = 3u; else Inspections = 6u; break;
+    case 2: if (nSpins > 20u) Inspections = 2u; else if (nSpins > 4u) Inspections = 6u; else Inspections = 12u; break;
+    case 3: if (nSpins > 20u) Inspections = 4u; else if (nSpins > 4u) Inspections = 12u; else Inspections = 24u; break;
+    case 4: if (nSpins > 20u) Inspections = 8u; else if (nSpins > 4u) Inspections = 24u; else Inspections = 48u; break;
     default: Inspections = 1u; break;
     }
 
