@@ -119,6 +119,9 @@
        <number>0</number>
       </property>
       <item>
+       <layout class="QGridLayout" name="gridLayout"/>
+      </item>
+      <item>
        <widget class="QPushButton" name="pushButton_Credits">
         <property name="text">
          <string>Credits</string>

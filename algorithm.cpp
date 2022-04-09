@@ -2203,7 +2203,8 @@ namespace grcube3
 		Algorithm ACanc, ADev = GetDeveloped();
 		while (ADev.Shrink());
 
-		for (uint i = 0u; i < ADev.GetSize() - 2u; i++)
+		uint i;
+		for (i = 0u; i < ADev.GetSize() - 2u; i++)
 		{
 			bool AllTurns = Algorithm::IsTurn(ADev.At(i)) && Algorithm::IsTurn(ADev.At(i + 1u)) && Algorithm::IsTurn(ADev.At(i + 2u));
 			if (SameAxisSteps(ADev.At(i), ADev.At(i + 1u)) || AllTurns)
@@ -2258,30 +2259,39 @@ namespace grcube3
 			else ACanc.Append(ADev.At(i));
 		}
 
-		if (SameAxisSteps(ADev.At(ADev.GetSize() - 2u), ADev.At(ADev.GetSize() - 1u))) // Test the last two steps
+		if (i == ADev.GetSize() - 2u) // Two steps left
 		{
-			bool found = false;
-			const Algorithm A2 = ADev.GetSubAlgorithm(ADev.GetSize() - 2u, 2u);
-			for (size_t n = 0u; n < Cancellations2.size(); n += 2u)
+			if (SameAxisSteps(ADev.At(ADev.GetSize() - 2u), ADev.At(ADev.GetSize() - 1u))) // Test the last two steps
 			{
-				if (A2 == Cancellations2[n])
+				bool found = false;
+				const Algorithm A2 = ADev.GetSubAlgorithm(ADev.GetSize() - 2u, 2u);
+				for (size_t n = 0u; n < Cancellations2.size(); n += 2u)
 				{
-					ACanc += Cancellations2[n + 1u];
-					found = true;
-					break;
+					if (A2 == Cancellations2[n])
+					{
+						ACanc += Cancellations2[n + 1u];
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+				{
+					ACanc.Append(ADev.At(ADev.GetSize() - 2u));
+					ACanc.Append(ADev.At(ADev.GetSize() - 1u));
 				}
 			}
-			if (!found)
+			else
 			{
 				ACanc.Append(ADev.At(ADev.GetSize() - 2u));
 				ACanc.Append(ADev.At(ADev.GetSize() - 1u));
 			}
 		}
-		else
+		else if (i == ADev.GetSize() - 1u) // One step left
 		{
-			ACanc.Append(ADev.At(ADev.GetSize() - 2u));
 			ACanc.Append(ADev.At(ADev.GetSize() - 1u));
 		}
+
+		while (ACanc.Shrink());
 
 		return ACanc;
 	}
