@@ -1,4 +1,4 @@
-# SpeedSolving-Master beta 2
+# SpeedSolving-Master V1.0
 
 An application for solving the Rubik's cube.
 
@@ -10,7 +10,7 @@ Quick start
     * Select Method, Variant and Option (if available).
     * Press the Start button and wait a few seconds (if you don't get any results, change the Speed to Medium and press Start button again).
 
-Supported methods: Layer by layer, CFOP, Roux, Petrus, ZZ, CEOR (YruRU) and Mehta. Press Help button for details.
+Supported methods: Layer by layer, CFOP, Roux, Petrus, ZZ, CEOR (YruRU), Mehta, Nautilus and LEOR.
 
 Copyright (C) 2022  German Ramos. This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. The source code is avaliable on GitHub.
 
