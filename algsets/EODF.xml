@@ -1,0 +1,69 @@
+<Collection Name="EODF" Description="Nautilus: orient the remaining six edges while placing the DF edge" CasesNumber="56">
+<Case Index="0">Skip<Algorithm></Algorithm></Case>
+<Case Index="1">2 Misoriented UF-UL/UB<Algorithm>r U r' U' r U r'</Algorithm></Case>
+<Case Index="2">2 Misoriented UF-UB/UR<Algorithm>M' U' M U2 M' U M</Algorithm></Case>
+<Case Index="3">2 Misoriented UF-UL/UR<Algorithm>(U) M' U M U' M' U M</Algorithm></Case>
+<Case Index="4">2 Misoriented UF-UL/FR<Algorithm>(U') M' U' M U r U' r'</Algorithm></Case>
+<Case Index="5">2 Misoriented UF-UL/DF<Algorithm>r U R' U' R U r'</Algorithm></Case>
+<Case Index="6">2 Misoriented UF-UB/FR<Algorithm>r U' M U2 M' U r'</Algorithm></Case>
+<Case Index="7">2 Misoriented UF-UB/DF<Algorithm>(U) R U' M' U' R' U' M</Algorithm>
+<Algorithm>(U) r U r' U r U' r'</Algorithm></Case>
+<Case Index="8">2 Misoriented UF-UR/FR<Algorithm>M' U2 M U' R' F R F'</Algorithm>
+<Algorithm>(U) M' U R U' r' U' M' U2 M</Algorithm></Case>
+<Case Index="9">2 Misoriented UF-UR/DF<Algorithm>r U' R' U' M</Algorithm></Case>
+<Case Index="10">2 Misoriented UF-FR/DF<Algorithm>M' U' R U' r'</Algorithm></Case>
+<Case Index="11">2 Misoriented FU/UL<Algorithm>(U') r U R' U M</Algorithm></Case>
+<Case Index="12">2 Misoriented FU/UB<Algorithm>(U2) M' U' M U M' U M</Algorithm></Case>
+<Case Index="13">2 Misoriented FU-UR<Algorithm>(U) r U2 R' U' R U r'</Algorithm>
+<Algorithm>(U) M' U' R U R' U' M</Algorithm></Case>
+<Case Index="14">2 Misoriented FU/FR<Algorithm>(U2) r U' r' U' r U' r'</Algorithm></Case>
+<Case Index="15">2 Misoriented FU/DF<Algorithm>(U') r U' R' U M</Algorithm></Case>
+<Case Index="16">2 Misoriented FR-UF/UL<Algorithm>(U') r U' r' U r U' r'</Algorithm></Case>
+<Case Index="17">2 Misoriented FR-UL/UR<Algorithm>(U) r U' M U M' U' r'</Algorithm></Case>
+<Case Index="18">2 Misoriented FR-UF/DF<Algorithm>(U2) r U' r' U' M' U M</Algorithm></Case>
+<Case Index="19">2 Misoriented RF/UF<Algorithm>M' U R U r'</Algorithm></Case>
+<Case Index="20">2 Misoriented RF/DF<Algorithm>M' U' R U r'</Algorithm></Case>
+<Case Index="21">2 Misoriented DF-UF/UL<Algorithm>(U') F R' F' R</Algorithm>
+<Algorithm>(U') r U R' U' M</Algorithm></Case>
+<Case Index="22">2 Misoriented DF-UL/UR<Algorithm>(U) F R U R' U' F'</Algorithm></Case>
+<Case Index="23">2 Misoriented DF-UF/FR<Algorithm>R' F R F'</Algorithm>
+<Algorithm>(U) F' U' F</Algorithm></Case>
+<Case Index="24">2 Misoriented FD/UF<Algorithm>r U r' U' r U' R' U' M</Algorithm></Case>
+<Case Index="25">2 Misoriented FD/FR<Algorithm>r U2 r' U' r U R' U M</Algorithm></Case>
+<Case Index="26">4 Misoriented UF-UL/UB/UR/FR<Algorithm>R' F2 R U2 r U' r' U F</Algorithm></Case>
+<Case Index="27">4 Misoriented UF-UL/UB/UR/DF<Algorithm>(U2) M' U M U2 M' U2 M</Algorithm></Case>
+<Case Index="28">4 Misoriented UF-UL/UB/FR/DF<Algorithm>M' U M U2 r U' r'</Algorithm></Case>
+<Case Index="29">4 Misoriented UF-UB/UR/FR/DF<Algorithm>r U' r' U2 M' U M</Algorithm></Case>
+<Case Index="30">4 Misoriented UF-UL/UR/FR/DF<Algorithm>(U) M' U M R U M' U' r'</Algorithm></Case>
+<Case Index="31">4 Misoriented FU/UL/UB/UR<Algorithm>(U) M' U2 M U2 M' U' M</Algorithm></Case>
+<Case Index="32">4 Misoriented FU/UL/UB/FR<Algorithm>(U2) M' U2 M U' r U' r'</Algorithm></Case>
+<Case Index="33">4 Misoriented FU/UL/UB/DF<Algorithm>(U') M' U M</Algorithm></Case>
+<Case Index="34">4 Misoriented FU/UB/UR/FR<Algorithm>(U2) M' U M U' r U' r'</Algorithm>
+<Algorithm>(U2) r U2 r' U' r U' r'</Algorithm></Case>
+<Case Index="35">4 Misoriented FU/UB/UR/DF<Algorithm>(U) M' U' M</Algorithm></Case>
+<Case Index="36">4 Misoriented FU/UL/UR/FR<Algorithm>(U) r U2 r' U' r U r'</Algorithm></Case>
+<Case Index="37">4 Misoriented FU/UL/UR/DF<Algorithm>M' U M U M' U2 M</Algorithm>
+<Algorithm>R U' R' U r U r'</Algorithm></Case>
+<Case Index="38">4 Misoriented FU/UL/FR/DF<Algorithm>(U') M' U2 R U' r'</Algorithm></Case>
+<Case Index="39">4 Misoriented FU/UB/FR/DF<Algorithm>R U M' U' r'</Algorithm></Case>
+<Case Index="40">4 Misoriented FU/UR/FR/DF<Algorithm>(U) r U' r'</Algorithm></Case>
+<Case Index="41">4 Misoriented FR-UF/UL/UB/UR<Algorithm>M2 r U' M' U r' U' M U M2</Algorithm></Case>
+<Case Index="42">4 Misoriented FR-UF/UL/UR/DF<Algorithm>(U') r U' r' U M' U' M</Algorithm>
+<Algorithm>M' U M' U R U' R r2</Algorithm></Case>
+<Case Index="43">4 Misoriented RF/UF/UL/UR<Algorithm>(U) M' U M U' r U r'</Algorithm></Case>
+<Case Index="44">4 Misoriented RF/UF/UL/DF<Algorithm>r U r'</Algorithm></Case>
+<Case Index="45">4 Misoriented RF/UL/UR/DF<Algorithm>R U' R' U M' U M</Algorithm></Case>
+<Case Index="46">4 Misoriented DF-UF/UL/UB/UR<Algorithm>r U r' U2 M' U M</Algorithm></Case>
+<Case Index="47">4 Misoriented DF/UF/UL/UR/FR<Algorithm>(U') r U' r' U2 r U r'</Algorithm>
+<Algorithm>(U') F' L' U2 L F</Algorithm></Case>
+<Case Index="48">4 Misoriented FD/UF/UL/UR<Algorithm>M' U M U' M' U2 M</Algorithm></Case>
+<Case Index="49">4 Misoriented FD/UF/UL/FR<Algorithm>r U r' U' r U2 r'</Algorithm></Case>
+<Case Index="50">4 Misoriented FD/UL/UR/FR<Algorithm>(U) r U2 r' U' M' U M</Algorithm>
+<Algorithm>(U') r U2 M U' M' U r'</Algorithm></Case>
+<Case Index="51">6 Misoriented FU<Algorithm>(U) r U' M2 U' R' U M'</Algorithm></Case>
+<Case Index="52">6 Misoriented RF<Algorithm>r U M2 U' R' U M'</Algorithm></Case>
+<Case Index="53">6 Misoriented FD<Algorithm>M U M' U r U M' U R r2</Algorithm></Case>
+<Case Index="54">All Oriented UF<Algorithm>M' U2 M</Algorithm>
+<Algorithm>r U2 r'</Algorithm></Case>
+<Case Index="55">All Oriented FR<Algorithm>R U M' U2 r'</Algorithm></Case>
+</Collection>

@@ -32,36 +32,36 @@ namespace grcube3
     const std::vector<Algorithm> Algorithm::Cancellations2 = LoadXMLCancellationsFile("algsets/cancel2.xml"); // Load two steps cancellations
     const std::vector<Algorithm> Algorithm::Cancellations3 = LoadXMLCancellationsFile("algsets/cancel3.xml"); // Load three steps cancellations
 
-	// Array with subjective score for each movement
+	// Array with subjective score for each movement (0 = No influence or very pleasant movement, 10 = very annoying movement)
 	const uint Algorithm::m_scores[]
 	{
 		0u, // No movement
 
 		// Single layer
-		9u, 10u, 6u,  // U, U', U2
-		5u, 6u, 4u,   // D, D', D2
-		10u, 8u, 5u,  // F, F', F2
-		4u, 5u, 3u,   // B, B', B2
-		10u, 10u, 8u, // R, R', R2
-		7u, 8u, 4u,   // L, L', L2
+		1u, 0u, 4u,  // U, U', U2
+		5u, 4u, 6u,   // D, D', D2
+		0u, 2u, 5u,  // F, F', F2
+		6u, 5u, 7u,   // B, B', B2
+		0u, 0u, 2u, // R, R', R2
+		3u, 2u, 6u,   // L, L', L2
 
 		// Double layer
-		5u, 5u, 3u, // u, u', u2
-		3u, 3u, 2u, // d, d', d2
-		4u, 4u, 2u, // f, f', f2
-		3u, 2u, 2u, // b, b', b2
-		5u, 4u, 3u, // r, r', r2
-		4u, 4u, 3u, // l, l', l2  
+		5u, 5u, 7u, // u, u', u2
+		7u, 7u, 8u, // d, d', d2
+		6u, 6u, 8u, // f, f', f2
+		7u, 8u, 8u, // b, b', b2
+		5u, 6u, 7u, // r, r', r2
+		6u, 6u, 7u, // l, l', l2  
 
 		// Middle layers
-		1u, 1u, 1u, // E, E', E2
-		1u, 1u, 1u,	// S, S', S2
-		2u, 8u, 6u,	// M, M', M2
+		9u, 9u, 9u, // E, E', E2
+		7u, 8u, 9u,	// S, S', S2
+		8u, 2u, 4u,	// M, M', M2
 
 		// Full cube turns
-		2u, 2u, 2u, // x, x', x2
-		3u, 3u, 3u,	// y, y', y2
-		2u, 2u, 2u,	// z, z', z2
+		8u, 8u, 8u, // x, x', x2
+		7u, 7u, 7u,	// y, y', y2
+		8u, 8u, 8u,	// z, z', z2
 
 		// Parentheses --limited to a maximum of 9 repetitions--
 		0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u,	0u
@@ -1226,7 +1226,7 @@ namespace grcube3
 		return count;
 	}
 
-	// Searchs a algorithm inside the current algorithm, returns his position(s)
+	// Searchs an algorithm inside the current algorithm, returns his position(s)
 	bool Algorithm::Find(std::vector<uint>& Pos, const Algorithm& SubAlg) const
 	{
 		uint SizeAlg = GetSize(), SizeSubAlg = SubAlg.GetSize();
@@ -1246,7 +1246,7 @@ namespace grcube3
 			}
 		}
 		
-		return Pos.size() > 0u;
+		return !Pos.empty();
 	}
 
 	// Returns equivalent algorithm with the subalgorithm expressed with repetitions
@@ -2296,28 +2296,28 @@ namespace grcube3
 		return ACanc;
 	}
 
-	// Returns the same algorithm with turns for getting most comfortable (subjective) movements
+	// Returns the same algorithm with turns for getting most comfortable (subjective) movements (lower score = best)
 	Algorithm Algorithm::GetRegrip() const
 	{
-		uint MaxScore = GetSubjectiveScore(), MaxScoreIndex = 9u;
+		uint MinScore = GetSubjectiveScore(), MinScoreIndex = static_cast<uint>(Turns.size());
 	
-		if (MaxScore == 0u) return Algorithm("");
+		if (MinScore == 0u) return Algorithm("");
 
-		for (uint i = 0u; i < 9u; i++)
+		for (uint i = 0u; i < static_cast<uint>(Turns.size()); i++)
 		{
 			Algorithm RegripAlg = *this;
 			RegripAlg.TransformTurn(Turns[i]); // No turns added
 			uint RegripScore = RegripAlg.GetSubjectiveScore();
 			
-			if (RegripScore > MaxScore)
+			if (RegripScore < MinScore)
 			{
-				MaxScore = RegripScore;
-				MaxScoreIndex = i;
+				MinScore = RegripScore;
+				MinScoreIndex = i;
 			}
 		}
 
 		Algorithm RegripAlg = *this;
-		if (MaxScoreIndex < 9u)	RegripAlg.TransformTurn(Turns[MaxScoreIndex], 0u, GetSize()); // Add turns
+		if (MinScoreIndex < static_cast<uint>(Turns.size())) RegripAlg.TransformTurn(Turns[MinScoreIndex], 0u, GetSize()); // Add turns
 		return RegripAlg;
 	}
 
@@ -2414,6 +2414,12 @@ namespace grcube3
 		case Sst::YRURU_UR: // YruRU movements for F2L
 			SL.push_back(Stp::U); SL.push_back(Stp::U2); SL.push_back(Stp::Up);
 			SL.push_back(Stp::R); SL.push_back(Stp::R2); SL.push_back(Stp::Rp); return true;
+
+		case Sst::NAUTILUS_rRUM: // Moveset for Nautilus dFR
+			SL.push_back(Stp::U); SL.push_back(Stp::U2); SL.push_back(Stp::Up);
+			SL.push_back(Stp::R); SL.push_back(Stp::R2); SL.push_back(Stp::Rp);
+			SL.push_back(Stp::M); SL.push_back(Stp::M2); SL.push_back(Stp::Mp);
+            SL.push_back(Stp::r); SL.push_back(Stp::r2); SL.push_back(Stp::rp); return true;
 
 		default: return false;
 		}

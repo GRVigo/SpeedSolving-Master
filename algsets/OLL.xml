@@ -1,4 +1,4 @@
-<Collection Name="OLL" Description="Algorithms collection" CasesNumber="58">
+<Collection Name="OLL" Description="Orients all last-layer corners and edges in one step" CasesNumber="58">
     <Case Index="0">SKIP<Algorithm></Algorithm>
     </Case>
     <Case Index="1">OCLL1<Algorithm>(R U2 R') (U' R U R') (U' R U' R')</Algorithm>

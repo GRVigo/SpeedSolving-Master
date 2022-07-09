@@ -21,11 +21,7 @@
 */
 
 #include "roux.h"
-#include "cfop.h"
 #include "collection.h"
-
-#include <chrono>
-#include <algorithm>
 
 namespace grcube3
 {	
@@ -49,10 +45,8 @@ namespace grcube3
         }
 		 
         MaxDepthFB = MaxDepthSBFS = MaxDepthSBSS = MaxDepthL6E = MaxDepthL6EO = 0u;
-        TimeFB = TimeSBFS = TimeSBSS = TimeCMLL = TimeCOLL = TimeL6EO = TimeL6E2E = TimeL6E = 0.0;
 
-		SearchSpins.clear();
-		for (int s = 0; s < 24; s++) SearchSpins.push_back(static_cast<Spn>(s));
+		TimeFB = TimeSBFS = TimeSBSS = TimeCMLL = TimeCOLL = TimeL6EO = TimeL6E2E = TimeL6E = 0.0;
 		
 		Metric = Metrics::Movements; // Default metric
 	}
@@ -65,42 +59,43 @@ namespace grcube3
 
         MaxDepthFB = (MaxDepth <= 4u ? 4u : MaxDepth);
 
-        DeepSearch DSFB(Scramble); // Deep search for first block
+		DS.Clear();
+        DS.SetScramble(Scramble);
 		
-        DSFB.AddToOptionalPieces(Pgr::UF_B1);
-        DSFB.AddToOptionalPieces(Pgr::UB_B1);
-        DSFB.AddToOptionalPieces(Pgr::UR_B1);
-        DSFB.AddToOptionalPieces(Pgr::UL_B1);
+        DS.AddToOptionalPieces(Pgr::UF_B1);
+        DS.AddToOptionalPieces(Pgr::UB_B1);
+        DS.AddToOptionalPieces(Pgr::UR_B1);
+        DS.AddToOptionalPieces(Pgr::UL_B1);
 
-        DSFB.AddToOptionalPieces(Pgr::DF_B1);
-        DSFB.AddToOptionalPieces(Pgr::DB_B1);
-        DSFB.AddToOptionalPieces(Pgr::DR_B1);
-        DSFB.AddToOptionalPieces(Pgr::DL_B1);
+        DS.AddToOptionalPieces(Pgr::DF_B1);
+        DS.AddToOptionalPieces(Pgr::DB_B1);
+        DS.AddToOptionalPieces(Pgr::DR_B1);
+        DS.AddToOptionalPieces(Pgr::DL_B1);
 
-        DSFB.AddToOptionalPieces(Pgr::FU_B1);
-        DSFB.AddToOptionalPieces(Pgr::FD_B1);
-        DSFB.AddToOptionalPieces(Pgr::FR_B1);
-        DSFB.AddToOptionalPieces(Pgr::FL_B1);
+        DS.AddToOptionalPieces(Pgr::FU_B1);
+        DS.AddToOptionalPieces(Pgr::FD_B1);
+        DS.AddToOptionalPieces(Pgr::FR_B1);
+        DS.AddToOptionalPieces(Pgr::FL_B1);
 
-        DSFB.AddToOptionalPieces(Pgr::BU_B1);
-        DSFB.AddToOptionalPieces(Pgr::BD_B1);
-        DSFB.AddToOptionalPieces(Pgr::BR_B1);
-        DSFB.AddToOptionalPieces(Pgr::BL_B1);
+        DS.AddToOptionalPieces(Pgr::BU_B1);
+        DS.AddToOptionalPieces(Pgr::BD_B1);
+        DS.AddToOptionalPieces(Pgr::BR_B1);
+        DS.AddToOptionalPieces(Pgr::BL_B1);
 
-        DSFB.AddToOptionalPieces(Pgr::RU_B1);
-        DSFB.AddToOptionalPieces(Pgr::RD_B1);
-        DSFB.AddToOptionalPieces(Pgr::RF_B1);
-        DSFB.AddToOptionalPieces(Pgr::RB_B1);
+        DS.AddToOptionalPieces(Pgr::RU_B1);
+        DS.AddToOptionalPieces(Pgr::RD_B1);
+        DS.AddToOptionalPieces(Pgr::RF_B1);
+        DS.AddToOptionalPieces(Pgr::RB_B1);
 
-        DSFB.AddToOptionalPieces(Pgr::LU_B1);
-        DSFB.AddToOptionalPieces(Pgr::LD_B1);
-        DSFB.AddToOptionalPieces(Pgr::LF_B1);
-        DSFB.AddToOptionalPieces(Pgr::LB_B1);
+        DS.AddToOptionalPieces(Pgr::LU_B1);
+        DS.AddToOptionalPieces(Pgr::LD_B1);
+        DS.AddToOptionalPieces(Pgr::LF_B1);
+        DS.AddToOptionalPieces(Pgr::LB_B1);
 
 		// First level is extended in the search to improve the multithreading - first level will not be checked
 		// (it's supose that the first block not will be solved in a single movement)
-        const SearchUnit URoot(SequenceType::DOUBLE);
-        const SearchUnit U(SequenceType::SINGLE);
+        const SearchUnit URoot(SequenceTypes::DOUBLE);
+        const SearchUnit U(SequenceTypes::SINGLE);
 
         SearchLevel L_Root(SearchCheck::NO_CHECK);
         L_Root.Add(URoot);
@@ -111,24 +106,24 @@ namespace grcube3
         SearchLevel L_NoCheck(SearchCheck::NO_CHECK);
         L_NoCheck.Add(U);
 
-        DSFB.AddSearchLevel(L_Root); // Level 1 (two steps -DOUBLE- root algorithms)
-        DSFB.AddSearchLevel(L_NoCheck); // Level 2
-        DSFB.AddSearchLevel(L_Check); // Level 3
-        for (uint l = 4u; l < MaxDepthFB; l++) DSFB.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
+        DS.AddSearchLevel(L_Root); // Level 1 (two steps -DOUBLE- root algorithms)
+        DS.AddSearchLevel(L_NoCheck); // Level 2
+        DS.AddSearchLevel(L_Check); // Level 3
+        for (uint l = 4u; l < MaxDepthFB; l++) DS.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
 
-        DSFB.UpdateRootData();
-		// DSFB.SetMinDeep(DSFB.GetMaxDepth() - 2u);
+        DS.UpdateRootData();
+		// DS.SetMinDepth(DS.GetMaxDepth() - 2u);
 
-        DSFB.Run(Cores);
+        DS.Run(Cores);
 
-        Cores = DSFB.GetCoresUsed(); // Update to the real number of cores used
+        Cores = DS.GetUsedCores(); // Update to the real number of cores used
 
-        EvaluateFirstBlock(DSFB.Solves, MaxSolves);
+        EvaluateFirstBlock(DS.GetSolves(), MaxSolves);
 
         const std::chrono::duration<double> fb_elapsed_seconds = std::chrono::system_clock::now() - time_fb_start;
         TimeFB = fb_elapsed_seconds.count();
 
-        return !DSFB.Solves.empty();
+        return !DS.GetSolves().empty();
 	}
 	
 	// Search the best first block solve algorithms from an algorithms vector
@@ -138,36 +133,41 @@ namespace grcube3
         for (const auto spin : SearchSpins)
         {
 			int sp = static_cast<int>(spin);
-			EvaluateFBResult(FirstBlocks[sp], MaxSolves, Solves, CubeBase, spin, Plc::BEST_SOLVES);
-        }
-
-		for (int sp = 0; sp < 24; sp++)
-		{
-			Spn spin = static_cast<Spn>(sp);
 			Stp T1, T2;
-			Cube::GetSpinsSteps(CubeBase.GetSpin(), spin, T1, T2);
 			Algorithm Insp;
-			if (T1 != Stp::NONE) Insp.Append(T1);
-			if (T2 != Stp::NONE) Insp.Append(T2);
 
-			for (auto& block : FirstBlocks[sp])
+			EvaluateRouxFBResult(FirstBlocks[sp], MaxSolves, Solves, CubeBase, spin, Plc::BEST);
+
+			Inspections[sp].clear();
+
+			if (!FirstBlocks[sp].empty())
 			{
-				if (T1 != Stp::NONE) block.TransformTurn(T1);
-				if (T2 != Stp::NONE) block.TransformTurn(T2);
-				Inspections[sp].push_back(Insp);
+				Insp.Clear();
+				Cube::GetSpinsSteps(CubeBase.GetSpin(), spin, T1, T2);
+				if (T1 != Stp::NONE) Insp.Append(T1);
+				if (T2 != Stp::NONE) Insp.Append(T2);
+
+				for (auto& fb : FirstBlocks[sp])
+				{
+					if (T1 != Stp::NONE) fb.TransformTurn(T1);
+					if (T2 != Stp::NONE) fb.TransformTurn(T2);
+					Inspections[sp].push_back(Insp);
+				}
 			}
-		}
+        }
 	}
 
     // Search the best second block first square solve algorithm with the given search depth
 	void Roux::SearchSecondBlocksFirstSquare(const uint MaxDepth)
     {
         const auto time_sb_start = std::chrono::system_clock::now();
+		
+		bool Skip = false; // Skip the search (for multi threading)
 
         MaxDepthSBFS = (MaxDepth <= 4u ? 4u : MaxDepth);
 		
-		const SearchUnit U_SB(SequenceType::SINGLE, Sst::ROUX_SB);
-        const SearchUnit U_SB_Seq(SequenceType::RETURN_FIXED_SINGLE, Sst::SINGLE_R, Sst::LATERAL_SINGLE_FBp);
+        const SearchUnit U_SB(SequenceTypes::SINGLE, Sst::ROUX_SB);
+        const SearchUnit U_SB_Seq(SequenceTypes::CONJUGATE_SINGLE, Sst::SINGLE_R, Sst::LATERAL_SINGLE_FBp);
 
 		SearchLevel L_Check(SearchCheck::CHECK);
         L_Check.Add(U_SB);
@@ -219,36 +219,40 @@ namespace grcube3
 			uint n = 0u;
 			for (const auto& FB : FirstBlocks[sp])
 			{
+                SecondBlocksFS[sp].push_back(Algorithm(""));
+				
+				if (Skip) continue;
+				
 				Algorithm AlgStart = Scramble;
 				AlgStart.Append(Inspections[sp][n]);
 				AlgStart.Append(FB);
 
-				DeepSearch DSSB(AlgStart); // Deep search for second block
+				DS.Clear();
+                DS.SetScramble(AlgStart);
 
-				DSSB.AddToMandatoryPieces(B1);
-				DSSB.AddToOptionalPieces(B2S1);
-				DSSB.AddToOptionalPieces(B2S2);
+				DS.AddToMandatoryPieces(B1);
+				DS.AddToOptionalPieces(B2S1);
+				DS.AddToOptionalPieces(B2S2);
 
-				for (uint l = 1u; l < MaxDepthSBFS; l++) DSSB.AddSearchLevel(L_Check); // Add needed search levels
+				for (uint l = 1u; l < MaxDepthSBFS; l++) DS.AddSearchLevel(L_Check); // Add needed search levels
 
-				DSSB.UpdateRootData();
+				DS.UpdateRootData();
 
-				DSSB.Run(Cores);
+				DS.Run(Cores);
+				Skip = DS.CheckSkipSearch();
 				
-				Cores = DSSB.GetCoresUsed(); // Update to the real number of cores used
+                Cores = DS.GetUsedCores(); // Update to the real number of cores used
 
 				Cube CubeRoux(AlgStart);
 
 				std::vector<Algorithm> Solves;
 				// This function is made for CFOP, but, without the cross check ('false' parameter), is useful here
-				CFOP::EvaluateF2LResult(Solves, 1u, DSSB.Solves, CubeRoux, Cube::GetDownSliceLayer(spin), Plc::BEST_SOLVES, false);
+                Method::EvaluateCFOPF2LResult(Solves, 1u, DS.GetSolves(), CubeRoux, Cube::GetDownSliceLayer(spin), Plc::BEST, false);
 
-				if (Solves.empty()) SecondBlocksFS[sp].push_back(Algorithm(""));
-				else
+				if (!Solves.empty())
 				{
 					CubeRoux.ApplyAlgorithm(Solves[0]);
-					if (IsFBAndSBSquareBuilt(CubeRoux)) SecondBlocksFS[sp].push_back(Solves[0]);
-					else SecondBlocksFS[sp].push_back(Algorithm(""));
+					if (IsRouxFBAndSBSquareBuilt(CubeRoux)) SecondBlocksFS[sp][n] = Solves[0];
 				}
 				n++;
 			}
@@ -262,11 +266,13 @@ namespace grcube3
     void Roux::SearchSecondBlocksSecondSquare(const uint MaxDepth)
     {
         auto time_SBSS_start = std::chrono::system_clock::now();
+		
+		bool Skip = false; // Skip the search (for multi threading)
 
 		MaxDepthSBSS = (MaxDepth <= 4u ? 4u : MaxDepth);
 
-		const SearchUnit U_Up(SequenceType::SINGLE, Sst::SINGLE_U);
-        const SearchUnit U_Lat(SequenceType::RETURN_FIXED_SINGLE, Sst::SINGLE_U, Sst::LATERAL_UD);
+        const SearchUnit U_Up(SequenceTypes::SINGLE, Sst::SINGLE_U);
+        const SearchUnit U_Lat(SequenceTypes::CONJUGATE_SINGLE, Sst::SINGLE_U, Sst::LATERAL_UD);
 
         SearchLevel L_F2L_Check(SearchCheck::CHECK);
         L_F2L_Check.Add(U_Up);
@@ -320,6 +326,10 @@ namespace grcube3
 			
 			for (uint n = 0u; n < FirstBlocks[sp].size(); n++)
 			{
+                SecondBlocksSS[sp].push_back(Algorithm(""));
+				
+				if (Skip) continue;
+				
 				Algorithm AlgStart = Scramble;
 				AlgStart.Append(Inspections[sp][n]);
 				AlgStart.Append(FirstBlocks[sp][n]);
@@ -328,34 +338,31 @@ namespace grcube3
 				Cube CubeRoux(AlgStart);
 
 				// No second block or second block already complete
-				if (!IsFBAndSBSquareBuilt(CubeRoux) || AreFirstBlocksBuilt(CubeRoux))
-				{
-					SecondBlocksSS[sp].push_back(Algorithm(""));
-					continue; 
-				}
+				if (!IsRouxFBAndSBSquareBuilt(CubeRoux) || AreRouxBlocksBuilt(CubeRoux)) continue; 
 
-				DeepSearch DSSB(AlgStart, Plc::SHORT); // Deep search to complete second block
+				DS.Clear();
+                DS.SetScramble(AlgStart);
+				DS.SetShortPolicy();
 
-				DSSB.AddToMandatoryPieces(B1);
-				DSSB.AddToMandatoryPieces(B2);
+				DS.AddToMandatoryPieces(B1);
+				DS.AddToMandatoryPieces(B2);
 
-				for (uint l = 1u; l < MaxDepthSBSS; l++) DSSB.AddSearchLevel(L_F2L_Check); // Add needed search levels
-				DSSB.AddSearchLevel(L_F2L_End);
+				for (uint l = 1u; l < MaxDepthSBSS; l++) DS.AddSearchLevel(L_F2L_Check); // Add needed search levels
+				DS.AddSearchLevel(L_F2L_End);
 
-				DSSB.UpdateRootData();
+				DS.UpdateRootData();
 
-				DSSB.Run(Cores);
+				DS.Run(Cores);
+				Skip = DS.CheckSkipSearch();
 
 				std::vector<Algorithm> Solves;
 				// This function is made for CFOP, but, without the cross check ('false' parameter), is useful here
-				CFOP::EvaluateF2LResult(Solves, 1u, DSSB.Solves, CubeRoux, Cube::GetDownSliceLayer(spin), Plc::SHORT, false);
+                Method::EvaluateCFOPF2LResult(Solves, 1u, DS.GetSolves(), CubeRoux, Cube::GetDownSliceLayer(spin), Plc::SHORT, false);
 
-				if (Solves.empty()) SecondBlocksSS[sp].push_back(Algorithm(""));
-				else
+				if (!Solves.empty())
 				{
 					CubeRoux.ApplyAlgorithm(Solves[0]);
-					if (AreFirstBlocksBuilt(CubeRoux)) SecondBlocksSS[sp].push_back(Solves[0]);
-					else SecondBlocksSS[sp].push_back(Algorithm(""));
+					if (AreRouxBlocksBuilt(CubeRoux)) SecondBlocksSS[sp][n] = Solves[0];
 				}
 			}
 		}
@@ -365,7 +372,7 @@ namespace grcube3
     }
 	
 	// CMLL search
-    void Roux::SearchCMLL(const bool AddLastUMovement)
+    void Roux::SearchCMLL(const Plc Pol, const bool AddLastUMovement)
 	{
         const auto time_CMLL_start = std::chrono::system_clock::now();
 
@@ -388,11 +395,11 @@ namespace grcube3
 
 				const Cube CubeRoux(AlgStart);
 
-				if (!AreFirstBlocksBuilt(CubeRoux)) continue;
+				if (!AreRouxBlocksBuilt(CubeRoux)) continue;
 
 				Stp LastUStep;
 
-                Collection::CornersLL(AlgCMLL[sp][n], CasesCMLL[sp][n], LastUStep, AlgSets::CMLL, CubeRoux);
+                CornersLL(AlgCMLL[sp][n], CasesCMLL[sp][n], LastUStep, Algset_CMLL, Pol, Metric, CubeRoux);
 
 				if (AddLastUMovement) AlgCMLL[sp][n].Append(LastUStep);
             }
@@ -403,7 +410,7 @@ namespace grcube3
 	}
     
     // COLL search
-    void Roux::SearchCOLL(const bool AddLastUMovement)
+    void Roux::SearchCOLL(const Plc Pol, const bool AddLastUMovement)
 	{
         const auto time_COLL_start = std::chrono::system_clock::now();
 
@@ -426,11 +433,11 @@ namespace grcube3
 
 				const Cube CubeRoux(AlgStart);
 
-				if (!AreFirstBlocksBuilt(CubeRoux)) continue;
+				if (!AreRouxBlocksBuilt(CubeRoux)) continue;
 
 				Stp LastUStep;
 
-                Collection::CornersLL(AlgCOLL[sp][n], CasesCOLL[sp][n], LastUStep, AlgSets::COLL, CubeRoux);
+                CornersLL(AlgCOLL[sp][n], CasesCOLL[sp][n], LastUStep, Algset_COLL, Pol, Metric, CubeRoux);
 
 				if (AddLastUMovement) AlgCOLL[sp][n].Append(LastUStep);
 			}
@@ -444,12 +451,14 @@ namespace grcube3
     void Roux::SearchL6E(const uint MaxDepth)
     {
         const auto time_L6E_start = std::chrono::system_clock::now();
+		
+		bool Skip = false; // Skip the search (for multi threading)
 
         MaxDepthL6E = (MaxDepth <= 4u ? 4u : MaxDepth);
 
         // First level is extended in the search to improve the multithreading
-        const SearchUnit U_Root(SequenceType::TRIPLE, Sst::SINGLE_UM);
-        const SearchUnit U_Level(SequenceType::SINGLE, Sst::SINGLE_UM);
+        const SearchUnit U_Root(SequenceTypes::TRIPLE, Sst::SINGLE_UM);
+        const SearchUnit U_Level(SequenceTypes::SINGLE, Sst::SINGLE_UM);
 
         SearchLevel L_Root(SearchCheck::NO_CHECK);
         L_Root.Add(U_Root);
@@ -466,6 +475,8 @@ namespace grcube3
 			for (uint n = 0u; n < FirstBlocks[sp].size(); n++)
 			{
 				AlgL6E[sp].push_back(Algorithm(""));
+				
+				if (Skip) continue;
 
 				Algorithm AlgStart = Scramble;
 				AlgStart.Append(Inspections[sp][n]);
@@ -479,7 +490,7 @@ namespace grcube3
 				
 				Cube CubeRoux(AlgStart);
 
-				if (!AreFirstBlocksBuilt(CubeRoux) || CubeRoux.IsSolved()) continue;
+				if (!AreRouxBlocksBuilt(CubeRoux) || CubeRoux.IsSolved()) continue;
 
 				// Auxiliar deep search for last six edges in 3 movements (very fast)
 				DeepSearch PreDSL6E(AlgStart, Plc::SHORT);
@@ -489,26 +500,29 @@ namespace grcube3
 				PreDSL6E.AddSearchLevel(L_Check);
 				PreDSL6E.UpdateRootData();
 				PreDSL6E.Run(Cores);
-				if (!PreDSL6E.Solves.empty())
+                if (!PreDSL6E.GetSolves().empty())
 				{
 					PreDSL6E.EvaluateShortestResult(AlgL6E[sp][n], true);
 					continue; // L6E solve in three movements found
 				}
 				
 				// Full deep search for last six edges
-				DeepSearch DSL6E(AlgStart, Plc::SHORT);
+				DS.Clear();
+                DS.SetScramble(AlgStart);
+				DS.SetShortPolicy();
 
-				DSL6E.AddToMandatoryPieces(Pgr::ALL); // Search the full cube
+				DS.AddToMandatoryPieces(Pgr::ALL); // Search the full cube
 
-				DSL6E.AddSearchLevel(L_Root); // Level 1 (three steps -TRIPLE- root algorithms
-				for (uint l = 2; l < MaxDepthL6E; l++) DSL6E.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
+				DS.AddSearchLevel(L_Root); // Level 1 (three steps -TRIPLE- root algorithms
+				for (uint l = 2; l < MaxDepthL6E; l++) DS.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
 
-				DSL6E.UpdateRootData();
-				DSL6E.SetMinDeep(DSL6E.GetMaxDeep() - 4u);
+				DS.UpdateRootData();
+                DS.SetMinDepth(DS.GetMaxDepth() - 4u);
 
-				DSL6E.Run(Cores);
+				DS.Run(Cores);
+				Skip = DS.CheckSkipSearch();
 
-				DSL6E.EvaluateShortestResult(AlgL6E[sp][n], true);
+				DS.EvaluateShortestResult(AlgL6E[sp][n], true);
 			}
         }
 
@@ -520,13 +534,15 @@ namespace grcube3
     void Roux::SearchL6EO(const uint MaxDepth)
     {
         const auto time_L6EO_start = std::chrono::system_clock::now();
+		
+		bool Skip = false; // Skip the search (for multi threading)
 
         MaxDepthL6EO = (MaxDepth <= 4u ? 4u : MaxDepth);
 
         // First level is extended in the search to improve the multithreading - first three levels will not be checked
         // (it's supose that the last six edges will not be solved in three movements)
-        const SearchUnit U_Root(SequenceType::TRIPLE, Sst::SINGLE_UM);
-        const SearchUnit U_Level(SequenceType::SINGLE, Sst::SINGLE_UM);
+        const SearchUnit U_Root(SequenceTypes::TRIPLE, Sst::SINGLE_UM);
+        const SearchUnit U_Level(SequenceTypes::SINGLE, Sst::SINGLE_UM);
 
         SearchLevel L_Root(SearchCheck::NO_CHECK);
         L_Root.Add(U_Root);
@@ -580,6 +596,8 @@ namespace grcube3
 			for (uint n = 0u; n < FirstBlocks[sp].size(); n++)
 			{
                 AlgL6EO[sp].push_back(Algorithm(""));
+				
+				if (Skip) continue;
 
 				Algorithm AlgStart = Scramble;
 				AlgStart.Append(Inspections[sp][n]);
@@ -591,23 +609,26 @@ namespace grcube3
 
 				Cube CubeRoux(AlgStart);
 
-				if (!AreFirstBlocksBuilt(CubeRoux) || IsL6EOriented(CubeRoux)) continue; // Last six edges already oriented or no solve
+				if (!AreRouxBlocksBuilt(CubeRoux) || IsRouxL6EOriented(CubeRoux)) continue; // Last six edges already oriented or no solve
 
-                DeepSearch DSOL6EO(AlgStart, Plc::SHORT); // Deep search for last six edges
+                DS.Clear();
+                DS.SetScramble(AlgStart);
+				DS.SetShortPolicy();
 
-                DSOL6EO.AddToMandatoryPieces(B1);
-                DSOL6EO.AddToMandatoryPieces(B2);
-                DSOL6EO.AddToMandatoryPieces(CORNERS);
-                DSOL6EO.AddToMandatoryOrientations(EDGES);
+                DS.AddToMandatoryPieces(B1);
+                DS.AddToMandatoryPieces(B2);
+                DS.AddToMandatoryPieces(CORNERS);
+                DS.AddToMandatoryOrientations(EDGES);
 
-                DSOL6EO.AddSearchLevel(L_Root); // Level 1 (three steps -TRIPLE- root algorithms
-                for (uint l = 2; l < MaxDepthL6EO; l++) DSOL6EO.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
+                DS.AddSearchLevel(L_Root); // Level 1 (three steps -TRIPLE- root algorithms
+                for (uint l = 2; l < MaxDepthL6EO; l++) DS.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
 
-                DSOL6EO.UpdateRootData();
+                DS.UpdateRootData();
 
-                DSOL6EO.Run(Cores);
+                DS.Run(Cores);
+				Skip = DS.CheckSkipSearch();
 
-                DSOL6EO.EvaluateShortestResult(AlgL6EO[sp][n], true);
+                DS.EvaluateShortestResult(AlgL6EO[sp][n], true);
 			}
         }
 
@@ -619,13 +640,15 @@ namespace grcube3
     void Roux::SearchL6E2E(const uint MaxDepth)
     {
         const auto time_L6E2E_start = std::chrono::system_clock::now();
+		
+		bool Skip = false; // Skip the search (for multi threading)
 
         MaxDepthL6E2E = (MaxDepth <= 4u ? 4u : MaxDepth);
 
         // First level is extended in the search to improve the multithreading - first two levels will not be checked
         // (it's supose that the last six edges will not be solved in two movements)
-        SearchUnit U_Root(SequenceType::DOUBLE, Sst::SINGLE_UM);
-        SearchUnit U_Level(SequenceType::SINGLE, Sst::SINGLE_UM);
+        SearchUnit U_Root(SequenceTypes::DOUBLE, Sst::SINGLE_UM);
+        SearchUnit U_Level(SequenceTypes::SINGLE, Sst::SINGLE_UM);
 
         SearchLevel L_Root(SearchCheck::NO_CHECK);
         L_Root.Add(U_Root);
@@ -676,6 +699,8 @@ namespace grcube3
 			for (uint n = 0u; n < FirstBlocks[sp].size(); n++)
 			{
                 AlgL6E2E[sp].push_back(Algorithm(""));
+				
+				if (Skip) continue;
 
 				Algorithm AlgStart = Scramble;
 				AlgStart.Append(Inspections[sp][n]);
@@ -688,22 +713,26 @@ namespace grcube3
 
 				Cube CubeRoux(AlgStart);
 
-                if (!IsL6EOriented(CubeRoux) || IsL6EO2E(CubeRoux)) continue; // L6E two edges solved or no solve
+                if (!IsRouxL6EOriented(CubeRoux) || IsRouxL6EO2E(CubeRoux)) continue; // L6E two edges solved or no solve
 
-                DeepSearch DSL6E2E(AlgStart, Plc::SHORT); // Deep search for last six edges (UR & UL edges)
+                // Deep search for last six edges (UR & UL edges)
+				DS.Clear();
+                DS.SetScramble(AlgStart);
+				DS.SetShortPolicy();
 
-                DSL6E2E.AddToMandatoryPieces(LR);
-                DSL6E2E.AddToMandatoryPieces(LL);
-                DSL6E2E.AddToMandatoryOrientations(LM);
+                DS.AddToMandatoryPieces(LR);
+                DS.AddToMandatoryPieces(LL);
+                DS.AddToMandatoryOrientations(LM);
 
-                DSL6E2E.AddSearchLevel(L_Root); // Level 1 (three steps -TRIPLE- root algorithms
-                for (uint l = 2; l < MaxDepthL6E2E; l++) DSL6E2E.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
+                DS.AddSearchLevel(L_Root); // Level 1 (three steps -TRIPLE- root algorithms
+                for (uint l = 2; l < MaxDepthL6E2E; l++) DS.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
 
-                DSL6E2E.UpdateRootData();
+                DS.UpdateRootData();
 
-                DSL6E2E.Run(Cores);
+                DS.Run(Cores);
+				Skip = DS.CheckSkipSearch();
 
-                DSL6E2E.EvaluateShortestResult(AlgL6E2E[sp][n], true);
+                DS.EvaluateShortestResult(AlgL6E2E[sp][n], true);
 			}
 		}
 
@@ -734,476 +763,12 @@ namespace grcube3
 		}
 	}
 
-	// Check if the left Roux block is built (first block)
-	bool Roux::IsFBBuilt(const Cube& C)
-	{
-		// Roux cube with desired spin
-		switch (C.GetSpin())
-		{
-		case Spn::UF: return C.IsSolved(Pgr::UF_B1);
-		case Spn::UB: return C.IsSolved(Pgr::UB_B1);
-		case Spn::UR: return C.IsSolved(Pgr::UR_B1);
-		case Spn::UL: return C.IsSolved(Pgr::UL_B1);
-
-		case Spn::DF: return C.IsSolved(Pgr::DF_B1);
-		case Spn::DB: return C.IsSolved(Pgr::DB_B1);
-		case Spn::DR: return C.IsSolved(Pgr::DR_B1);
-		case Spn::DL: return C.IsSolved(Pgr::DL_B1);
-
-		case Spn::FU: return C.IsSolved(Pgr::FU_B1);
-		case Spn::FD: return C.IsSolved(Pgr::FD_B1);
-		case Spn::FR: return C.IsSolved(Pgr::FR_B1);
-		case Spn::FL: return C.IsSolved(Pgr::FL_B1);
-
-		case Spn::BU: return C.IsSolved(Pgr::BU_B1);
-		case Spn::BD: return C.IsSolved(Pgr::BD_B1);
-		case Spn::BR: return C.IsSolved(Pgr::BR_B1);
-		case Spn::BL: return C.IsSolved(Pgr::BL_B1);
-
-		case Spn::RU: return C.IsSolved(Pgr::RU_B1);
-		case Spn::RD: return C.IsSolved(Pgr::RD_B1);
-		case Spn::RF: return C.IsSolved(Pgr::RF_B1);
-		case Spn::RB: return C.IsSolved(Pgr::RB_B1);
-
-		case Spn::LU: return C.IsSolved(Pgr::LU_B1);
-		case Spn::LD: return C.IsSolved(Pgr::LD_B1);
-		case Spn::LF: return C.IsSolved(Pgr::LF_B1);
-		case Spn::LB: return C.IsSolved(Pgr::LB_B1);
-
-		default: return false; // Should not happend
-		}
-	}
-
-	// Check if the first Roux block is built with the given spin
-	bool Roux::IsFBBuilt(const Cube& C, const Spn S)
-	{
-		// Roux cube with desired spin
-		switch (S)
-		{
-		case Spn::UF: return C.IsSolved(Pgr::UF_B1);
-		case Spn::UB: return C.IsSolved(Pgr::UB_B1);
-		case Spn::UR: return C.IsSolved(Pgr::UR_B1);
-		case Spn::UL: return C.IsSolved(Pgr::UL_B1);
-
-		case Spn::DF: return C.IsSolved(Pgr::DF_B1);
-		case Spn::DB: return C.IsSolved(Pgr::DB_B1);
-		case Spn::DR: return C.IsSolved(Pgr::DR_B1);
-		case Spn::DL: return C.IsSolved(Pgr::DL_B1);
-
-		case Spn::FU: return C.IsSolved(Pgr::FU_B1);
-		case Spn::FD: return C.IsSolved(Pgr::FD_B1);
-		case Spn::FR: return C.IsSolved(Pgr::FR_B1);
-		case Spn::FL: return C.IsSolved(Pgr::FL_B1);
-
-		case Spn::BU: return C.IsSolved(Pgr::BU_B1);
-		case Spn::BD: return C.IsSolved(Pgr::BD_B1);
-		case Spn::BR: return C.IsSolved(Pgr::BR_B1);
-		case Spn::BL: return C.IsSolved(Pgr::BL_B1);
-
-		case Spn::RU: return C.IsSolved(Pgr::RU_B1);
-		case Spn::RD: return C.IsSolved(Pgr::RD_B1);
-		case Spn::RF: return C.IsSolved(Pgr::RF_B1);
-		case Spn::RB: return C.IsSolved(Pgr::RB_B1);
-
-		case Spn::LU: return C.IsSolved(Pgr::LU_B1);
-		case Spn::LD: return C.IsSolved(Pgr::LD_B1);
-		case Spn::LF: return C.IsSolved(Pgr::LF_B1);
-		case Spn::LB: return C.IsSolved(Pgr::LB_B1);
-
-		default: return false; // Should not happend
-		}
-	}
-
-	// Check if the first Roux square block is built with the given spin
-	bool Roux::IsFBSquareBuilt(const Cube& C, const Spn S)
-	{
-		// Roux cube with desired spin
-		switch (S)
-		{
-		case Spn::UF: return C.IsSolved(Pgr::UF_B1S2);
-		case Spn::UB: return C.IsSolved(Pgr::UB_B1S2);
-		case Spn::UR: return C.IsSolved(Pgr::UR_B1S2);
-		case Spn::UL: return C.IsSolved(Pgr::UL_B1S2);
-
-		case Spn::DF: return C.IsSolved(Pgr::DF_B1S2);
-		case Spn::DB: return C.IsSolved(Pgr::DB_B1S2);
-		case Spn::DR: return C.IsSolved(Pgr::DR_B1S2);
-		case Spn::DL: return C.IsSolved(Pgr::DL_B1S2);
-
-		case Spn::FU: return C.IsSolved(Pgr::FU_B1S2);
-		case Spn::FD: return C.IsSolved(Pgr::FD_B1S2);
-		case Spn::FR: return C.IsSolved(Pgr::FR_B1S2);
-		case Spn::FL: return C.IsSolved(Pgr::FL_B1S2);
-
-		case Spn::BU: return C.IsSolved(Pgr::BU_B1S2);
-		case Spn::BD: return C.IsSolved(Pgr::BD_B1S2);
-		case Spn::BR: return C.IsSolved(Pgr::BR_B1S2);
-		case Spn::BL: return C.IsSolved(Pgr::BL_B1S2);
-
-		case Spn::RU: return C.IsSolved(Pgr::RU_B1S2);
-		case Spn::RD: return C.IsSolved(Pgr::RD_B1S2);
-		case Spn::RF: return C.IsSolved(Pgr::RF_B1S2);
-		case Spn::RB: return C.IsSolved(Pgr::RB_B1S2);
-
-		case Spn::LU: return C.IsSolved(Pgr::LU_B1S2);
-		case Spn::LD: return C.IsSolved(Pgr::LD_B1S2);
-		case Spn::LF: return C.IsSolved(Pgr::LF_B1S2);
-		case Spn::LB: return C.IsSolved(Pgr::LB_B1S2);
-
-		default: return false; // Should not happend
-		}
-	}
-
-	// Check if the right Roux block is built (second block)
-	bool Roux::IsSBBuilt(const Cube& C)
-	{
-		// Roux cube with desired spin
-		switch (C.GetSpin())
-		{
-		case Spn::UF: return C.IsSolved(Pgr::UF_B2);
-		case Spn::UB: return C.IsSolved(Pgr::UB_B2);
-		case Spn::UR: return C.IsSolved(Pgr::UR_B2);
-		case Spn::UL: return C.IsSolved(Pgr::UL_B2);
-
-		case Spn::DF: return C.IsSolved(Pgr::DF_B2);
-		case Spn::DB: return C.IsSolved(Pgr::DB_B2);
-		case Spn::DR: return C.IsSolved(Pgr::DR_B2);
-		case Spn::DL: return C.IsSolved(Pgr::DL_B2);
-
-		case Spn::FU: return C.IsSolved(Pgr::FU_B2);
-		case Spn::FD: return C.IsSolved(Pgr::FD_B2);
-		case Spn::FR: return C.IsSolved(Pgr::FR_B2);
-		case Spn::FL: return C.IsSolved(Pgr::FL_B2);
-
-		case Spn::BU: return C.IsSolved(Pgr::BU_B2);
-		case Spn::BD: return C.IsSolved(Pgr::BD_B2);
-		case Spn::BR: return C.IsSolved(Pgr::BR_B2);
-		case Spn::BL: return C.IsSolved(Pgr::BL_B2);
-
-		case Spn::RU: return C.IsSolved(Pgr::RU_B2);
-		case Spn::RD: return C.IsSolved(Pgr::RD_B2);
-		case Spn::RF: return C.IsSolved(Pgr::RF_B2);
-		case Spn::RB: return C.IsSolved(Pgr::RB_B2);
-
-		case Spn::LU: return C.IsSolved(Pgr::LU_B2);
-		case Spn::LD: return C.IsSolved(Pgr::LD_B2);
-		case Spn::LF: return C.IsSolved(Pgr::LF_B2);
-		case Spn::LB: return C.IsSolved(Pgr::LB_B2);
-
-		default: return false; // Should not happend
-		}
-	}
-
-	// Check if the left Roux block is built and an square in the right block
-	bool Roux::IsFBAndSBSquareBuilt(const Cube& C)
-	{
-		switch (C.GetSpin())
-		{
-		case Spn::UF: return C.IsSolved(Pgr::UF_B1) &&
-			(C.IsSolved(Pgr::UF_B2S1) || C.IsSolved(Pgr::UF_B2S2));
-		case Spn::UB: return C.IsSolved(Pgr::UB_B1) &&
-			(C.IsSolved(Pgr::UB_B2S1) || C.IsSolved(Pgr::UB_B2S2));
-		case Spn::UR: return C.IsSolved(Pgr::UR_B1) &&
-			(C.IsSolved(Pgr::UR_B2S1) || C.IsSolved(Pgr::UR_B2S2));
-		case Spn::UL: return C.IsSolved(Pgr::UL_B1) &&
-			(C.IsSolved(Pgr::UL_B2S1) || C.IsSolved(Pgr::UL_B2S2));
-
-		case Spn::DF: return C.IsSolved(Pgr::DF_B1) &&
-			(C.IsSolved(Pgr::DF_B2S1) || C.IsSolved(Pgr::DF_B2S2));
-		case Spn::DB: return C.IsSolved(Pgr::DB_B1) &&
-			(C.IsSolved(Pgr::DB_B2S1) || C.IsSolved(Pgr::DB_B2S2));
-		case Spn::DR: return C.IsSolved(Pgr::DR_B1) &&
-			(C.IsSolved(Pgr::DR_B2S1) || C.IsSolved(Pgr::DR_B2S2));
-		case Spn::DL: return C.IsSolved(Pgr::DL_B1) &&
-			(C.IsSolved(Pgr::DL_B2S1) || C.IsSolved(Pgr::DL_B2S2));
-
-		case Spn::FU: return C.IsSolved(Pgr::FU_B1) &&
-			(C.IsSolved(Pgr::FU_B2S1) || C.IsSolved(Pgr::FU_B2S2));
-		case Spn::FD: return C.IsSolved(Pgr::FD_B1) &&
-			(C.IsSolved(Pgr::FD_B2S1) || C.IsSolved(Pgr::FD_B2S2));
-		case Spn::FR: return C.IsSolved(Pgr::FR_B1) &&
-			(C.IsSolved(Pgr::FR_B2S1) || C.IsSolved(Pgr::FR_B2S2));
-		case Spn::FL: return C.IsSolved(Pgr::FL_B1) &&
-			(C.IsSolved(Pgr::FL_B2S1) || C.IsSolved(Pgr::FL_B2S2));
-
-		case Spn::BU: return C.IsSolved(Pgr::BU_B1) &&
-			(C.IsSolved(Pgr::BU_B2S1) || C.IsSolved(Pgr::BU_B2S2));
-		case Spn::BD: return C.IsSolved(Pgr::BD_B1) &&
-			(C.IsSolved(Pgr::BD_B2S1) || C.IsSolved(Pgr::BD_B2S2));
-		case Spn::BR: return C.IsSolved(Pgr::BR_B1) &&
-			(C.IsSolved(Pgr::BR_B2S1) || C.IsSolved(Pgr::BR_B2S2));
-		case Spn::BL: return C.IsSolved(Pgr::BL_B1) &&
-			(C.IsSolved(Pgr::BL_B2S1) || C.IsSolved(Pgr::BL_B2S2));
-
-		case Spn::RU: return C.IsSolved(Pgr::RU_B1) &&
-			(C.IsSolved(Pgr::RU_B2S1) || C.IsSolved(Pgr::RU_B2S2));
-		case Spn::RD: return C.IsSolved(Pgr::RD_B1) &&
-			(C.IsSolved(Pgr::RD_B2S1) || C.IsSolved(Pgr::RD_B2S2));
-		case Spn::RF: return C.IsSolved(Pgr::RF_B1) &&
-			(C.IsSolved(Pgr::RF_B2S1) || C.IsSolved(Pgr::RF_B2S2));
-		case Spn::RB: return C.IsSolved(Pgr::RB_B1) &&
-			(C.IsSolved(Pgr::RB_B2S1) || C.IsSolved(Pgr::RB_B2S2));
-
-		case Spn::LU: return C.IsSolved(Pgr::LU_B1) &&
-			(C.IsSolved(Pgr::LU_B2S1) || C.IsSolved(Pgr::LU_B2S2));
-		case Spn::LD: return C.IsSolved(Pgr::LD_B1) &&
-			(C.IsSolved(Pgr::LD_B2S1) || C.IsSolved(Pgr::LD_B2S2));
-		case Spn::LF: return C.IsSolved(Pgr::LF_B1) &&
-			(C.IsSolved(Pgr::LF_B2S1) || C.IsSolved(Pgr::LF_B2S2));
-		case Spn::LB: return C.IsSolved(Pgr::LB_B1) &&
-			(C.IsSolved(Pgr::LB_B2S1) || C.IsSolved(Pgr::LB_B2S2));
-
-		default: return false; // Should not happend
-		}
-	}
-
-	// Check if the first Roux blocks and the upper layer corners (CMLL) are built
-	bool Roux::IsCMLLBuilt(const Cube& C)
-	{
-		if (!AreFirstBlocksBuilt(C)) return false;
-
-		switch (C.GetSpin())
-		{
-		case Spn::UF:
-		case Spn::UB:
-		case Spn::UR:
-		case Spn::UL: return C.IsSolved(Pgr::CORNERS_U);
-
-		case Spn::DF:
-		case Spn::DB:
-		case Spn::DR:
-		case Spn::DL: return C.IsSolved(Pgr::CORNERS_D);
-
-		case Spn::FU:
-		case Spn::FD:
-		case Spn::FR:
-		case Spn::FL: return C.IsSolved(Pgr::CORNERS_F);
-
-		case Spn::BU:
-		case Spn::BD:
-		case Spn::BR:
-		case Spn::BL: return C.IsSolved(Pgr::CORNERS_B);
-
-		case Spn::RU:
-		case Spn::RD:
-		case Spn::RF:
-		case Spn::RB: return C.IsSolved(Pgr::CORNERS_R);
-
-		case Spn::LU:
-		case Spn::LD:
-		case Spn::LF:
-		case Spn::LB: return C.IsSolved(Pgr::CORNERS_L);
-
-		default: return false; // Should not happend
-		}
-	}
-	
-	// Returns best solve algorithm from the Solves vector class member and his score for the given spin
-	// F2L pieces are used as evaluation condition for the Roux first blocks (first block in the left side)
-	bool Roux::EvaluateFBResult(std::vector<Algorithm>& BestSolves, const uint MaxSolves, const std::vector<Algorithm>& Solves, const Cube& CBase, const Spn Sp, const Plc Policy)
-	{
-		BestSolves.clear();
-
-		if (Solves.empty()) return false; // No solves
-
-		// Pieces to search
-		Pgr F2L_1, F2L_2, F2L_3, F2L_4;
-
-		// Get the required F2L pieces groups based on the spin
-		switch (Sp)
-		{
-		case Spn::DF:
-		case Spn::DB:
-		case Spn::DR:
-		case Spn::DL:
-			F2L_1 = Pgr::F2L_U_UFR;
-			F2L_2 = Pgr::F2L_U_UFL;
-			F2L_3 = Pgr::F2L_U_UBR;
-			F2L_4 = Pgr::F2L_U_UBL;
-			break;
-		case Spn::UF:
-		case Spn::UB:
-		case Spn::UR:
-		case Spn::UL:
-			F2L_1 = Pgr::F2L_D_DFR;
-			F2L_2 = Pgr::F2L_D_DFL;
-			F2L_3 = Pgr::F2L_D_DBR;
-			F2L_4 = Pgr::F2L_D_DBL;
-			break;
-		case Spn::BU:
-		case Spn::BD:
-		case Spn::BR:
-		case Spn::BL:
-			F2L_1 = Pgr::F2L_F_UFR;
-			F2L_2 = Pgr::F2L_F_UFL;
-			F2L_3 = Pgr::F2L_F_DFR;
-			F2L_4 = Pgr::F2L_F_DFL;
-			break;
-		case Spn::FU:
-		case Spn::FD:
-		case Spn::FR:
-		case Spn::FL:
-			F2L_1 = Pgr::F2L_B_UBR;
-			F2L_2 = Pgr::F2L_B_UBL;
-			F2L_3 = Pgr::F2L_B_DBR;
-			F2L_4 = Pgr::F2L_B_DBL;
-			break;
-		case Spn::LU:
-		case Spn::LD:
-		case Spn::LF:
-		case Spn::LB:
-			F2L_1 = Pgr::F2L_R_UFR;
-			F2L_2 = Pgr::F2L_R_UBR;
-			F2L_3 = Pgr::F2L_R_DFR;
-			F2L_4 = Pgr::F2L_R_DBR;
-			break;
-		case Spn::RU:
-		case Spn::RD:
-		case Spn::RF:
-		case Spn::RB:
-			F2L_1 = Pgr::F2L_L_UFL;
-			F2L_2 = Pgr::F2L_L_UBL;
-			F2L_3 = Pgr::F2L_L_DFL;
-			F2L_4 = Pgr::F2L_L_DBL;
-			break;
-		default: return 0u; // Invalid spin (should not happend)
-		}
-
-		// Based on the search policy, different conditions have different weights in the final score
-		uint SolveSizeMagnitude, SolveF2LMagnitude, SolveOppositeLayerMagnitude, SolveOrientedMagnitude, SolveNotAdjacentMagnitude;
-		switch (Policy)
-		{
-		case Plc::SHORT:
-			SolveSizeMagnitude = 1000u;
-			SolveF2LMagnitude = 100u;
-			SolveOppositeLayerMagnitude = 10u;
-			SolveOrientedMagnitude = 50u;
-			SolveNotAdjacentMagnitude = 10u;
-			break;
-		case Plc::BEST_SOLVES:
-		default:
-			SolveSizeMagnitude = 100u;
-			SolveF2LMagnitude = 1000u;
-			SolveOppositeLayerMagnitude = 10u;
-			SolveOrientedMagnitude = 50u;
-			SolveNotAdjacentMagnitude = 10u;
-			break;
-		}
-
-		uint Score;
-
-		std::vector<std::pair<uint, Algorithm>> ScoredSolves;
-
-		for (const auto& s : Solves) // Check each solve to get the best one
-		{
-			Score = 0u;
-
-			Cube CheckCube = CBase;
-			CheckCube.ApplyAlgorithm(s);
-
-			if (!IsFBBuilt(CheckCube, Sp)) continue; // Invalid solve for this spin
-
-			// Evaluate solve size
-			Score = (s.GetSize() > 50u ? 0u : 50u - s.GetSize()) * SolveSizeMagnitude;
-			Score += s.GetSubjectiveScore();
-
-			// Check F2L solves
-			if (CheckCube.IsSolved(F2L_1)) Score += SolveF2LMagnitude;
-			if (CheckCube.IsSolved(F2L_2)) Score += SolveF2LMagnitude;
-			if (CheckCube.IsSolved(F2L_3)) Score += SolveF2LMagnitude;
-			if (CheckCube.IsSolved(F2L_4)) Score += SolveF2LMagnitude;
-
-			// Check both F2L pieces condition in the opposite layer
-			const Lyr EndLayer = Cube::GetUpSliceLayer(Sp);
-
-			if (CFOP::IsF2LOriented(F2L_1, CheckCube)) Score += SolveOrientedMagnitude;
-			else
-			{
-				std::vector<Pcp> AuxF2LPos;
-				Cube::AddToPositionsList(F2L_1, AuxF2LPos);
-				std::vector<Pce> AuxF2L;
-				AuxF2L.push_back(static_cast<Pce>(AuxF2LPos[0]));
-				AuxF2L.push_back(static_cast<Pce>(AuxF2LPos[1]));
-
-				if (CheckCube.ArePiecesInLayer(AuxF2L, EndLayer))
-				{
-					Score += SolveOppositeLayerMagnitude;
-					if (CFOP::IsF2LAdjacent(F2L_1, CheckCube)) Score += SolveNotAdjacentMagnitude;
-				}
-			}
-
-			if (CFOP::IsF2LOriented(F2L_2, CheckCube)) Score += SolveOrientedMagnitude;
-			else
-			{
-				std::vector<Pcp> AuxF2LPos;
-				Cube::AddToPositionsList(F2L_2, AuxF2LPos);
-				std::vector<Pce> AuxF2L;
-				AuxF2L.push_back(static_cast<Pce>(AuxF2LPos[0]));
-				AuxF2L.push_back(static_cast<Pce>(AuxF2LPos[1]));
-
-				if (CheckCube.ArePiecesInLayer(AuxF2L, EndLayer))
-				{
-					Score += SolveOppositeLayerMagnitude;
-					if (CFOP::IsF2LAdjacent(F2L_2, CheckCube)) Score += SolveNotAdjacentMagnitude;
-				}
-			}
-
-			if (CFOP::IsF2LOriented(F2L_3, CheckCube)) Score += SolveOrientedMagnitude;
-			else
-			{
-				std::vector<Pcp> AuxF2LPos;
-				Cube::AddToPositionsList(F2L_3, AuxF2LPos);
-				std::vector<Pce> AuxF2L;
-				AuxF2L.push_back(static_cast<Pce>(AuxF2LPos[0]));
-				AuxF2L.push_back(static_cast<Pce>(AuxF2LPos[1]));
-
-				if (CheckCube.ArePiecesInLayer(AuxF2L, EndLayer))
-				{
-					Score += SolveOppositeLayerMagnitude;
-					if (CFOP::IsF2LAdjacent(F2L_3, CheckCube)) Score += SolveNotAdjacentMagnitude;
-				}
-			}
-
-			if (CFOP::IsF2LOriented(F2L_4, CheckCube)) Score += SolveOrientedMagnitude;
-			else
-			{
-				std::vector<Pcp> AuxF2LPos;
-				Cube::AddToPositionsList(F2L_4, AuxF2LPos);
-				std::vector<Pce> AuxF2L;
-				AuxF2L.push_back(static_cast<Pce>(AuxF2LPos[0]));
-				AuxF2L.push_back(static_cast<Pce>(AuxF2LPos[1]));
-
-				if (CheckCube.ArePiecesInLayer(AuxF2L, EndLayer))
-				{
-					Score += SolveOppositeLayerMagnitude;
-					if (CFOP::IsF2LAdjacent(F2L_4, CheckCube)) Score += SolveNotAdjacentMagnitude;
-				}
-			}
-
-			if (Score > 0u)
-			{
-				std::pair<uint, Algorithm> ScoredSolve;
-				ScoredSolve.first = Score;
-				ScoredSolve.second = s;
-				ScoredSolves.push_back(ScoredSolve);
-			}
-		}
-
-		if (ScoredSolves.empty()) return false;
-
-		std::sort(ScoredSolves.begin(), ScoredSolves.end(), [](auto a, auto b) { return a.first > b.first; });
-
-		const uint ssize = MaxSolves < ScoredSolves.size() ? MaxSolves : static_cast<uint>(ScoredSolves.size());
-
-		for (uint n = 0u; n < ssize; n++) BestSolves.push_back(ScoredSolves[n].second);
-		return true;
-	}
-
     // Get a solve report
     std::string Roux::GetReport(const bool cancellations, bool debug) const
     {
-        std::string Report  = "Roux search for Scramble (" + std::to_string(Scramble.GetNumSteps()) + "): " + GetTextScramble(), ReportLine;
-        Report += "\n--------------------------------------------------------------------------------\n";
+        std::string Report, ReportLine;
+        // Report = "Roux: Scramble [" + std::to_string(Scramble.GetNumSteps()) + "] " + GetTextScramble();
+        // Report += "\n--------------------------------------------------------------------------------\n";
 
 		for (const auto spin : SearchSpins)
 		{
@@ -1219,7 +784,7 @@ namespace grcube3
 				C.ApplyAlgorithm(Inspections[sp][n]);
 				C.ApplyAlgorithm(FirstBlocks[sp][n]);
 
-				if (IsFBBuilt(C))
+				if (IsRouxFBBuilt(C))
 				{
 					ReportLine += "[" + Cube::GetSpinText(spin) + "|" + Algorithm::GetMetricValue(GetMetricSolve(spin, n));
 					if (cancellations) ReportLine += "(" + Algorithm::GetMetricValue(GetMetricCancellations(spin, n)) + ")";
@@ -1243,7 +808,7 @@ namespace grcube3
 
 				C.ApplyAlgorithm(SecondBlocksFS[sp][n]);
 
-				if (IsFBAndSBSquareBuilt(C)) ReportLine += " (" + SecondBlocksFS[sp][n].ToString() + ")";
+				if (IsRouxFBAndSBSquareBuilt(C)) ReportLine += " (" + SecondBlocksFS[sp][n].ToString() + ")";
 				else
 				{
 					ReportLine += "First square for second block not built in " + std::to_string(MaxDepthSBFS) + " steps";
@@ -1253,11 +818,11 @@ namespace grcube3
 					continue;
 				}
 
-				if (!AreFirstBlocksBuilt(C))
+				if (!AreRouxBlocksBuilt(C))
 				{
 					C.ApplyAlgorithm(SecondBlocksSS[sp][n]);
 
-					if (AreFirstBlocksBuilt(C)) ReportLine += " (" + SecondBlocksSS[sp][n].ToString() + ")";
+					if (AreRouxBlocksBuilt(C)) ReportLine += " (" + SecondBlocksSS[sp][n].ToString() + ")";
 					else
 					{
 						ReportLine += "Second square for second block not built in " + std::to_string(MaxDepthSBSS) + " steps";
@@ -1318,13 +883,13 @@ namespace grcube3
     {
         std::string Report;
 
-        Report += "Total search time: " + std::to_string(GetFullTime()) + " s\n";
-        Report += "First blocks search time: " + std::to_string(GetTimeFB()) + " s\n";
-        Report += "Second blocks search time: " + std::to_string(GetTimeSB()) + " s\n";
-        if (GetTimeCMLL() > 0.0) Report += "CMLL search time: " + std::to_string(GetTimeCMLL()) + " s\n";
-        if (GetTimeCOLL() > 0.0) Report += "COLL search time: " + std::to_string(GetTimeCOLL()) + " s\n";
-        Report += "L6E search time: " + std::to_string(GetTimeL6E() + GetTimeL6EO() + GetTimeL6E2E()) + " s\n";
-        Report += "Threads used: " + std::to_string(GetUsedCores() > 0 ? GetUsedCores() : 0) +
+        Report += "Total time: " + std::to_string(GetFullTime()) + " s\n";
+        Report += "First blocks time: " + std::to_string(GetTimeFB()) + " s\n";
+        Report += "Second blocks time: " + std::to_string(GetTimeSB()) + " s\n";
+        if (GetTimeCMLL() > 0.0) Report += "CMLL time: " + std::to_string(GetTimeCMLL()) + " s\n";
+        if (GetTimeCOLL() > 0.0) Report += "COLL time: " + std::to_string(GetTimeCOLL()) + " s\n";
+        Report += "L6E time: " + std::to_string(GetTimeL6E() + GetTimeL6EO() + GetTimeL6E2E()) + " s\n";
+        Report += "Threads: " + std::to_string(GetUsedCores() > 0 ? GetUsedCores() : DeepSearch::GetSystemCores()) +
                   " of " + std::to_string(DeepSearch::GetSystemCores()) + "\n";
 
         return Report;
@@ -1343,46 +908,47 @@ namespace grcube3
 			return FReport;
 		}
 
-        std::string Report  = "Roux search with orientation " + Cube::GetSpinText(sp);
-        Report += ":\n---------------------------------\n";
+        std::string Report;
+        // Report += "Roux search with orientation " + Cube::GetSpinText(sp);
+        // Report += ":\n---------------------------------\n";
         // Report += "Scramble (" + std::to_string(Scramble.GetNumSteps()) + "): " + GetTextScramble() + "\n";
 
 		Cube C = CubeBase;
         C.ApplyAlgorithm(Inspections[si][n]);
-        if (!Inspections[si][n].Empty()) Report += "Inspection [" + C.GetSpinText() + "]: " + Inspections[si][n].ToString() + "\n\n";
+        if (!Inspections[si][n].Empty()) Report += GetTextInspection(sp,n) + " // Inspection [" + C.GetSpinText() + "]\n";
 
         C.ApplyAlgorithm(FirstBlocks[si][n]);
-        if (!IsFBBuilt(C))
+        if (!IsRouxFBBuilt(C))
         {
 			Report += "First block not built in " + std::to_string(MaxDepthFB) + " movements\n";
             return Report;
         }
-        Report += "First block (" + Algorithm::GetMetricValue(GetMetricFirstBlock(sp, n)) + "): " + FirstBlocks[si][n].ToString() + "\n";
+        Report += GetTextFirstBlock(sp, n) + " // First block (" + Algorithm::GetMetricValue(GetMetricFirstBlock(sp, n)) + ")\n";
 
         C.ApplyAlgorithm(SecondBlocksFS[si][n]);
         C.ApplyAlgorithm(SecondBlocksSS[si][n]);
-        if (!AreFirstBlocksBuilt(C))
+        if (!AreRouxBlocksBuilt(C))
         {
             Report += "Second block not built!\n";
             return Report;
         }
         if (GetLengthSecondBlockSS(sp, n) == 0u)
-			Report += "Second block (" + Algorithm::GetMetricValue(GetMetricSecondBlock(sp,n)) + "): " + SecondBlocksFS[si][n].ToString() + "\n";
+            Report += GetTextSecondBlockFS(sp, n) +  " // Second block (" + Algorithm::GetMetricValue(GetMetricSecondBlock(sp,n)) + ")\n";
         else
         {
-            Report += "Second block - square (" + Algorithm::GetMetricValue(GetMetricSecondBlockFS(sp, n)) + "): " + SecondBlocksFS[si][n].ToString() + "\n";
-            Report += "Second block (" + Algorithm::GetMetricValue(GetMetricSecondBlockSS(sp, n)) + "): " + SecondBlocksSS[si][n].ToString() + "\n";
+            Report += GetTextSecondBlockFS(sp, n) + " // Second block - square (" + Algorithm::GetMetricValue(GetMetricSecondBlockFS(sp, n)) + ")\n";
+            Report += GetTextSecondBlockSS(sp, n) + " // Second block (" + Algorithm::GetMetricValue(GetMetricSecondBlockSS(sp, n)) + ")\n";
         }
 
 		if (!AlgCMLL[si].empty())
         {
             C.ApplyAlgorithm(AlgCMLL[si][n]);
-            Report += "CMLL (" + Algorithm::GetMetricValue(GetMetricCMLL(sp, n)) + "): " + AlgCMLL[si][n].ToString() + "\n";
+            if (!AlgCMLL[si][n].Empty()) Report += GetTextCMLL(sp, n) + " // CMLL (" + Algorithm::GetMetricValue(GetMetricCMLL(sp, n)) + ")\n";
         }
         else if (!AlgCOLL[si].empty())
         {
             C.ApplyAlgorithm(AlgCOLL[si][n]);
-            Report += "COLL (" + Algorithm::GetMetricValue(GetMetricCOLL(sp, n)) + "): " + AlgCOLL[si][n].ToString() + "\n";
+            if (!AlgCOLL[si][n].Empty()) Report += GetTextCOLL(sp, n) + " // COLL (" + Algorithm::GetMetricValue(GetMetricCOLL(sp, n)) + ")\n";
         }
         else
         {
@@ -1398,11 +964,11 @@ namespace grcube3
 
                 if (!C.IsFaceOriented2(Cube::GetUpSliceLayer(sp)))
                 {
-                    Report += "L6E not orientated: " + AlgL6EO[si][n].ToString() + "\n";
+                    Report += "L6E not orientated: " + GetTextL6EO(sp, n) + "\n";
                     return Report;
                 }
                 else if (!AlgL6EO[si][n].Empty())
-                    Report += "L6E orientation (" + Algorithm::GetMetricValue(GetMetricL6EO(sp, n)) + "): " + AlgL6EO[si][n].ToString() + "\n";
+                    Report += GetTextL6EO(sp, n) + " // L6E orientation (" + Algorithm::GetMetricValue(GetMetricL6EO(sp, n)) + ")\n";
             }
         }
         if (!AlgL6E2E[si].empty())
@@ -1411,19 +977,19 @@ namespace grcube3
             {
                 C.ApplyAlgorithm(AlgL6E2E[si][n]);
                 if (!AlgL6E2E[si][n].Empty())
-                    Report += "UR & UL edges (" + Algorithm::GetMetricValue(GetMetricL6E2E(sp, n)) + "): " + AlgL6E2E[si][n].ToString() + "\n";
+                    Report += GetTextL6E2E(sp, n) + " // UR & UL edges (" + Algorithm::GetMetricValue(GetMetricL6E2E(sp, n)) + ")\n";
             }
 		}
 
 		C.ApplyAlgorithm(AlgL6E[si][n]);
 		if (C.IsSolved())
 		{
-			if (!AlgL6E[si][n].Empty()) Report += "L6E (" + Algorithm::GetMetricValue(GetMetricL6E(sp, n)) + "): " + AlgL6E[si][n].ToString() + "\n";
+            if (!AlgL6E[si][n].Empty()) Report += GetTextL6E(sp, n) + " // L6E (" + Algorithm::GetMetricValue(GetMetricL6E(sp, n)) + ")\n";
 		}
-		else Report += "L6E not solved: " + AlgL6E[si][n].ToString() + "\n";
+        else Report += "L6E not solved: " + GetTextL6E(sp, n) + "\n";
 
         // Show summary
-        Report += "\nSolve metric: " + Algorithm::GetMetricValue(GetMetricSolve(sp, n)) + " " + Algorithm::GetMetricString(Metric) + "\n";
+        Report += "\nMetric: " + Algorithm::GetMetricValue(GetMetricSolve(sp, n)) + " " + Algorithm::GetMetricString(Metric) + "\n";
 		if (AlgCMLL[si].empty()) // COLL
 			Report += "COLL case: " + GetTextCOLLCase(sp, n) + "\n";
 		else // CMLL 
@@ -1446,58 +1012,12 @@ namespace grcube3
 			   (AlgL6E[si].size() == n); // && (AlgOL6E[si].size() == n) && (AlgL6E_URUL[si].size() == n);
 	}
 
-    // Check if in the given spin the solve is OK
-    bool Roux::IsSolved(const Spn CurrentSpin, const uint n) const
-    {
-        const int Si = static_cast<int>(CurrentSpin); // Spin index
-
-		if (!CheckSolveConsistency(CurrentSpin) || FirstBlocks[Si].size() <= n) return 0u;
-
-        Cube C = CubeBase;
-        C.ApplyAlgorithm(Inspections[Si][n]);
-        C.ApplyAlgorithm(FirstBlocks[Si][n]);
-        C.ApplyAlgorithm(SecondBlocksFS[Si][n]);
-        C.ApplyAlgorithm(SecondBlocksSS[Si][n]);
-		if (!AlgCMLL[Si].empty()) C.ApplyAlgorithm(AlgCMLL[Si][n]);
-		if (!AlgCOLL[Si].empty()) C.ApplyAlgorithm(AlgCOLL[Si][n]);
-        if (!AlgL6EO[Si].empty()) C.ApplyAlgorithm(AlgL6EO[Si][n]);
-        if (!AlgL6E2E[Si].empty()) C.ApplyAlgorithm(AlgL6E2E[Si][n]);
-        C.ApplyAlgorithm(AlgL6E[Si][n]);
-		
-        return C.IsSolved();
-    }
-
-	// Get the solve metric
-    float Roux::GetMetricSolve(const Spn spin, const uint n) const
+	// Get the full solve
+    Algorithm Roux::GetFullSolve(const Spn spin, const uint n) const
 	{
 		const int si = static_cast<int>(spin); // Spin index
 
-		if (!CheckSolveConsistency(spin) || FirstBlocks[si].size() <= n) return 0u;
-
-		Algorithm A = FirstBlocks[si][n];
-		A += SecondBlocksFS[si][n];
-		A += SecondBlocksSS[si][n];
-		if (!AlgCMLL[si].empty()) A += AlgCMLL[si][n];
-		if (!AlgCOLL[si].empty()) A += AlgCOLL[si][n];
-        if (!AlgL6EO[si].empty()) A += AlgL6EO[si][n];
-        if (!AlgL6E2E[si].empty()) A += AlgL6E2E[si][n];
-		A += AlgL6E[si][n];
-		
-		return A.GetMetric(Metric);
-	}
-
-	// Get the full solve with cancellations
-	Algorithm Roux::GetCancellations(const Spn spin, const uint n) const
-	{
-		const int si = static_cast<int>(spin); // Spin index
-
-		if (!CheckSolveConsistency(spin) || FirstBlocks[si].size() <= n)
-		{
-			std::string FReport = "No solve with cancellations for spin ";
-			FReport += Cube::GetSpinText(spin);
-			FReport += ", position " + std::to_string(n) + "\n";
-			return FReport;
-		}
+		if (!CheckSolveConsistency(spin) || n >= Inspections[si].size()) return 0u;
 
 		Algorithm A = Inspections[si][n];
 		A += FirstBlocks[si][n];
@@ -1508,47 +1028,7 @@ namespace grcube3
         if (!AlgL6EO[si].empty()) A += AlgL6EO[si][n];
         if (!AlgL6E2E[si].empty()) A += AlgL6E2E[si][n];
 		A += AlgL6E[si][n];
-
-		return A.GetCancellations();
-	}
-
-	// Get the best solve report
-	std::string Roux::GetBestReport(const bool Cancellations) const
-	{
-		float M, min_M = 0.0f;
-		uint Bestn = 0u;
-		Spn BestSpin = Spn::Default;
-
-		for (int sp = 0; sp < 24; sp++)
-		{
-			const Spn Spin = static_cast<Spn>(sp);
-
-			if (!CheckSolveConsistency(Spin)) continue;
-
-			for (uint n = 0u; n < FirstBlocks[sp].size(); n++)
-			{
-				if (!IsSolved(Spin, n)) continue;
-
-				if (Cancellations) M = GetMetricCancellations(Spin, n);
-                else M = GetMetricSolve(Spin, n);
-				
-				if (min_M == 0.0f || M < min_M)
-				{
-					min_M = M;
-					BestSpin = Spin;
-					Bestn = n;
-				}
-			}
-		}
-		if (min_M == 0.0f) return "No Roux solves!\n";
-
-		if (Cancellations)
-		{
-			Algorithm C = GetCancellations(BestSpin, Bestn);
-			return GetReport(BestSpin, Bestn) + "\nCancellations (" + Algorithm::GetMetricValue(C.GetMetric(Metric)) + " " + 
-			       Algorithm::GetMetricString(Metric) + "): " + C.ToString() + "\n";
-		}
-
-		return GetReport(BestSpin, Bestn);
+		
+		return A;
 	}
 }

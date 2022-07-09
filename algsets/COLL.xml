@@ -1,4 +1,4 @@
-<Collection Name="COLL" Description="Removed U-slice movements from the start (for Roux)" CasesNumber="43">
+<Collection Name="COLL" Description="Solves the last layer corners while preserving the last layer edges orientation" CasesNumber="43">
     <Case Index="0">Skip<Algorithm></Algorithm>
     </Case>
     <Case Index="1">Solved Adjacent<Algorithm>R U R' F' R U R' U' R' F R2 U' R'</Algorithm>

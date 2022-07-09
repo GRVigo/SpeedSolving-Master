@@ -1,4 +1,4 @@
-<Collection Name="EPLL" Description="Algorithms collection" CasesNumber="5">
+<Collection Name="EPLL" Description="Edges permutation of the last layer, abbrevaited EPLL, is the sub group of PLL where only the edges are permuted" CasesNumber="5">
     <Case Index="0">Skip<Algorithm></Algorithm>
     </Case>
     <Case Index="1">H Permutation<Algorithm>M2 U M2 U2 M2 U M2</Algorithm>

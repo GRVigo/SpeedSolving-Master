@@ -26,7 +26,13 @@
 #include <QMainWindow>
 #include <QMap>
 
+#include "algset.h"
+
+#include "searchthread.h"
+
 #include "cube_definitions.h"
+
+using namespace grcube3;
 
 using LangMap = QMap<QString, QString>;
 
@@ -41,6 +47,81 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+public slots:
+    void printLBL_Solves(const QString, const QString, const QString); // Scramble, Cross layer, Solve
+    void printLBL_NoSolves();
+    void printLBL_Cross();
+    void printLBL_FL();
+    void printLBL_SL();
+    void printLBL_LL();
+
+    void printMethod_Solves(const QString, const QString); // Scramble, Solves
+    void printMethod_Best(const QString); // Best solve
+    void printMethod_Time(const QString);
+    void printMethod_NoSolves();
+
+    void printCFOP_Cross();
+    void printCFOP_F2L();
+    void printCFOP_LL();
+
+    void printRoux_FB();
+    void printRoux_SB();
+    void printRoux_CMLL();
+    void printRoux_COLL();
+    void printRoux_L6E();
+
+    void printPetrus_FB();
+    void printPetrus_EB();
+    void printPetrus_EO();
+    void printPetrus_F2L();
+    void printPetrus_LL();
+
+    void printZZ_EOX();
+    void printZZ_F2L();
+    void printZZ_LL();
+
+    void printCEOR_Lines();
+    void printCEOR_CP();
+    void printCEOR_CPLines();
+    void printCEOR_pEO();
+    void printCEOR_EOBF();
+    void printCEOR_F2L();
+    void printCEOR_LL();
+
+    void printMehta_FB();
+    void printMehta_3QB();
+    void printMehta_EOLE();
+    void printMehta_6CO();
+    void printMehta_6CP();
+    void printMehta_L5EP();
+    void printMehta_APDR();
+    void printMehta_PLL();
+    void printMehta_DCAL();
+    void printMehta_CDRLL();
+    void printMehta_JTLE();
+    void printMehta_TDR();
+    void printMehta_ZBLL();
+
+    void printNautilus_FB();
+    void printNautilus_SB();
+    void printNautilus_dFR();
+    void printNautilus_NCLL();
+    void printNautilus_NCOLL();
+    void printNautilus_TNCLL();
+    void printNautilus_L5E();
+    void printNautilus_EODF();
+    void printNautilus_F2L();
+    void printNautilus_LL();
+
+    void printLEOR_FB();
+    void printLEOR_EOStripe();
+    void printLEOR_FLPair();
+    void printLEOR_EODF();
+    void printLEOR_SB();
+    void printLEOR_LL();
+
+    void printCache();
 
 private slots:
     void on_lineEdit_Scramble_textChanged(const QString &);
@@ -89,24 +170,34 @@ private slots:
 
     void on_pushButton_Debug_clicked();
 
+    void on_pushButton_Skip_clicked();
+
+    void on_pushButton_Collections_clicked();
+
 private:
     Ui::MainWindow *ui;
+    Algset* aw; // Algset Window
+
+    RunSearch *SearchThread;
 
     LangMap DefaultLang, CurrentLang;
 
     std::vector<QString> History;
     uint SolveId;
 
+    QString HtmlReport;
+
+    void DisableWhileSearching();
+    void EnableAfterSearch();
+
     void AddToHistory(const QString&);
 
     void SaveXMLDefaultLanguage() const;
     bool LoadXMLDefaultLanguage();
-    bool LoadXMLCurrentLanguage(const QString &);
+    bool LoadXMLCurrentLanguage(const QString&);
 
     void UpdateFixedTexts(const LangMap&);
     bool CheckXMLLanguageFile(const QString&);
-
-    void GetSearchSpins(std::vector<grcube3::Spn>&);
 
     void sLBL(const std::string&);
     void sCFOP(const std::string&);
@@ -115,6 +206,7 @@ private:
     void sZZ(const std::string&);
     void sCEOR(const std::string&);
     void sMehta(const std::string&);
-
+    void sNautilus(const std::string&);
+    void sLEOR(const std::string&);
 };
 #endif // MAINWINDOW_H

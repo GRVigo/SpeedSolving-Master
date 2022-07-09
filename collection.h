@@ -1,6 +1,6 @@
 /*  This file is part of "GR Cube"
 
-	Copyright (C) 2021 German Ramos Rodriguez
+	Copyright (C) 2022 German Ramos Rodriguez
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -27,13 +27,24 @@
 
 #include "cube_definitions.h"
 #include "algorithm.h"
-#include "cube.h"
 
 namespace grcube3
 {
-	// Supported algorithm sets (collections)
-	enum class AlgSets { _1LLL, OLL, PLL, ZBLL, OCLL, CMLL, COLL, EPLL, _2GLL, _6CO, _6CP, APDR, CDRLL, DCAL, EOLE, JTLE, L5EP, TDR };
-
+	// Algorithm audit probes
+	enum class Probe
+	{
+		NONE,
+		LL_SOLVE, // Solve the last layer
+		LL_ORIENT, // Orient the last layer
+		CMLL, // Solves the LL corners while preserving the First Two Blocks made in Roux
+		COLL, // Solves (orients and permutes) the last layer corners while preserving the last layer edges orientation
+		NCLL, // Solves Nautilus NCLL
+		NCOLL, // Solves Nautilus NCOLL
+		TNCLL, // Solves Nautilus TNCLL
+		L5E, // Solves last five edges
+		L5EP, // Permute last five edges (already oriented)
+	};
+	
     struct Case // Case data structure for collections
     {
         std::string Name; // Case name
@@ -48,21 +59,44 @@ namespace grcube3
         Collection(const std::string& s, bool clean) { LoadXMLCollectionFile(s, clean); } // Initialize algorithms collection
         ~Collection() { } // Destructor
 		
-		Algorithm& operator[](const uint cn) { return GetAlgorithm(cn); }
+		Algorithm& operator[](const uint cn) { return Cases[cn].Algs.front(); }
 
-		void AddData(const Case& CData) { Data.push_back(CData); }
+		void AddData(const Case& CData) { Cases.push_back(CData); }
 		
-		void Reset() { Name.clear(); Description.clear(); Data.clear(); }
-		uint GetCasesNumber() const { return static_cast<uint>(Data.size()); }
-		std::string GetCaseName(const uint cp) // Return case name
-		{
-			if (cp < Data.size()) return Data[cp].Name;
-			std::string s_Empty = "";
-			return s_Empty;
-		}
+		void Reset() { Name.clear(); Description.clear(); Cases.clear(); }
 
-		// Return first algorithm for the given case index
-		Algorithm& GetAlgorithm(const uint cn) { return Data[cn].Algs.front(); }
+		std::string GetName() const { return Name; }
+		
+		std::string GetDescription() const { return Description; }
+
+		uint GetCasesNumber() const { return static_cast<uint>(Cases.size()); }
+		
+		std::string GetCaseName(const uint cp) const { return cp < Cases.size() ? Cases[cp].Name : ""; }
+
+        uint GetAlgorithmsNumber(const uint cp) const { return cp < Cases.size() ? static_cast<uint>(Cases[cp].Algs.size()) : 0u; }
+
+        Algorithm GetAlgorithm(const uint cp, const uint ap) const { return cp < Cases.size() ? ap < Cases[cp].Algs.size() ? Cases[cp].Algs[ap] : "" : ""; }
+
+        bool SetAlgorithm(const uint cp, const uint ap, const Algorithm alg)
+        {
+            if (cp >= Cases.size() || ap >= Cases[cp].Algs.size()) return false;
+            Cases[cp].Algs[ap] = alg;
+            return true;
+        }
+
+        bool AddAlgorithm(const uint cp, const Algorithm alg)
+        {
+            if (cp >= Cases.size()) return false;
+            for (const auto& a : Cases[cp].Algs) if (a == alg) return true; // Algortihm already present in collection
+            Cases[cp].Algs.push_back(alg);
+            return true;
+        }
+
+		// Return required algorithm for the given case index
+		Algorithm GetAlgorithm(const uint cn, const Plc = Plc::FIRST, const Metrics = Metrics::Movements) const;
+
+		// Returns the same algorithm transformed by y turns for getting most comfortable (subjective) movements
+		Algorithm GetSubjectiveBesty(const Algorithm&) const;
 
 		// Load a collection of algorithms from an XML file (optionally clean y an U steps from the start/end)
 		bool LoadXMLCollectionFile(const std::string&, const bool = false); 
@@ -70,82 +104,57 @@ namespace grcube3
 		// Save a collection of algorithms to an XML file
 		bool SaveXMLCollectionFile(const std::string&) const;
 
-		// Check if two last layer algorithms are equivalent
-        static bool EquivalentLLAlgorithms(const Algorithm&, const Algorithm&);
+		// Save txt file from current collection
+		void Save_To_TXT(const std::string&) const;
+
+		// Order by length the algorithms for each case
+		void OrderAlgorithms();
+
+		// Merge a collection with the current collection
+		void MergeCollection(const Collection&, const Probe);
+
+		// Merge a collection with the list of algorithms from a text file
+		void MergeTXTFile(const std::string&, const Probe, const bool = false);
+		
+		// Audit a collection of algorithms, audit results to a TXT file
+		void Audit(const Probe, const std::string&) const;
+		
+		// Check the integrity of the two first layers by the given algorithm
+		static bool CheckF2LIntegrity(const Algorithm&);
+
+		// Check the integrity of the two first Roux blocks by the given algorithm
+		static bool CheckRouxF2BIntegrity(const Algorithm&);
+
+		// Check the integrity of F2L except DF edge (Nautilus)
+		static bool CheckF2LDFIntegrity(const Algorithm&);
+
+		// Check the integrity of F2L except DR edge
+		static bool CheckF2LDRIntegrity(const Algorithm&);
+
+		// Check the integrity of F2L except DL edge
+		static bool CheckF2LDLIntegrity(const Algorithm&);
+
+		// Check the integrity of F2L except DR edge
+		static bool CheckF2LDBIntegrity(const Algorithm&);
+
+		// Check the integrity of F2L except DF edge & DFR corner orientation (Nautilus)
+		static bool CheckF2LDFDFRIntegrity(const Algorithm&);
+
+		// Check if two last layer solve algorithms are equivalent
+        static bool CheckLLSolveAlgorithms(const Algorithm&, const Algorithm&);
+		
+		// Check if two last layer orientation algorithms are equivalent
+        static bool CheckLLOrientAlgorithms(const Algorithm&, const Algorithm&);
+
+		// Check if two last layer corners solve algorithms are equivalent
+		static bool CheckLLCornersAlgorithms(const Algorithm&, const Algorithm&);
 
         static void ConvertTXT_To_XML(const std::string&, const std::string&); // Save XML collection file from txt file
 		static void SaveVector_To_XML(const std::vector<Algorithm>&, const std::vector<std::string>&, const std::string&, const std::string&); // Save algorithm vector to XML file
 
-		// Get number of collections cases
-		static uint GetOLLCases() { return OLL_Algorithms.GetCasesNumber(); }
-		static uint GetPLLCases() { return PLL_Algorithms.GetCasesNumber(); }
-		static uint Get1LLLCases() { return Algorithms_1LLL.GetCasesNumber(); }
-		static uint GetZBLLCases() { return ZBLL_Algorithms.GetCasesNumber(); }
-		static uint GetOCLLCases() { return OCLL_Algorithms.GetCasesNumber(); }
-		static uint GetCMLLCases() { return CMLL_Algorithms.GetCasesNumber(); }
-		static uint GetCOLLCases() { return COLL_Algorithms.GetCasesNumber(); }
-		static uint GetEPLLCases() { return EPLL_Algorithms.GetCasesNumber(); }
-		static uint Get2GLLCases() { return Algorithms_2GLL.GetCasesNumber(); }
-		
-		static uint GetEOLECases() { return EOLE_Algorithms.GetCasesNumber(); }
-		static uint Get6COCases() { return Algorithms_6CO.GetCasesNumber(); }
-		static uint Get6CPCases() { return Algorithms_6CP.GetCasesNumber(); }
-		static uint GetAPDRCases() { return APDR_Algorithms.GetCasesNumber(); }
-		static uint GetCDRLLCases() { return CDRLL_Algorithms.GetCasesNumber(); }
-		static uint GetDCALCases() { return DCAL_Algorithms.GetCasesNumber(); }
-		static uint GetJTLECases() { return JTLE_Algorithms.GetCasesNumber(); }
-		static uint GetL5EPCases() { return L5EP_Algorithms.GetCasesNumber(); }
-		static uint GetTDRCases() { return TDR_Algorithms.GetCasesNumber(); }
-
-		// Algorithm searchs from a collection
-		static bool OrientateLL(Algorithm&, std::string&, const AlgSets, const Cube&);
-		static bool SolveLL(Algorithm&, std::string&, Stp&, const AlgSets, const Cube&);
-		static bool CornersLL(Algorithm&, std::string&, Stp&, const AlgSets, const Cube&);
-
-		// Get algorithms
-		static Algorithm GetEOLE(const uint n) { return n < GetEOLECases() ? EOLE_Algorithms.Data[n].Algs[0] : Algorithm(""); }
-		static Algorithm Get6CO(const uint n) { return n < Get6COCases() ? Algorithms_6CO.Data[n].Algs[0] : Algorithm(""); }
-		static Algorithm Get6CP(const uint n) { return n < Get6CPCases() ? Algorithms_6CP.Data[n].Algs[0] : Algorithm(""); }
-		static Algorithm GetAPDR(const uint n) { return n < GetAPDRCases() ? APDR_Algorithms.Data[n].Algs[0] : Algorithm(""); }
-		static Algorithm GetCDRLL(const uint n) { return n < GetCDRLLCases() ? CDRLL_Algorithms.Data[n].Algs[0] : Algorithm(""); }
-		static Algorithm GetDCAL(const uint n) { return n < GetDCALCases() ? DCAL_Algorithms.Data[n].Algs[0] : Algorithm(""); }
-		static Algorithm GetJTLE(const uint n) { return n < GetJTLECases() ? JTLE_Algorithms.Data[n].Algs[0] : Algorithm(""); }
-		static Algorithm GetL5EP(const uint n) { return n < GetL5EPCases() ? L5EP_Algorithms.Data[n].Algs[0] : Algorithm(""); }
-		static Algorithm GetTDR(const uint n) { return n < GetTDRCases() ? TDR_Algorithms.Data[n].Algs[0] : Algorithm(""); }
-
-		// Get cases
-		static std::string GetEOLECase(const uint n) { return n < GetEOLECases() ? EOLE_Algorithms.Data[n].Name : "EOLE error"; }
-		static std::string Get6COCase(const uint n) { return n < Get6COCases() ? Algorithms_6CO.Data[n].Name : "6CO error"; }
-		static std::string Get6CPCase(const uint n) { return n < Get6CPCases() ? Algorithms_6CP.Data[n].Name : "6CP error"; }
-		static std::string GetAPDRCase(const uint n) { return n < GetAPDRCases() ? APDR_Algorithms.Data[n].Name : "APDR error"; }
-		static std::string GetCDRLLCase(const uint n) { return n < GetCDRLLCases() ? CDRLL_Algorithms.Data[n].Name : "CDRLL error"; }
-		static std::string GetDCALCase(const uint n) { return n < GetDCALCases() ? DCAL_Algorithms.Data[n].Name : "DCAL error"; }
-		static std::string GetJTLECase(const uint n) { return n < GetJTLECases() ? JTLE_Algorithms.Data[n].Name : "JTLE error"; }
-		static std::string GetL5EPCase(const uint n) { return n < GetL5EPCases() ? L5EP_Algorithms.Data[n].Name : "L5EP error"; }
-		static std::string GetTDRCase(const uint n) { return n < GetTDRCases() ? TDR_Algorithms.Data[n].Name : "TDR error"; }
-
 	private:
         std::string Name; // Algorithms collection name
         std::string Description; // Algorithms collection description
-        std::vector<Case> Data; // Algorithms collection data (cases)
-
-		static const Collection OLL_Algorithms,
-			PLL_Algorithms,
-			Algorithms_1LLL,
-			ZBLL_Algorithms,
-			OCLL_Algorithms,
-			CMLL_Algorithms,
-			COLL_Algorithms,
-			EPLL_Algorithms,
-			Algorithms_2GLL,
-			Algorithms_6CO,
-			Algorithms_6CP,
-			APDR_Algorithms,
-			CDRLL_Algorithms,
-			DCAL_Algorithms,
-			EOLE_Algorithms,
-			JTLE_Algorithms,
-			L5EP_Algorithms,
-			TDR_Algorithms;
+        std::vector<Case> Cases; // Algorithms collection cases
 	};
 }

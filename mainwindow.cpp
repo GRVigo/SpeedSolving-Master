@@ -28,41 +28,17 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include <QRadioButton>
-#include <QThread>
 
 #include "tinyxml2.h" // For xml language files
 
-#include "cfop.h"
-#include "roux.h"
-#include "lbl.h"
-#include "petrus.h"
-#include "zz.h"
-#include "yruru.h"
-#include "mehta.h"
-
-#include "collection.h"
-
+#include "method.h"
+#include "deep_search.h"
 #include "deep_eval.h"
 
 using namespace grcube3;
 using namespace tinyxml2;
 
-// Information to store about a solve search for the cache
-struct CacheUnit
-{
-    Algorithm Scramble;
-    uint Depth;
-    double Time;
-    std::vector<Algorithm> Solves;
-
-    void Reset() { Scramble.Clear(); Depth = 0u; Time = 0.0; Solves.clear(); }
-};
-
-std::vector<CacheUnit> Cache; // Solves cache
-
 DeepEval Evaluation(Algorithm(""), 5u); // Scrambles evaluation
-
-#define _DEBUG_ false
 
   /*****************************************************************************************************************/
  /*** MAIN WINDOW *************************************************************************************************/
@@ -71,6 +47,85 @@ DeepEval Evaluation(Algorithm(""), 5u); // Scrambles evaluation
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    aw = nullptr;
+
+    SearchThread = new RunSearch;
+
+    QObject::connect(SearchThread, SIGNAL(finishLBL_Solves(const QString, const QString, const QString)),
+                     this, SLOT(printLBL_Solves(const QString, const QString, const QString)));
+    QObject::connect(SearchThread, SIGNAL(finishLBL_NoSolves()), this, SLOT(printLBL_NoSolves()));
+    QObject::connect(SearchThread, SIGNAL(msgLBLStartCross()), this, SLOT(printLBL_Cross()));
+    QObject::connect(SearchThread, SIGNAL(msgLBLStartFL()), this, SLOT(printLBL_FL()));
+    QObject::connect(SearchThread, SIGNAL(msgLBLStartSL()), this, SLOT(printLBL_SL()));
+    QObject::connect(SearchThread, SIGNAL(msgLBLStartLL()), this, SLOT(printLBL_LL()));
+
+    QObject::connect(SearchThread, SIGNAL(finishMethod_Solves(const QString, const QString)),
+                     this, SLOT(printMethod_Solves(const QString, const QString)));
+    QObject::connect(SearchThread, SIGNAL(finishMethod_Best(const QString)), this, SLOT(printMethod_Best(const QString)));
+    QObject::connect(SearchThread, SIGNAL(finishMethod_Time(const QString)), this, SLOT(printMethod_Time(const QString)));
+    QObject::connect(SearchThread, SIGNAL(finishMethod_NoSolves()), this, SLOT(printMethod_NoSolves()));
+
+    QObject::connect(SearchThread, SIGNAL(msgCFOPStartCross()), this, SLOT(printCFOP_Cross()));
+    QObject::connect(SearchThread, SIGNAL(msgCFOPStartF2L()), this, SLOT(printCFOP_F2L()));
+    QObject::connect(SearchThread, SIGNAL(msgCFOPStartLL()), this, SLOT(printCFOP_LL()));
+
+    QObject::connect(SearchThread, SIGNAL(msgRouxStartFB()), this, SLOT(printRoux_FB()));
+    QObject::connect(SearchThread, SIGNAL(msgRouxStartSB()), this, SLOT(printRoux_SB()));
+    QObject::connect(SearchThread, SIGNAL(msgRouxStartCMLL()), this, SLOT(printRoux_CMLL()));
+    QObject::connect(SearchThread, SIGNAL(msgRouxStartCOLL()), this, SLOT(printRoux_COLL()));
+    QObject::connect(SearchThread, SIGNAL(msgRouxStartL6E()), this, SLOT(printRoux_L6E()));
+
+    QObject::connect(SearchThread, SIGNAL(msgPetrusStartFB()), this, SLOT(printPetrus_FB()));
+    QObject::connect(SearchThread, SIGNAL(msgPetrusStartEB()), this, SLOT(printPetrus_EB()));
+    QObject::connect(SearchThread, SIGNAL(msgPetrusStartEO()), this, SLOT(printPetrus_EO()));
+    QObject::connect(SearchThread, SIGNAL(msgPetrusStartF2L()), this, SLOT(printPetrus_F2L()));
+    QObject::connect(SearchThread, SIGNAL(msgPetrusStartLL()), this, SLOT(printPetrus_LL()));
+
+    QObject::connect(SearchThread, SIGNAL(msgZZStartEOX()), this, SLOT(printZZ_EOX()));
+    QObject::connect(SearchThread, SIGNAL(msgZZStartF2L()), this, SLOT(printZZ_F2L()));
+    QObject::connect(SearchThread, SIGNAL(msgZZStartLL()), this, SLOT(printZZ_LL()));
+
+    QObject::connect(SearchThread, SIGNAL(msgCEORStartLines()), this, SLOT(printCEOR_Lines()));
+    QObject::connect(SearchThread, SIGNAL(msgCEORStartCP()), this, SLOT(printCEOR_CP()));
+    QObject::connect(SearchThread, SIGNAL(msgCEORStartCPLines()), this, SLOT(printCEOR_CPLines()));
+    QObject::connect(SearchThread, SIGNAL(msgCEORStartpEO()), this, SLOT(printCEOR_pEO()));
+    QObject::connect(SearchThread, SIGNAL(msgCEORStartEOBF()), this, SLOT(printCEOR_EOBF()));
+    QObject::connect(SearchThread, SIGNAL(msgCEORStartF2L()), this, SLOT(printCEOR_F2L()));
+    QObject::connect(SearchThread, SIGNAL(msgCEORStartLL()), this, SLOT(printCEOR_LL()));
+
+    QObject::connect(SearchThread, SIGNAL(msgMehtaStartFB()), this, SLOT(printMehta_FB()));
+    QObject::connect(SearchThread, SIGNAL(msgMehtaStart3QB()), this, SLOT(printMehta_3QB()));
+    QObject::connect(SearchThread, SIGNAL(msgMehtaStartEOLE()), this, SLOT(printMehta_EOLE()));
+    QObject::connect(SearchThread, SIGNAL(msgMehtaStart6CO()), this, SLOT(printMehta_6CO()));
+    QObject::connect(SearchThread, SIGNAL(msgMehtaStart6CP()), this, SLOT(printMehta_6CP()));
+    QObject::connect(SearchThread, SIGNAL(msgMehtaStartL5EP()), this, SLOT(printMehta_L5EP()));
+    QObject::connect(SearchThread, SIGNAL(msgMehtaStartAPDR()), this, SLOT(printMehta_APDR()));
+    QObject::connect(SearchThread, SIGNAL(msgMehtaStartPLL()), this, SLOT(printMehta_PLL()));
+    QObject::connect(SearchThread, SIGNAL(msgMehtaStartDCAL()), this, SLOT(printMehta_DCAL()));
+    QObject::connect(SearchThread, SIGNAL(msgMehtaStartCDRLL()), this, SLOT(printMehta_CDRLL()));
+    QObject::connect(SearchThread, SIGNAL(msgMehtaStartJTLE()), this, SLOT(printMehta_JTLE()));
+    QObject::connect(SearchThread, SIGNAL(msgMehtaStartTDR()), this, SLOT(printMehta_TDR()));
+    QObject::connect(SearchThread, SIGNAL(msgMehtaStartZBLL()), this, SLOT(printMehta_ZBLL()));
+
+    QObject::connect(SearchThread, SIGNAL(msgNautilusStartFB()), this, SLOT(printNautilus_FB()));
+    QObject::connect(SearchThread, SIGNAL(msgNautilusStartSB()), this, SLOT(printNautilus_SB()));
+    QObject::connect(SearchThread, SIGNAL(msgNautilusStartdFR()), this, SLOT(printNautilus_dFR()));
+    QObject::connect(SearchThread, SIGNAL(msgNautilusStartNCLL()), this, SLOT(printNautilus_NCLL()));
+    QObject::connect(SearchThread, SIGNAL(msgNautilusStartNCOLL()), this, SLOT(printNautilus_NCOLL()));
+    QObject::connect(SearchThread, SIGNAL(msgNautilusStartTNCLL()), this, SLOT(printNautilus_TNCLL()));
+    QObject::connect(SearchThread, SIGNAL(msgNautilusStartL5E()), this, SLOT(printNautilus_L5E()));
+    QObject::connect(SearchThread, SIGNAL(msgNautilusStartEODF()), this, SLOT(printNautilus_EODF()));
+    QObject::connect(SearchThread, SIGNAL(msgNautilusStartF2L()), this, SLOT(printNautilus_F2L()));
+    QObject::connect(SearchThread, SIGNAL(msgNautilusStartLL()), this, SLOT(printNautilus_LL()));
+
+    QObject::connect(SearchThread, SIGNAL(msgLEORStartFB()), this, SLOT(printLEOR_FB()));
+    QObject::connect(SearchThread, SIGNAL(msgLEORStartEOStripe()), this, SLOT(printLEOR_EOStripe()));
+    QObject::connect(SearchThread, SIGNAL(msgLEORStartFLPair()), this, SLOT(printLEOR_FLPair()));
+    QObject::connect(SearchThread, SIGNAL(msgLEORStartEODF()), this, SLOT(printLEOR_EODF()));
+    QObject::connect(SearchThread, SIGNAL(msgLEORStartSB()), this, SLOT(printLEOR_SB()));
+    QObject::connect(SearchThread, SIGNAL(msgLEORStartLL()), this, SLOT(printLEOR_LL()));
+
+    QObject::connect(SearchThread, SIGNAL(msgCache()), this, SLOT(printCache()));
 
     SaveXMLDefaultLanguage(); // Save default language texts
 
@@ -84,7 +139,13 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     // Read language files
     QDir directory = QDir::currentPath();
     QStringList langfiles = directory.entryList(QStringList() << "*.xml" << "*.XML", QDir::Files);
-    foreach(QString filename, langfiles) if (CheckXMLLanguageFile(filename)) ui->comboBox_Language->addItem(filename);
+    int Index = 0;
+    foreach(QString filename, langfiles) if (CheckXMLLanguageFile(filename))
+    {
+        ui->comboBox_Language->addItem(filename);
+        if (filename.contains("english")) ui->comboBox_Language->setCurrentIndex(Index);
+        Index++;
+    }
 
     // No scramble text in status bar
     MainWindow::on_lineEdit_Scramble_textChanged(ui->lineEdit_Scramble->text());
@@ -96,14 +157,82 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     // Hide unused controls
     ui->pushButton_Debug->hide();
-    ui->line_Cores->hide();
-    ui->label_Language->hide();
-    ui->comboBox_Language->hide();
+    ui->pushButton_Collections->hide();
+    // ui->line_Cores->hide();
+    // ui->label_Language->hide();
+    // ui->comboBox_Language->hide();
+
+    ui->pushButton_Skip->setDisabled(true); // Skip button disabled at start
 }
 
 MainWindow::~MainWindow()
 {
+    SearchThread->Skip();
+    if (aw != nullptr) delete aw;
     delete ui;
+    delete SearchThread;
+}
+
+void MainWindow::DisableWhileSearching()
+{
+    ui->pushButton_Credits->setDisabled(true);
+    ui->pushButton_License->setDisabled(true);
+    ui->pushButton_Help->setDisabled(true);
+    ui->checkBox_Cache->setDisabled(true);
+    ui->spinBox_Cores->setDisabled(true);
+	ui->comboBox_Language->setDisabled(true);
+    ui->lineEdit_Scramble->setDisabled(true);
+    ui->spinBox_ScrambleLength->setDisabled(true);
+    ui->pushButton_RandomScramble->setDisabled(true);
+    ui->pushButton_PasteScramble->setDisabled(true);
+    ui->pushButton_ClearScramble->setDisabled(true);
+    ui->comboBox_Method->setDisabled(true);
+    ui->comboBox_Variant->setDisabled(true);
+    ui->comboBox_Option->setDisabled(true);
+    ui->comboBox_Speed->setDisabled(true);
+    ui->comboBox_Orientation->setDisabled(true);
+    ui->comboBox_Amount->setDisabled(true);
+    ui->comboBox_Metric->setDisabled(true);
+    ui->checkBox_Regrips->setDisabled(true);
+    ui->checkBox_Cancellations->setDisabled(true);
+    ui->pushButton_ZoomPlus->setDisabled(true);
+    ui->pushButton_ZoomMinus->setDisabled(true);
+    ui->pushButton_CopyReport->setDisabled(true);
+    ui->pushButton_SaveReport->setDisabled(true);
+    ui->pushButton_ClearReport->setDisabled(true);
+    ui->comboBox_History->setDisabled(true);
+    ui->pushButton_ClearHistory->setDisabled(true);
+}
+
+void MainWindow::EnableAfterSearch()
+{
+    ui->pushButton_Credits->setEnabled(true);
+    ui->pushButton_License->setEnabled(true);
+    ui->pushButton_Help->setEnabled(true);
+    ui->checkBox_Cache->setEnabled(true);
+    ui->spinBox_Cores->setEnabled(true);
+	ui->comboBox_Language->setEnabled(true);
+    ui->lineEdit_Scramble->setEnabled(true);
+    ui->spinBox_ScrambleLength->setEnabled(true);
+    ui->pushButton_RandomScramble->setEnabled(true);
+    ui->pushButton_PasteScramble->setEnabled(true);
+    ui->pushButton_ClearScramble->setEnabled(true);
+    ui->comboBox_Method->setEnabled(true);
+    ui->comboBox_Variant->setEnabled(true);
+    ui->comboBox_Option->setEnabled(true);
+    ui->comboBox_Speed->setEnabled(true);
+    ui->comboBox_Orientation->setEnabled(true);
+    ui->comboBox_Amount->setEnabled(true);
+    ui->comboBox_Metric->setEnabled(true);
+    ui->checkBox_Regrips->setEnabled(true);
+    ui->checkBox_Cancellations->setEnabled(true);
+    ui->pushButton_ZoomPlus->setEnabled(true);
+    ui->pushButton_ZoomMinus->setEnabled(true);
+    ui->pushButton_CopyReport->setEnabled(true);
+    ui->pushButton_SaveReport->setEnabled(true);
+    ui->pushButton_ClearReport->setEnabled(true);
+    ui->comboBox_History->setEnabled(true);
+    ui->pushButton_ClearHistory->setEnabled(true);
 }
 
   /*****************************************************************************************************************/
@@ -121,53 +250,69 @@ void MainWindow::on_pushButton_Debug_clicked()
     summary.append(std::to_string(Algorithm::GetCancellation3Size() >> 1).c_str());
     summary.append("\n\t");
     summary.append(CurrentLang["LoadOLL"]);
-    summary.append(std::to_string(Collection::GetOLLCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_OLL.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["LoadPLL"]);
-    summary.append(std::to_string(Collection::GetPLLCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_PLL.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["Load1LLL"]);
-    summary.append(std::to_string(Collection::Get1LLLCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_1LLL.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["LoadZBLL"]);
-    summary.append(std::to_string(Collection::GetZBLLCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_ZBLL.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["LoadOCLL"]);
-    summary.append(std::to_string(Collection::GetOCLLCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_OCLL.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["LoadCMLL"]);
-    summary.append(std::to_string(Collection::GetCMLLCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_CMLL.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["LoadCOLL"]);
-    summary.append(std::to_string(Collection::GetCOLLCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_COLL.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["LoadEPLL"]);
-    summary.append(std::to_string(Collection::GetEPLLCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_EPLL.GetCasesNumber())));
 
     summary.append("\n\t");
     summary.append(CurrentLang["LoadEOLE"]);
-    summary.append(std::to_string(Collection::GetEOLECases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_EOLE.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["Load6CO"]);
-    summary.append(std::to_string(Collection::Get6COCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_6CO.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["Load6CP"]);
-    summary.append(std::to_string(Collection::Get6CPCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_6CP.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["LoadAPDR"]);
-    summary.append(std::to_string(Collection::GetAPDRCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_APDR.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["LoadL5EP"]);
-    summary.append(std::to_string(Collection::GetL5EPCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_L5EP.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["LoadCDRLL"]);
-    summary.append(std::to_string(Collection::GetCDRLLCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_CDRLL.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["LoadJTLE"]);
-    summary.append(std::to_string(Collection::GetJTLECases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_JTLE.GetCasesNumber())));
     summary.append("\n\t");
     summary.append(CurrentLang["LoadTDR"]);
-    summary.append(std::to_string(Collection::GetTDRCases()).c_str());
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_TDR.GetCasesNumber())));
+
+    summary.append("\n\t");
+    summary.append(CurrentLang["LoadNCLL"]);
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_NCLL.GetCasesNumber())));
+    summary.append("\n\t");
+    summary.append(CurrentLang["LoadNCOLL"]);
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_NCOLL.GetCasesNumber())));
+    summary.append("\n\t");
+    summary.append(CurrentLang["LoadTNCLL"]);
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_TNCLL.GetCasesNumber())));
+    summary.append("\n\t");
+    summary.append(CurrentLang["LoadL5E"]);
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_L5E.GetCasesNumber())));
+    summary.append("\n\t");
+    summary.append(CurrentLang["LoadEODF"]);
+    summary.append(QString::fromStdString(std::to_string(Method::Algset_EODF.GetCasesNumber())));
 
     ui->textBrowser_report->setText(summary);
 	
@@ -353,6 +498,11 @@ void MainWindow::SaveXMLDefaultLanguage() const
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("FixedText");
+    pElement->SetAttribute("ObjectName", ui->pushButton_Skip->objectName().toStdString().c_str());
+    pElement->SetText(ui->pushButton_Skip->text().toStdString().c_str());
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("FixedText");
     pElement->SetAttribute("ObjectName", ui->pushButton_StartSearch->objectName().toStdString().c_str());
     pElement->SetText(ui->pushButton_StartSearch->text().toStdString().c_str());
     pRoot->InsertEndChild(pElement);
@@ -398,7 +548,7 @@ void MainWindow::SaveXMLDefaultLanguage() const
 
 	pElement = lang_xml.NewElement("Message");
 	pElement->SetAttribute("Id", "MainWindowTitle");
-    pElement->SetText("SpeedSolving Master beta 2");
+    pElement->SetText("SpeedSolving Master V1.0 by GRVigo");
 	pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
@@ -408,7 +558,7 @@ void MainWindow::SaveXMLDefaultLanguage() const
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "CacheOn");
-    pElement->SetText("Cache enabled, note that slow searchs cause high memory usage");
+    pElement->SetText("Cache enabled, please note that slow searchs cause high memory usage");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
@@ -419,11 +569,6 @@ void MainWindow::SaveXMLDefaultLanguage() const
 	pElement = lang_xml.NewElement("Message");
 	pElement->SetAttribute("Id", "NoScramble");
 	pElement->SetText("No scramble!");
-	pRoot->InsertEndChild(pElement);
-
-	pElement = lang_xml.NewElement("Message");
-	pElement->SetAttribute("Id", "ScrambleSimplified");
-	pElement->SetText("Scramble simplified: ");
 	pRoot->InsertEndChild(pElement);
 
 	pElement = lang_xml.NewElement("Message");
@@ -453,17 +598,17 @@ void MainWindow::SaveXMLDefaultLanguage() const
 
 	pElement = lang_xml.NewElement("Message");
 	pElement->SetAttribute("Id", "AllAvaliable");
-	pElement->SetText("All avaliable");
+	pElement->SetText("All avaliable threads will be used in the search");
+	pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+	pElement->SetAttribute("Id", "SingleCoreWillBeUsedInTheSearch");
+	pElement->SetText("Single thread will be used in the search");
 	pRoot->InsertEndChild(pElement);
 
 	pElement = lang_xml.NewElement("Message");
 	pElement->SetAttribute("Id", "CoresWillBeUsedInTheSearch");
-	pElement->SetText(" threads will be used in the search");
-	pRoot->InsertEndChild(pElement);
-
-	pElement = lang_xml.NewElement("Message");
-	pElement->SetAttribute("Id", "SingleCoreWillBeUsedInTheSearch");
-	pElement->SetText("Single thread will be used in the search");
+    pElement->SetText("Number of threads that will be used in the search: ");
 	pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
@@ -471,10 +616,20 @@ void MainWindow::SaveXMLDefaultLanguage() const
     pElement->SetText("Search in progress...");
     pRoot->InsertEndChild(pElement);
 
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "Skip");
+    pElement->SetText("[Skip]");
+    pRoot->InsertEndChild(pElement);
+
 	pElement = lang_xml.NewElement("Message");
 	pElement->SetAttribute("Id", "SearchFinished");
 	pElement->SetText("Search finished, enjoy!");
 	pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchCancelled");
+    pElement->SetText("Search cancelled!");
+    pRoot->InsertEndChild(pElement);
 
 	pElement = lang_xml.NewElement("Message");
 	pElement->SetAttribute("Id", "ReportCopiedToTheClipboard");
@@ -546,31 +701,288 @@ void MainWindow::SaveXMLDefaultLanguage() const
 	pElement->SetText("Solve recovered from history");
 	pRoot->InsertEndChild(pElement);
 
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "OLL+PLL");
+    pElement->SetText("OLL+PLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "1LLL");
+    pElement->SetText("1LLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "EO+ZBLL");
+    pElement->SetText("EO+ZBLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "CMLL");
+    pElement->SetText("CMLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "COLL");
+    pElement->SetText("COLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "L6EStepByStep");
+    pElement->SetText("L6E step by step");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "OneLookL6E");
+    pElement->SetText("One-look L6E");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "ZBLL");
+    pElement->SetText("ZBLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "OCLL+PLL");
+    pElement->SetText("OCLL+PLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "COLL+EPLL");
+    pElement->SetText("COLL+EPLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "YruRU");
+    pElement->SetText("YruRU");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "CPSkip");
+    pElement->SetText("CP-Skip");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "NoCPSkip");
+    pElement->SetText("No CP-Skip");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "TDR");
+    pElement->SetText("TDR");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "6CP");
+    pElement->SetText("6CP");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "APDR");
+    pElement->SetText("APDR");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "CDRLL");
+    pElement->SetText("CDRLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "JTLE");
+    pElement->SetText("JTLE");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "L5E-NCLL");
+    pElement->SetText("L5E-NCLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "L5E-NCOLL");
+    pElement->SetText("L5E-NCOLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "L5E-NCLL/TNCLL");
+    pElement->SetText("L5E-NCLL/TNCLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LSLL-ZBLL");
+    pElement->SetText("LSLL-ZBLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LSLL-OCLL/PLL");
+    pElement->SetText("LSLL-OCLL/PLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LSLL-COLL/EPLL");
+    pElement->SetText("LSLL-COLL/EPLL");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LEOR-A");
+    pElement->SetText("LEOR-A");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LEOR-B");
+    pElement->SetText("LEOR-B");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SpeedFast");
+    pElement->SetText("Fast");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SpeedMedium");
+    pElement->SetText("Medium");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SpeedSlow");
+    pElement->SetText("Slow");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SpeedVerySlow");
+    pElement->SetText("Very slow");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "OrientAll");
+    pElement->SetText("All");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "OrientUD");
+    pElement->SetText("U & D layers up");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "OrientFB");
+    pElement->SetText("F & B layers up");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "OrientRL");
+    pElement->SetText("R & L layers up");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "OrientU");
+    pElement->SetText("U layer up");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "OrientD");
+    pElement->SetText("D layer up");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "OrientF");
+    pElement->SetText("F layer up");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "OrientB");
+    pElement->SetText("B layer up");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "OrientR");
+    pElement->SetText("R layer up");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "OrientL");
+    pElement->SetText("L layer up");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "AmountMinimum");
+    pElement->SetText("Minimum");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "AmountLow");
+    pElement->SetText("Low");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "AmountMedium");
+    pElement->SetText("Medium");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "AmountHigh");
+    pElement->SetText("High");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "AmountHuge");
+    pElement->SetText("Huge");
+    pRoot->InsertEndChild(pElement);
+
     // LBL
-
-    pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingCross");
-    pElement->SetText("Searching cross...");
-    pRoot->InsertEndChild(pElement);
-
-    pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingFL");
-    pElement->SetText("Searching first layer corners...");
-    pRoot->InsertEndChild(pElement);
-
-    pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingSL");
-    pElement->SetText("Searching second layer edges...");
-    pRoot->InsertEndChild(pElement);
-
-    pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingLL");
-    pElement->SetText("Searching last layer...");
-    pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LBLSolve");
     pElement->SetText("LBL solve");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingLBLCross");
+    pElement->SetText("Searching first layer cross...");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingLBLFLCorners");
+    pElement->SetText("Searching first layer corners...");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingLBLSL");
+    pElement->SetText("Searching second layer edges...");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingLBLLL");
+    pElement->SetText("Searching last layer...");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LBLNoSolve");
+    pElement->SetText("No LBL solves found. This shouldn't happend.");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LBLHeader");
+    pElement->SetText("Layer-by-Layer solve with cross in layer ");
+    pRoot->InsertEndChild(pElement);
+
+    // Common to all methods
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "NoSolves");
+    pElement->SetText("No solves found. Try a slower speed, more orientations or increase the amount of solves.");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "MethodHeader");
+    pElement->SetText("All found solves for ");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "ScrambleHeader");
+    pElement->SetText("Scramble: ");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "TimeHeader");
+    pElement->SetText("Search times / Threads");
     pRoot->InsertEndChild(pElement);
 
     // CFOP
@@ -581,8 +993,23 @@ void MainWindow::SaveXMLDefaultLanguage() const
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingF2L");
-    pElement->SetText("Searching F2L...");
+    pElement->SetAttribute("Id", "CFOPBest");
+    pElement->SetText("Best CFOP solve");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingCFOPCross");
+    pElement->SetText("Searching CFOP cross...");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingCFOPF2L");
+    pElement->SetText("Searching first two layers...");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingCFOPLL");
+    pElement->SetText("Searching last layer...");
     pRoot->InsertEndChild(pElement);
 
     // Roux
@@ -593,32 +1020,32 @@ void MainWindow::SaveXMLDefaultLanguage() const
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingFB");
-    pElement->SetText("Searching first blocks...");
+    pElement->SetAttribute("Id", "RouxBest");
+    pElement->SetText("Best Roux solve");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "NoFB");
-    pElement->SetText("First blocks not found!");
+    pElement->SetAttribute("Id", "SearchingRouxFB");
+    pElement->SetText("Searching Roux first blocks...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingSB");
+    pElement->SetAttribute("Id", "SearchingRouxSB");
     pElement->SetText("Searching second blocks...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingCOLL");
+    pElement->SetAttribute("Id", "SearchingRouxCOLL");
     pElement->SetText("Searching COLL...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingCMLL");
+    pElement->SetAttribute("Id", "SearchingRouxCMLL");
     pElement->SetText("Searching CMLL...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingL6E");
+    pElement->SetAttribute("Id", "SearchingRouxL6E");
     pElement->SetText("Searching last six edges...");
     pRoot->InsertEndChild(pElement);
 
@@ -630,23 +1057,33 @@ void MainWindow::SaveXMLDefaultLanguage() const
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingBlocks");
-    pElement->SetText("Searching blocks...");
+    pElement->SetAttribute("Id", "PetrusBest");
+    pElement->SetText("Best Petrus solve");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "NoPetrusBlock");
-    pElement->SetText("First blocks not found!");
+    pElement->SetAttribute("Id", "SearchingPetrusBlocks");
+    pElement->SetText("Searching Petrus blocks...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingEB");
-    pElement->SetText("Searching expanded block...");
+    pElement->SetAttribute("Id", "SearchingPetrusEB");
+    pElement->SetText("Searching expanded blocks...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingEO");
-    pElement->SetText("Searching edges orientation...");
+    pElement->SetAttribute("Id", "SearchingPetrusEO");
+    pElement->SetText("Searching edges orientations...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingPetrusF2L");
+    pElement->SetText("Searching F2L...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingPetrusLL");
+    pElement->SetText("Searching last layers...");
     pRoot->InsertEndChild(pElement);
 
     // ZZ
@@ -657,13 +1094,23 @@ void MainWindow::SaveXMLDefaultLanguage() const
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingEOX");
+    pElement->SetAttribute("Id", "ZZBest");
+    pElement->SetText("Best ZZ solve");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingZZEOX");
     pElement->SetText("Searching EO X...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "NoZZBlock");
-    pElement->SetText("No ZZ blocks found!");
+    pElement->SetAttribute("Id", "SearchingZZF2L");
+    pElement->SetText("Searching F2L...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingZZLL");
+    pElement->SetText("Searching last layers...");
     pRoot->InsertEndChild(pElement);
 
     // CEOR
@@ -674,38 +1121,43 @@ void MainWindow::SaveXMLDefaultLanguage() const
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingCPLines");
-    pElement->SetText("Searching Lines+CP...");
+    pElement->SetAttribute("Id", "CEORBest");
+    pElement->SetText("Best CEOR solve");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingYruRULines");
+    pElement->SetText("Searching YruRU lines...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingLines");
-    pElement->SetText("Searching Lines...");
+    pElement->SetAttribute("Id", "SearchingYruRUCP");
+    pElement->SetText("Searching YruRU CP...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingCP");
-    pElement->SetText("Searching CP...");
+    pElement->SetAttribute("Id", "SearchingYruRUCPLines");
+    pElement->SetText("Searching YruRU lines + CP...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "NoLines");
-    pElement->SetText("No Lines found!");
-    pRoot->InsertEndChild(pElement);
-
-    pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "NoCPLines");
-    pElement->SetText("No CP Lines found!");
-    pRoot->InsertEndChild(pElement);
-
-    pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingEOBF");
-    pElement->SetText("Searching EOBF...");
-    pRoot->InsertEndChild(pElement);
-
-    pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingpEOExtension");
+    pElement->SetAttribute("Id", "SearchingpYruRUpEOExtension");
     pElement->SetText("Searching pEO-extension...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingYruRUEOBF");
+    pElement->SetText("Searching EO BF...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingYruRUF2L");
+    pElement->SetText("Searching F2L...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingYruRULL");
+    pElement->SetText("Searching last layers...");
     pRoot->InsertEndChild(pElement);
 
     // Mehta
@@ -716,63 +1168,177 @@ void MainWindow::SaveXMLDefaultLanguage() const
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "Searching3QB");
+    pElement->SetAttribute("Id", "MehtaBest");
+    pElement->SetText("Best Mehta solve");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingMehtaFB");
+    pElement->SetText("Searching Mehta first blocks...");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingMehta3QB");
     pElement->SetText("Searching 3QB...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingEOLE");
+    pElement->SetAttribute("Id", "SearchingMehtaEOLE");
     pElement->SetText("Searching EOLE...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "Searching6CO");
+    pElement->SetAttribute("Id", "SearchingMehta6CO");
     pElement->SetText("Searching 6CO...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "Searching6CP");
+    pElement->SetAttribute("Id", "SearchingMehta6CP");
     pElement->SetText("Searching 6CP...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingL5EP");
+    pElement->SetAttribute("Id", "SearchingMehtaL5EP");
     pElement->SetText("Searching L5EP...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingAPDR");
+    pElement->SetAttribute("Id", "SearchingMehtaAPDR");
     pElement->SetText("Searching APDR...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingPLL");
+    pElement->SetAttribute("Id", "SearchingMehtaPLL");
     pElement->SetText("Searching PLL...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingDCAL");
+    pElement->SetAttribute("Id", "SearchingMehtaDCAL");
     pElement->SetText("Searching DCAL...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingCDRLL");
+    pElement->SetAttribute("Id", "SearchingMehtaCDRLL");
     pElement->SetText("Searching CDRLL...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingJTLE");
+    pElement->SetAttribute("Id", "SearchingMehtaJTLE");
     pElement->SetText("Searching JTLE...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingTDR");
+    pElement->SetAttribute("Id", "SearchingMehtaTDR");
     pElement->SetText("Searching TDR...");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
-    pElement->SetAttribute("Id", "SearchingZBLL");
+    pElement->SetAttribute("Id", "SearchingMehtaZBLL");
     pElement->SetText("Searching ZBLL...");
+    pRoot->InsertEndChild(pElement);
+
+    // Nautilus
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "NautilusSolve");
+    pElement->SetText("Nautilus solve");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "NautilusBest");
+    pElement->SetText("Best Nautilus solve");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingNautilusFB");
+    pElement->SetText("Searching Nautilus first blocks...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingNautilusSB");
+    pElement->SetText("Searching Nautilus second blocks...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingNautilusdFR");
+    pElement->SetText("Searching Nautilus dFR pairs...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingNautilusNCLL");
+    pElement->SetText("Searching NCLL...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingNautilusNCOLL");
+    pElement->SetText("Searching NOCLL...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingNautilusTNCLL");
+    pElement->SetText("Searching NCLL/TNCLL...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingNautilusL5E");
+    pElement->SetText("Searching last five edges...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingNautilusEODF");
+    pElement->SetText("Searching Nautilus EODF...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingNautilusF2L");
+    pElement->SetText("Searching Nautilus F2L...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingNautilusLL");
+    pElement->SetText("Searching last layers...");
+    pRoot->InsertEndChild(pElement);
+
+    // LEOR
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LEORSolve");
+    pElement->SetText("LEOR solve");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LEORBest");
+    pElement->SetText("Best LEOR solve");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingLEORFB");
+    pElement->SetText("Searching LEOR first blocks...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingLEOREOStripe");
+    pElement->SetText("Searching EO stripe...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingLEORFLPair");
+    pElement->SetText("Searching FL pair...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingLEOREODF");
+    pElement->SetText("Searching EO DF...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingLEORSB");
+    pElement->SetText("Searching LEOR second blocks...");
+    pRoot->InsertEndChild(pElement);
+	
+	pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "SearchingLEORLL");
+    pElement->SetText("Searching last layers...");
     pRoot->InsertEndChild(pElement);
 
     // External files messages
@@ -794,82 +1360,107 @@ void MainWindow::SaveXMLDefaultLanguage() const
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LoadOLL");
-    pElement->SetText("OLL algorithms loaded: ");
+    pElement->SetText("OLL cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LoadPLL");
-    pElement->SetText("PLL algorithms loaded: ");
+    pElement->SetText("PLL cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "Load1LLL");
-    pElement->SetText("1LLL algorithms loaded: ");
+    pElement->SetText("1LLL cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LoadZBLL");
-    pElement->SetText("ZBLL algorithms loaded: ");
+    pElement->SetText("ZBLL cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LoadOCLL");
-    pElement->SetText("OCLL algorithms loaded: ");
+    pElement->SetText("OCLL cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LoadCMLL");
-    pElement->SetText("CMLL algorithms loaded: ");
+    pElement->SetText("CMLL cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LoadCOLL");
-    pElement->SetText("COLL algorithms loaded: ");
+    pElement->SetText("COLL cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LoadEPLL");
-    pElement->SetText("EPLL algorithms loaded: ");
+    pElement->SetText("EPLL cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LoadEOLE");
-    pElement->SetText("EOLE algorithms loaded: ");
+    pElement->SetText("EOLE cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "Load6CO");
-    pElement->SetText("6CO algorithms loaded: ");
+    pElement->SetText("6CO cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "Load6CP");
-    pElement->SetText("6CP algorithms loaded: ");
+    pElement->SetText("6CP cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LoadAPDR");
-    pElement->SetText("APDR algorithms loaded: ");
+    pElement->SetText("APDR cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LoadL5EP");
-    pElement->SetText("L5EP algorithms loaded: ");
+    pElement->SetText("L5EP cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LoadCDRLL");
-    pElement->SetText("CDRLL algorithms loaded: ");
+    pElement->SetText("CDRLL cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LoadJTLE");
-    pElement->SetText("JTLE algorithms loaded: ");
+    pElement->SetText("JTLE cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     pElement = lang_xml.NewElement("Message");
     pElement->SetAttribute("Id", "LoadTDR");
-    pElement->SetText("TDR algorithms loaded: ");
+    pElement->SetText("TDR cases loaded: ");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LoadNCLL");
+    pElement->SetText("NCLL cases loaded: ");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LoadNCOLL");
+    pElement->SetText("NCOLL cases loaded: ");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LoadTNCLL");
+    pElement->SetText("TNCLL cases loaded: ");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LoadL5E");
+    pElement->SetText("L5E cases loaded: ");
+    pRoot->InsertEndChild(pElement);
+
+    pElement = lang_xml.NewElement("Message");
+    pElement->SetAttribute("Id", "LoadEODF");
+    pElement->SetText("EODF cases loaded: ");
     pRoot->InsertEndChild(pElement);
 
     // Evaluation
@@ -1074,7 +1665,7 @@ bool MainWindow::CheckXMLLanguageFile(const QString& lang)
             const char* s_Language = pElementRoot->Attribute("Language");
             if (s_Language == nullptr) return false;
             std::string Lang = s_Language;
-            if (Lang.empty()) return false; // No language
+            if (Lang.empty() || lang.contains("default")) return false; // No language
             return true;
         }
     }
@@ -1087,53 +1678,48 @@ void MainWindow::on_comboBox_Language_currentIndexChanged(const QString &langfil
     if (LoadXMLCurrentLanguage(langfile))
     {
         UpdateFixedTexts(CurrentLang);
+        on_comboBox_Method_currentIndexChanged(ui->comboBox_Method->currentText());
+
+        ui->comboBox_Speed->clear();
+        ui->comboBox_Speed->addItem(CurrentLang["SpeedFast"]);
+        ui->comboBox_Speed->addItem(CurrentLang["SpeedMedium"]);
+        ui->comboBox_Speed->addItem(CurrentLang["SpeedSlow"]);
+        ui->comboBox_Speed->addItem(CurrentLang["SpeedVerySlow"]);
+
+        ui->comboBox_Orientation->clear();
+        ui->comboBox_Orientation->addItem(CurrentLang["OrientAll"]);
+        ui->comboBox_Orientation->addItem(CurrentLang["OrientUD"]);
+        ui->comboBox_Orientation->addItem(CurrentLang["OrientFB"]);
+        ui->comboBox_Orientation->addItem(CurrentLang["OrientRL"]);
+        ui->comboBox_Orientation->addItem(CurrentLang["OrientU"]);
+        ui->comboBox_Orientation->addItem(CurrentLang["OrientD"]);
+        ui->comboBox_Orientation->addItem(CurrentLang["OrientF"]);
+        ui->comboBox_Orientation->addItem(CurrentLang["OrientB"]);
+        ui->comboBox_Orientation->addItem(CurrentLang["OrientR"]);
+        ui->comboBox_Orientation->addItem(CurrentLang["OrientL"]);
+
+        ui->comboBox_Amount->clear();
+        ui->comboBox_Amount->addItem(CurrentLang["AmountMinimum"]);
+        ui->comboBox_Amount->addItem(CurrentLang["AmountLow"]);
+        ui->comboBox_Amount->addItem(CurrentLang["AmountMedium"]);
+        ui->comboBox_Amount->addItem(CurrentLang["AmountHigh"]);
+        ui->comboBox_Amount->addItem(CurrentLang["AmountHuge"]);
+
         ui->statusBar->showMessage(CurrentLang["ApplicationLanguageChanged"]);
     }
     else
     {
         UpdateFixedTexts(DefaultLang);
+        on_comboBox_Method_currentIndexChanged(ui->comboBox_Method->currentText());
         ui->statusBar->showMessage(CurrentLang["DefaultLanguageApplied"]);
     }
+
+    on_pushButton_Credits_clicked();
 }
 
   /*****************************************************************************************************************/
  /*** SCRAMBLE FUNCTIONS ******************************************************************************************/
 /*****************************************************************************************************************/
-
-void MainWindow::GetSearchSpins(std::vector<Spn>& SearchSpins)
-{
-    SearchSpins.clear();
-
-    switch (ui->comboBox_Orientation->currentIndex())
-    {
-    case 0: for (int s = 0; s < 24; s++) SearchSpins.push_back(static_cast<Spn>(s)); break; // All
-
-    case 1: SearchSpins.push_back(Spn::UF); SearchSpins.push_back(Spn::UB); SearchSpins.push_back(Spn::UR); SearchSpins.push_back(Spn::UL);
-            SearchSpins.push_back(Spn::DF); SearchSpins.push_back(Spn::DB); SearchSpins.push_back(Spn::DR); SearchSpins.push_back(Spn::DL);
-        break;
-    case 2: SearchSpins.push_back(Spn::FU); SearchSpins.push_back(Spn::FD); SearchSpins.push_back(Spn::FR); SearchSpins.push_back(Spn::FL);
-            SearchSpins.push_back(Spn::BU); SearchSpins.push_back(Spn::BD); SearchSpins.push_back(Spn::BR); SearchSpins.push_back(Spn::BL);
-        break;
-    case 3: SearchSpins.push_back(Spn::RU); SearchSpins.push_back(Spn::RD); SearchSpins.push_back(Spn::RF); SearchSpins.push_back(Spn::RB);
-            SearchSpins.push_back(Spn::LU); SearchSpins.push_back(Spn::LD); SearchSpins.push_back(Spn::LF); SearchSpins.push_back(Spn::LB);
-        break;
-
-    case 4: SearchSpins.push_back(Spn::UF); SearchSpins.push_back(Spn::UB); SearchSpins.push_back(Spn::UR); SearchSpins.push_back(Spn::UL);
-        break;
-    case 5: SearchSpins.push_back(Spn::DF); SearchSpins.push_back(Spn::DB); SearchSpins.push_back(Spn::DR); SearchSpins.push_back(Spn::DL);
-        break;
-    case 6: SearchSpins.push_back(Spn::FU); SearchSpins.push_back(Spn::FD); SearchSpins.push_back(Spn::FR); SearchSpins.push_back(Spn::FL);
-        break;
-    case 7: SearchSpins.push_back(Spn::BU); SearchSpins.push_back(Spn::BD); SearchSpins.push_back(Spn::BR); SearchSpins.push_back(Spn::BL);
-        break;
-    case 8: SearchSpins.push_back(Spn::RU); SearchSpins.push_back(Spn::RD); SearchSpins.push_back(Spn::RF); SearchSpins.push_back(Spn::RB);
-        break;
-    case 9: SearchSpins.push_back(Spn::LU); SearchSpins.push_back(Spn::LD); SearchSpins.push_back(Spn::LF); SearchSpins.push_back(Spn::LB);
-        break;
-
-    default: SearchSpins.push_back(Spn::UF); break;
-    }
-}
 
 void MainWindow::on_lineEdit_Scramble_textChanged(const QString &scrInput)
 {
@@ -1156,7 +1742,6 @@ void MainWindow::on_lineEdit_Scramble_textChanged(const QString &scrInput)
         Algorithm B = A.GetSimplified();
         B = B.GetWithoutTurns();
         while (B.Shrink());
-        // if (A != B) ui->statusBar->showMessage(CurrentLang["ScrambleSimplified"] + QString::fromStdString(B.ToString()));
 
         if (B.GetSize() < 12u) // Scramble too short to evaluate
         {
@@ -1166,7 +1751,7 @@ void MainWindow::on_lineEdit_Scramble_textChanged(const QString &scrInput)
         {
             // Read the allowed orientations
             std::vector<Spn> SearchSpins;
-            GetSearchSpins(SearchSpins);
+            RunSearch::GetSearchSpins(SearchSpins, ui->comboBox_Orientation->currentIndex());
 
             // Get the scramble evaluation
             Evaluation.SetNewScramble(B);
@@ -1221,9 +1806,9 @@ void MainWindow::on_pushButton_ClearScramble_clicked()
 
 void MainWindow::on_spinBox_Cores_valueChanged(int cores)
 {
-    if (cores == 0) ui->statusBar->showMessage(CurrentLang["AllAvaliable"] + CurrentLang["CoresWillBeUsedInTheSearch"]);
+    if (cores == 0) ui->statusBar->showMessage(CurrentLang["AllAvaliable"]);
     else if (cores == 1) ui->statusBar->showMessage(CurrentLang["SingleCoreWillBeUsedInTheSearch"]);
-    else ui->statusBar->showMessage(QString::number(cores) + CurrentLang["CoresWillBeUsedInTheSearch"]);
+    else ui->statusBar->showMessage(CurrentLang["CoresWillBeUsedInTheSearch"] + QString::number(cores));
 }
 
 void MainWindow::on_checkBox_Cache_stateChanged(int arg1)
@@ -1344,36 +1929,50 @@ void MainWindow::on_comboBox_Method_currentIndexChanged(const QString &arg1)
     switch (ui->comboBox_Method->currentIndex())
     {
     case 1: // CFOP
-        ui->comboBox_Variant->addItem("OLL+PLL");
-        ui->comboBox_Variant->addItem("1LLL");
-        ui->comboBox_Variant->addItem("EO+ZBLL");
+        ui->comboBox_Variant->addItem(CurrentLang["OLL+PLL"]);
+        ui->comboBox_Variant->addItem(CurrentLang["1LLL"]);
+        ui->comboBox_Variant->addItem(CurrentLang["EO+ZBLL"]);
         ui->comboBox_Option->addItem(CurrentLang["None"]); break;
     case 2: // Roux
-        ui->comboBox_Variant->addItem("CMLL");
-        ui->comboBox_Variant->addItem("COLL");
-        ui->comboBox_Option->addItem("L6E step by step");
-        ui->comboBox_Option->addItem("One-look L6E"); break;
+        ui->comboBox_Variant->addItem(CurrentLang["CMLL"]);
+        ui->comboBox_Variant->addItem(CurrentLang["COLL"]);
+        ui->comboBox_Option->addItem(CurrentLang["L6EStepByStep"]);
+        ui->comboBox_Option->addItem(CurrentLang["OneLookL6E"]); break;
     case 3: // Petrus
-        ui->comboBox_Variant->addItem("ZBLL");
-        ui->comboBox_Variant->addItem("OCLL+PLL");
-        ui->comboBox_Variant->addItem("COLL+EPLL");
+        ui->comboBox_Variant->addItem(CurrentLang["ZBLL"]);
+        ui->comboBox_Variant->addItem(CurrentLang["OCLL+PLL"]);
+        ui->comboBox_Variant->addItem(CurrentLang["COLL+EPLL"]);
         ui->comboBox_Option->addItem(CurrentLang["None"]); break;
     case 4: // ZZ
-        ui->comboBox_Variant->addItem("ZBLL");
-        ui->comboBox_Variant->addItem("OCLL+PLL");
-        ui->comboBox_Variant->addItem("COLL+EPLL");
+        ui->comboBox_Variant->addItem(CurrentLang["ZBLL"]);
+        ui->comboBox_Variant->addItem(CurrentLang["OCLL+PLL"]);
+        ui->comboBox_Variant->addItem(CurrentLang["COLL+EPLL"]);
         ui->comboBox_Option->addItem(CurrentLang["None"]); break;
     case 5: // CEOR
-        ui->comboBox_Variant->addItem("YruRU");
-        ui->comboBox_Option->addItem("CP-Skip");
-        ui->comboBox_Option->addItem("No CP-Skip"); break;
+        ui->comboBox_Variant->addItem(CurrentLang["YruRU"]);
+        ui->comboBox_Option->addItem(CurrentLang["CPSkip"]);
+        ui->comboBox_Option->addItem(CurrentLang["NoCPSkip"]); break;
     case 6: // Mehta
-        ui->comboBox_Variant->addItem("TDR");
-        ui->comboBox_Variant->addItem("6CP");
-        ui->comboBox_Variant->addItem("APDR");
-        ui->comboBox_Variant->addItem("CDRLL");
-        ui->comboBox_Variant->addItem("JTLE");
+        ui->comboBox_Variant->addItem(CurrentLang["TDR"]);
+        ui->comboBox_Variant->addItem(CurrentLang["6CP"]);
+        ui->comboBox_Variant->addItem(CurrentLang["APDR"]);
+        ui->comboBox_Variant->addItem(CurrentLang["CDRLL"]);
+        ui->comboBox_Variant->addItem(CurrentLang["JTLE"]);
         ui->comboBox_Option->addItem(CurrentLang["None"]); break;
+    case 7: // Nautilus
+        ui->comboBox_Variant->addItem(CurrentLang["L5E-NCLL"]);
+        ui->comboBox_Variant->addItem(CurrentLang["L5E-NCOLL"]);
+        ui->comboBox_Variant->addItem(CurrentLang["L5E-NCLL/TNCLL"]);
+        ui->comboBox_Variant->addItem(CurrentLang["LSLL-ZBLL"]);
+        ui->comboBox_Variant->addItem(CurrentLang["LSLL-OCLL/PLL"]);
+        ui->comboBox_Variant->addItem(CurrentLang["LSLL-COLL/EPLL"]);
+        ui->comboBox_Option->addItem(CurrentLang["None"]); break;
+    case 8: // LEOR
+        ui->comboBox_Variant->addItem(CurrentLang["LEOR-A"]);
+        ui->comboBox_Variant->addItem(CurrentLang["LEOR-B"]);
+        ui->comboBox_Option->addItem(CurrentLang["ZBLL"]);
+        ui->comboBox_Option->addItem(CurrentLang["OCLL+PLL"]);
+        ui->comboBox_Option->addItem(CurrentLang["COLL+EPLL"]); break;
     default: // LBL
         ui->comboBox_Variant->addItem(CurrentLang["None"]);
         ui->comboBox_Option->addItem(CurrentLang["None"]); break;
@@ -1384,10 +1983,7 @@ void MainWindow::on_pushButton_StartSearch_clicked()
 {
     // Clear output and disable controls during search
     ui->textBrowser_report->clear();
-    ui->pushButton_CopyReport->setDisabled(true);
-    ui->pushButton_ClearReport->setDisabled(true);
-    ui->pushButton_SaveReport->setDisabled(true);
-    ui->pushButton_StartSearch->setDisabled(true);
+    DisableWhileSearching();
 
     // Read scramble
     Algorithm Scramble(ui->lineEdit_Scramble->text().toStdString().c_str());
@@ -1406,18 +2002,117 @@ void MainWindow::on_pushButton_StartSearch_clicked()
     case 4: sZZ(Scramble.ToString()); break;
     case 5: sCEOR(Scramble.ToString()); break;
     case 6: sMehta(Scramble.ToString()); break;
-    // case 7: sNautilus(Scramble.ToString()); break;
+    case 7: sNautilus(Scramble.ToString()); break;
+    case 8: sLEOR(Scramble.ToString()); break;
+
+    default:
+        EnableAfterSearch();
+        ui->statusBar->showMessage(CurrentLang["SearchCancelled"]);
+        break;
+    }
+}
+
+void MainWindow::on_pushButton_Skip_clicked()
+{
+    ui->textBrowser_report->append(CurrentLang["Skip"]);
+    SearchThread->Skip();
+}
+
+void MainWindow::printCache()
+{
+    ui->textBrowser_report->append(CurrentLang["Cache"]);
+}
+
+void MainWindow::printMethod_NoSolves()
+{
+    ui->textBrowser_report->setText(CurrentLang["NoSolves"]);
+
+    EnableAfterSearch(); // Enable controls after search
+    ui->pushButton_StartSearch->setEnabled(true);
+    ui->pushButton_Skip->setDisabled(true);
+    ui->statusBar->showMessage(CurrentLang["SearchFinished"]);
+}
+
+void MainWindow::printMethod_Solves(const QString Scramble, const QString Result)
+{
+    QString Method = ui->comboBox_Method->currentText(),
+            MethodText = ui->label_Method->text().toLower(),
+            Variant = ui->comboBox_Variant->currentText(),
+            VariantText = ui->label_Variant->text().toLower(),
+            Option = ui->comboBox_Option->currentText(),
+            OptionText = ui->label_Option->text().toLower();
+
+    HtmlReport = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n";
+    HtmlReport += "<html><head><meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"content-type\">";
+    HtmlReport +=  "<title>Solve</title></head>\n";
+    HtmlReport += "<body><h1>" + CurrentLang["ScrambleHeader"] + "[" + Scramble + "]" + "</h1>";
+    HtmlReport += "<h2 style=\"color: rgb(0, 0, 127);\">" + CurrentLang["MethodHeader"] + MethodText + " " + Method;
+    HtmlReport += ", " + VariantText + " " + Variant;
+    if (ui->comboBox_Option->count() > 1) HtmlReport += ", " + OptionText + " " + Option;
+    HtmlReport += "</h2>";
+
+    QStringList Lines = Result.split('\n');
+    for (auto& Line : Lines)
+    {
+        HtmlReport += "<span>" + Line + "</span>";
+        if (Line != Lines.last()) HtmlReport += "<br>";
+    }
+}
+
+void MainWindow::printMethod_Best(const QString Result)
+{
+    HtmlReport += "<h2 style=\"color: rgb(0, 0, 127);\">";
+    switch (ui->comboBox_Method->currentIndex())
+    {
+    case 1: HtmlReport += CurrentLang["CFOPBest"]; break;
+    case 2: HtmlReport += CurrentLang["RouxBest"]; break;
+    case 3: HtmlReport += CurrentLang["PetrusBest"]; break;
+    case 4: HtmlReport += CurrentLang["ZZBest"]; break;
+    case 5: HtmlReport += CurrentLang["CEORBest"]; break;
+    case 6: HtmlReport += CurrentLang["MehtaBest"]; break;
+    case 7: HtmlReport += CurrentLang["NautilusBest"]; break;
+    case 8: HtmlReport += CurrentLang["LEORBest"]; break;
+    default: break;
+    }
+    HtmlReport += "</h2>";
+
+    QStringList Lines = Result.split('\n');
+    for (auto& Line : Lines)
+    {
+        QStringList Parts = Line.split("//");
+        if (Parts.size() == 2) HtmlReport += "<code style=\"color: rgb(127, 0, 0);\">" + Parts[0] + "</code><span> // " + Parts[1] + "</span><br>";
+        else if (Parts.size() == 1) HtmlReport += "<span>" + Parts[0] + "</span><br>";
+    }
+}
+
+void MainWindow::printMethod_Time(const QString Result)
+{
+    HtmlReport += "<h3 style=\"color: rgb(0, 0, 127);\">" + CurrentLang["TimeHeader"] + "</h3>";
+    QStringList Lines = Result.split('\n');
+    for (auto& Line : Lines) HtmlReport += "<span>" + Line + "</span><br>";
+
+    HtmlReport += "</body>\n";
+
+    ui->textBrowser_report->setHtml(HtmlReport);
+
+    EnableAfterSearch(); // Enable controls after search
+    ui->pushButton_StartSearch->setEnabled(true);
+    ui->pushButton_Skip->setDisabled(true);
+    ui->statusBar->showMessage(CurrentLang["SearchFinished"]);
+
+    switch (ui->comboBox_Method->currentIndex())
+    {
+    case 1: AddToHistory(CurrentLang["CFOPSolve"]); break;
+    case 2: AddToHistory(CurrentLang["RouxSolve"]); break;
+    case 3: AddToHistory(CurrentLang["PetrusSolve"]); break;
+    case 4: AddToHistory(CurrentLang["ZZSolve"]); break;
+    case 5: AddToHistory(CurrentLang["CEORSolve"]); break;
+    case 6: AddToHistory(CurrentLang["MehtaSolve"]); break;
+    case 7: AddToHistory(CurrentLang["NautilusSolve"]); break;
+    case 8: AddToHistory(CurrentLang["LEORSolve"]); break;
 
     default: break;
     }
-
-    // Enable controls after search
-    ui->pushButton_CopyReport->setEnabled(true);
-    ui->pushButton_ClearReport->setEnabled(true);
-    ui->pushButton_SaveReport->setEnabled(true);
-    ui->pushButton_StartSearch->setEnabled(true);
-
-    ui->statusBar->showMessage(CurrentLang["SearchFinished"]);
 }
 
   /*****************************************************************************************************************/
@@ -1426,1047 +2121,511 @@ void MainWindow::on_pushButton_StartSearch_clicked()
 
 void MainWindow::sLBL(const std::string& Scramble)
 {
-    // Select the layer for cross
-    Lyr SearchLayer;
-    switch (ui->comboBox_Orientation->currentIndex())
+    ui->pushButton_StartSearch->setDisabled(true); // Start button disabled while searching
+    ui->pushButton_Skip->setDisabled(true); // LBL search is fast, skip is not necessary
+
+    SearchThread->doStartSearchLBL(QString::fromStdString(Scramble),
+                                   ui->comboBox_Orientation->currentIndex(),
+                                   ui->spinBox_Cores->value(),
+                                   ui->comboBox_Metric->currentIndex());
+}
+
+void MainWindow::printLBL_Solves(const QString Scramble, const QString CrossLayer, const QString Result)
+{
+    HtmlReport = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n";
+    HtmlReport += "<html><head><meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"content-type\">";
+    HtmlReport +=  "<title>Layer by layer</title></head>\n";
+    HtmlReport += "<body><h1>" + CurrentLang["ScrambleHeader"] + "[" + Scramble + "]" + "</h1>";
+    HtmlReport += "<h2 style=\"color: rgb(0, 0, 127);\">" + CurrentLang["LBLHeader"] + CrossLayer + "</h2>";
+
+    QStringList Lines = Result.split('\n');
+    for (auto& Line : Lines)
     {
-    case 0: case 1: case 4: SearchLayer = Lyr::D; break;
-    case 2: case 6: SearchLayer = Lyr::B; break;
-    case 3: case 8: SearchLayer = Lyr::L; break;
-    case 5: SearchLayer = Lyr::U; break;
-    case 7: SearchLayer = Lyr::F; break;
-    case 9: SearchLayer = Lyr::R; break;
-    default: SearchLayer = Lyr::U; break;
+        QStringList Parts = Line.split("//");
+        if (Parts.size() == 2) HtmlReport += "<code style=\"color: rgb(127, 0, 0);\">" + Parts[0] + "</code><span> // " + Parts[1] + "</span><br>";
+        else if (Parts.size() == 1) HtmlReport += "<span>" + Parts[0] + "</span><br>";
     }
 
-    // Create search
-    LBL* SearchLBL = new LBL(Algorithm(Scramble), ui->spinBox_Cores->value());
+    HtmlReport += "</body>\n";
 
-    SearchLBL->SetMetric(static_cast<Metrics>(ui->comboBox_Metric->currentIndex()));
+    ui->textBrowser_report->setHtml(HtmlReport);
 
-    // Start cross search
-    ui->textBrowser_report->append(CurrentLang["SearchingCross"]);
-    qApp->processEvents();
-    if (!SearchLBL->SearchFLCross(SearchLayer))
-    {
-        ui->textBrowser_report->clear();
-        ui->textBrowser_report->append(QString::fromStdString(SearchLBL->GetReport()));
-        return;
-    }
-
-    // Complete first layer search
-    ui->textBrowser_report->append(CurrentLang["SearchingFL"]);
-    qApp->processEvents();
-    SearchLBL->SearchFLCorners();
-
-    // Start second layer search
-    ui->textBrowser_report->append(CurrentLang["SearchingSL"]);
-    qApp->processEvents();
-    SearchLBL->SearchSLEdges();
-
-    // Start last layer search
-    ui->textBrowser_report->append(CurrentLang["SearchingLL"]);
-    qApp->processEvents();
-    SearchLBL->SearchLLCross1();
-    SearchLBL->SearchLLCross2();
-    SearchLBL->SearchLLCorners1();
-    SearchLBL->SearchLLCorners2();
-
-    ui->textBrowser_report->setText(QString::fromStdString(SearchLBL->GetReport()));
-    // ui->textBrowser_report->setHtml(QString::fromStdString(SearchLBL->GetHtmlReport()));
+    EnableAfterSearch(); // Enable controls after search
+    ui->pushButton_StartSearch->setEnabled(true);
+    ui->statusBar->showMessage(CurrentLang["SearchFinished"]);
 
     AddToHistory(CurrentLang["LBLSolve"]);
+}
 
-    delete SearchLBL;
+void MainWindow::printLBL_NoSolves()
+{
+    EnableAfterSearch(); // Enable controls after search
+    ui->pushButton_StartSearch->setEnabled(true);
+    ui->pushButton_Skip->setDisabled(true);
+    ui->statusBar->showMessage(CurrentLang["SearchFinished"]);
+
+    ui->textBrowser_report->setText(CurrentLang["LBLNoSolve"]);
+}
+
+void MainWindow::printLBL_Cross()
+{
+    ui->textBrowser_report->setText(CurrentLang["SearchingLBLCross"]);
+}
+
+void MainWindow::printLBL_FL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingLBLFLCorners"]);
+}
+
+void MainWindow::printLBL_SL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingLBLSL"]);
+}
+
+void MainWindow::printLBL_LL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingLBLLL"]);
 }
 
   /*****************************************************************************************************************/
  /*** CFOP ********************************************************************************************************/
 /*****************************************************************************************************************/
 
-void MainWindow::sCFOP(const std::string& Scr)
+void MainWindow::sCFOP(const std::string& Scramble)
 {
-    const Algorithm Scramble(Scr);
+    ui->pushButton_StartSearch->setDisabled(true);
+    ui->pushButton_Skip->setEnabled(true);
 
-    // Read the allowed layers for cross
-    std::vector<Lyr> CrossLayers;
-    switch (ui->comboBox_Orientation->currentIndex())
-    {
-    case 0: CrossLayers.push_back(Lyr::U); CrossLayers.push_back(Lyr::D);
-            CrossLayers.push_back(Lyr::F); CrossLayers.push_back(Lyr::B);
-            CrossLayers.push_back(Lyr::R); CrossLayers.push_back(Lyr::L); break;
-    case 1: CrossLayers.push_back(Lyr::U); CrossLayers.push_back(Lyr::D); break;
-    case 2: CrossLayers.push_back(Lyr::F); CrossLayers.push_back(Lyr::B); break;
-    case 3: CrossLayers.push_back(Lyr::R); CrossLayers.push_back(Lyr::L); break;
-    case 4: CrossLayers.push_back(Lyr::D); break;
-    case 5: CrossLayers.push_back(Lyr::U); break;
-    case 6: CrossLayers.push_back(Lyr::B); break;
-    case 7: CrossLayers.push_back(Lyr::F); break;
-    case 8: CrossLayers.push_back(Lyr::L); break;
-    case 9: CrossLayers.push_back(Lyr::R); break;
-    default: CrossLayers.push_back(Lyr::U); break;
-    }
-    uint nLayers = CrossLayers.size();
+    SearchThread->doStartSearchCFOP(QString::fromStdString(Scramble),
+                                    ui->spinBox_Cores->value(),
+                                    ui->checkBox_Cache->isChecked(),
+                                    ui->comboBox_Variant->currentIndex(),
+                                    ui->comboBox_Option->currentIndex(),
+                                    ui->comboBox_Speed->currentIndex(),
+                                    ui->comboBox_Orientation->currentIndex(),
+                                    ui->comboBox_Amount->currentIndex(),
+                                    ui->comboBox_Metric->currentIndex(),
+                                    ui->checkBox_Regrips->isChecked(),
+                                    ui->checkBox_Cancellations->isChecked());
+}
 
-    uint Depth;
-    switch (ui->comboBox_Speed->currentIndex())
-    {
-    case 0: Depth = 6u; break;
-    case 1: Depth = 7u; break;
-    case 2: Depth = 8u; break;
-    case 3: Depth = ui->checkBox_Cache->isChecked() ? 8u : 9u; break;
-    default: Depth = 6u; break;
-    }
+void MainWindow::printCFOP_Cross()
+{
+    ui->textBrowser_report->setText(CurrentLang["SearchingCFOPCross"]);
+}
 
-    uint Inspections;
-    switch (ui->comboBox_Amount->currentIndex())
-    {
-    case 0: Inspections = 1u; break;
-    case 1: if (nLayers > 5u) Inspections = 1u; else if (nLayers > 1u) Inspections = 3u; else Inspections = 6u; break;
-    case 2: if (nLayers > 5u) Inspections = 2u; else if (nLayers > 1u) Inspections = 6u; else Inspections = 12u; break;
-    case 3: if (nLayers > 5u) Inspections = 4u; else if (nLayers > 1u) Inspections = 12u; else Inspections = 24u; break;
-    case 4: if (nLayers > 5u) Inspections = 8u; else if (nLayers > 1u) Inspections = 24u; else Inspections = 48u; break;
-    default: Inspections = 1u; break;
-    }
+void MainWindow::printCFOP_F2L()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingCFOPF2L"]);
+}
 
-    // Create search
-    CFOP* SearchCFOP = new CFOP(Algorithm(Scramble), ui->spinBox_Cores->value());
-
-    SearchCFOP->SetCrossLayers(CrossLayers);
-
-    SearchCFOP->SetMetric(static_cast<Metrics>(ui->comboBox_Metric->currentIndex()));
-
-    // Start crosses search
-    ui->textBrowser_report->append(CurrentLang["SearchingCross"]);
-    qApp->processEvents();
-
-    if (ui->checkBox_Cache->isChecked())
-    {
-        bool found = false;
-        for (const auto& c : Cache) // Search in cache
-        {
-            if (c.Scramble == Scramble && c.Depth >= Depth && !c.Solves.empty())
-            {
-                ui->textBrowser_report->append(CurrentLang["Cache"]);
-                qApp->processEvents();
-                SearchCFOP->EvaluateCrosses(c.Solves, Inspections);
-                SearchCFOP->SetTimeCrosses(c.Time);
-                SearchCFOP->SetDepthCrosses(c.Depth);
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) // Solves not found in cache
-        {
-            Cache.clear(); // Cache memory usage can be large, clear previous cache
-            const auto time_cross_start = std::chrono::system_clock::now();
-
-            DeepSearch BaseSearch(Scramble);
-            BaseSearch.SearchBase(Depth, Plc::BEST_SOLVES, ui->spinBox_Cores->value());
-
-            if (BaseSearch.Solves.empty())
-            {
-                ui->textBrowser_report->clear();
-                ui->textBrowser_report->append(QString::fromStdString(SearchCFOP->GetReport(false, false)));
-                return;
-            }
-
-            SearchCFOP->EvaluateCrosses(BaseSearch.Solves, Inspections);
-
-            const std::chrono::duration<double> cross_elapsed_seconds = std::chrono::system_clock::now() - time_cross_start;
-            SearchCFOP->SetTimeCrosses(cross_elapsed_seconds.count());
-            SearchCFOP->SetDepthCrosses(Depth);
-
-            // Add current solves into cache
-            CacheUnit CU;
-            CU.Scramble = Scramble;
-            CU.Depth = Depth;
-            CU.Time = SearchCFOP->GetTime();
-            CU.Solves = BaseSearch.Solves;
-            Cache.push_back(CU);
-        }
-    }
-    else // No cache
-    {
-        if (!SearchCFOP->SearchCrosses(Depth, Inspections))
-        {
-            ui->textBrowser_report->clear();
-            ui->textBrowser_report->append(QString::fromStdString(SearchCFOP->GetReport(false, false)));
-            return;
-        }
-    }
-
-    // Start F2L search
-    ui->textBrowser_report->append(CurrentLang["SearchingF2L"]);
-    qApp->processEvents();
-    SearchCFOP->SearchF2L();
-
-    // Start last layer search
-    ui->textBrowser_report->append(CurrentLang["SearchingLL"]);
-    qApp->processEvents();
-    if (ui->comboBox_Variant->currentIndex() == 1)
-    {
-        SearchCFOP->Search1LLL();
-    }
-    else if (ui->comboBox_Variant->currentIndex() == 2)
-    {
-        SearchCFOP->SearchEOLL();
-        SearchCFOP->SearchZBLL();
-    }
-    else // Default
-    {
-        SearchCFOP->SearchOLL();
-        SearchCFOP->SearchPLL();
-    }
-
-    if (ui->checkBox_Regrips->isChecked()) SearchCFOP->SetRegrips();
-
-    ui->textBrowser_report->clear();
-
-    ui->textBrowser_report->append(QString::fromStdString(SearchCFOP->GetReport(ui->checkBox_Cancellations->isChecked(), false)));
-
-    ui->textBrowser_report->append(QString::fromStdString("Best solve for " + SearchCFOP->GetBestReport(ui->checkBox_Cancellations->isChecked())));
-    ui->textBrowser_report->append(QString::fromStdString(SearchCFOP->GetTimeReport()));
-    AddToHistory(CurrentLang["CFOPSolve"]);
-
-    delete SearchCFOP;
+void MainWindow::printCFOP_LL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingCFOPLL"]);
 }
 
   /*****************************************************************************************************************/
  /*** Roux ********************************************************************************************************/
 /*****************************************************************************************************************/
 
-void MainWindow::sRoux(const std::string& Scr)
+void MainWindow::sRoux(const std::string& Scramble)
 {
-    const Algorithm Scramble(Scr);
+    ui->pushButton_StartSearch->setDisabled(true);
+    ui->pushButton_Skip->setEnabled(true);
 
-    // Read the allowed orientations
-    std::vector<Spn> SearchSpins;
-    GetSearchSpins(SearchSpins);
-    uint nSpins = SearchSpins.size();
+    SearchThread->doStartSearchRoux(QString::fromStdString(Scramble),
+                                    ui->spinBox_Cores->value(),
+                                    ui->checkBox_Cache->isChecked(),
+                                    ui->comboBox_Variant->currentIndex(),
+									ui->comboBox_Option->currentIndex(),
+                                    ui->comboBox_Speed->currentIndex(),
+                                    ui->comboBox_Orientation->currentIndex(),
+                                    ui->comboBox_Amount->currentIndex(),
+                                    ui->comboBox_Metric->currentIndex(),
+                                    ui->checkBox_Regrips->isChecked(),
+                                    ui->checkBox_Cancellations->isChecked());
+}
 
-    uint Depth1, Depth2;
-    switch (ui->comboBox_Speed->currentIndex())
-    {
-    case 0: Depth1 = 6u; Depth2 = 6u; break;
-    case 1: Depth1 = 7u; Depth2 = 6u; break;
-    case 2: Depth1 = 8u; Depth2 = 7u; break;
-    case 3: Depth1 = 8u; Depth2 = 8u; break;
-    default: Depth1 = 6u; Depth2 = 6u; break;
-    }
+void MainWindow::printRoux_FB()
+{
+    ui->textBrowser_report->setText(CurrentLang["SearchingRouxFB"]); 
+}
 
-    uint Inspections;
-    switch (ui->comboBox_Amount->currentIndex())
-    {
-    case 0: Inspections = 1u; break;
-    case 1: if (nSpins > 20u) Inspections = 1u; else if (nSpins > 4u) Inspections = 3u; else Inspections = 6u; break;
-    case 2: if (nSpins > 20u) Inspections = 2u; else if (nSpins > 4u) Inspections = 6u; else Inspections = 12u; break;
-    case 3: if (nSpins > 20u) Inspections = 4u; else if (nSpins > 4u) Inspections = 12u; else Inspections = 24u; break;
-    case 4: if (nSpins > 20u) Inspections = 8u; else if (nSpins > 4u) Inspections = 24u; else Inspections = 48u; break;
-    default: Inspections = 1u; break;
-    }
+void MainWindow::printRoux_SB()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingRouxSB"]);
+}
 
-    // Create search
-    Roux* SearchRoux = new Roux(Scramble, ui->spinBox_Cores->value());
+void MainWindow::printRoux_CMLL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingRouxCMLL"]);
+}
 
-    SearchRoux->SetSearchSpins(SearchSpins);
+void MainWindow::printRoux_COLL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingRouxCOLL"]);
+}
 
-    SearchRoux->SetMetric(static_cast<Metrics>(ui->comboBox_Metric->currentIndex()));
-
-    // Start first block search
-    ui->textBrowser_report->append(CurrentLang["SearchingFB"]);
-    qApp->processEvents();
-
-    if (ui->checkBox_Cache->isChecked())
-    {
-        bool found = false;
-        for (const auto& c : Cache) // Search in cache
-        {
-            if (c.Scramble == Scramble && c.Depth >= Depth1 && !c.Solves.empty())
-            {
-                ui->textBrowser_report->append(CurrentLang["Cache"]);
-                qApp->processEvents();
-                SearchRoux->EvaluateFirstBlock(c.Solves, Inspections);
-                SearchRoux->SetTimeFB(c.Time);
-                SearchRoux->SetDepthFB(c.Depth);
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) // Solves not found in cache
-        {
-            Cache.clear(); // Cache memory usage can be large, clear previous cache
-            const auto time_fb_start = std::chrono::system_clock::now();
-
-            DeepSearch BaseSearch(Scramble);
-            BaseSearch.SearchBase(Depth1, Plc::BEST_SOLVES, ui->spinBox_Cores->value());
-
-            if (BaseSearch.Solves.empty())
-            {
-                ui->textBrowser_report->clear();
-                ui->textBrowser_report->append(CurrentLang["NoFB"]);
-                return;
-            }
-
-            SearchRoux->EvaluateFirstBlock(BaseSearch.Solves, Inspections);
-
-            const std::chrono::duration<double> fb_elapsed_seconds = std::chrono::system_clock::now() - time_fb_start;
-            SearchRoux->SetTimeFB(fb_elapsed_seconds.count());
-            SearchRoux->SetDepthFB(Depth1);
-
-            // Add current solves into cache
-            CacheUnit CU;
-            CU.Scramble = Scramble;
-            CU.Depth = Depth1;
-            CU.Time = SearchRoux->GetTimeFB();
-            CU.Solves = BaseSearch.Solves;
-            Cache.push_back(CU);
-        }
-    }
-    else // No cache
-    {
-        if (!SearchRoux->SearchFirstBlock(Depth1, Inspections))
-        {
-            ui->textBrowser_report->clear();
-            ui->textBrowser_report->append(CurrentLang["NoFB"]);
-            return;
-        }
-    }
-
-    // Start second blocks search
-    ui->textBrowser_report->append(CurrentLang["SearchingSB"]);
-    qApp->processEvents();
-    SearchRoux->SearchSecondBlocksFirstSquare(Depth2);
-    SearchRoux->SearchSecondBlocksSecondSquare(4u);
-
-    if (ui->comboBox_Variant->currentIndex() == 1)
-    {
-        // Start COLL search
-        ui->textBrowser_report->append(CurrentLang["SearchingCOLL"]);
-        qApp->processEvents();
-        SearchRoux->SearchCOLL();
-    }
-    else // if (ui->comboBox_Variant->currentIndex() == 0)
-    {
-        // Start CMLL search
-        ui->textBrowser_report->append(CurrentLang["SearchingCMLL"]);
-        qApp->processEvents();
-        SearchRoux->SearchCMLL();
-    }
-
-    // Start L6E search
-    ui->textBrowser_report->append(CurrentLang["SearchingL6E"]);
-    qApp->processEvents();
-    if (ui->comboBox_Option->currentIndex() == 1)
-    {
-        SearchRoux->SearchL6E(16u);
-    }
-    else // if (ui->comboBox_Option->currentIndex() == 0)
-    {
-        SearchRoux->SearchL6EO(10u);
-        SearchRoux->SearchL6E2E(12u);
-        SearchRoux->SearchL6E(15u);
-    }
-
-    if (ui->checkBox_Regrips->isChecked()) SearchRoux->SetRegrips();
-
-    ui->textBrowser_report->clear();
-
-    ui->textBrowser_report->append(QString::fromStdString(SearchRoux->GetReport(ui->checkBox_Cancellations->isChecked(), false)));
-    ui->textBrowser_report->append(QString::fromStdString("Best solve for " + SearchRoux->GetBestReport(ui->checkBox_Cancellations->isChecked())));
-    ui->textBrowser_report->append(QString::fromStdString(SearchRoux->GetTimeReport()));
-
-    AddToHistory(CurrentLang["RouxSolve"]);
-
-    delete SearchRoux;
+void MainWindow::printRoux_L6E()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingRouxL6E"]);
 }
 
   /*****************************************************************************************************************/
  /*** Petrus ******************************************************************************************************/
 /*****************************************************************************************************************/
 
-void MainWindow::sPetrus(const std::string& Scr)
+void MainWindow::sPetrus(const std::string& Scramble)
 {
-    const Algorithm Scramble(Scr);
+    ui->pushButton_StartSearch->setDisabled(true);
+    ui->pushButton_Skip->setEnabled(true);
 
-    // Read the allowed orientations
-    std::vector<Spn> SearchSpins;
-    GetSearchSpins(SearchSpins);
-    uint nSpins = SearchSpins.size();
+    SearchThread->doStartSearchPetrus(QString::fromStdString(Scramble),
+                                      ui->spinBox_Cores->value(),
+                                      ui->checkBox_Cache->isChecked(),
+                                      ui->comboBox_Variant->currentIndex(),
+                                      ui->comboBox_Option->currentIndex(),
+                                      ui->comboBox_Speed->currentIndex(),
+                                      ui->comboBox_Orientation->currentIndex(),
+                                      ui->comboBox_Amount->currentIndex(),
+                                      ui->comboBox_Metric->currentIndex(),
+                                      ui->checkBox_Regrips->isChecked(),
+                                      ui->checkBox_Cancellations->isChecked());
+}
 
-    uint Depth1, Depth2;
-    switch (ui->comboBox_Speed->currentIndex())
-    {
-    case 0: Depth1 = 6u; Depth2 = 6u; break;
-    case 1: Depth1 = 7u; Depth2 = 6u; break;
-    case 2: Depth1 = 7u; Depth2 = 7u; break;
-    case 3: Depth1 = 8u; Depth2 = 7u; break;
-    default: Depth1 = 6u; Depth2 = 6u; break;
-    }
+void MainWindow::printPetrus_FB()
+{
+    ui->textBrowser_report->setText(CurrentLang["SearchingPetrusBlocks"]);
+}
 
-    uint Inspections;
-    switch (ui->comboBox_Amount->currentIndex())
-    {
-    case 0: Inspections = 1u; break;
-    case 1: if (nSpins > 20u) Inspections = 1u; else if (nSpins > 4u) Inspections = 3u; else Inspections = 6u; break;
-    case 2: if (nSpins > 20u) Inspections = 2u; else if (nSpins > 4u) Inspections = 6u; else Inspections = 12u; break;
-    case 3: if (nSpins > 20u) Inspections = 4u; else if (nSpins > 4u) Inspections = 12u; else Inspections = 24u; break;
-    case 4: if (nSpins > 20u) Inspections = 8u; else if (nSpins > 4u) Inspections = 24u; else Inspections = 48u; break;
-    default: Inspections = 1u; break;
-    }
+void MainWindow::printPetrus_EB()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingPetrusEB"]);
+}
 
-    // Create search
-    Petrus* SearchPetrus = new Petrus(Scramble, ui->spinBox_Cores->value());
+void MainWindow::printPetrus_EO()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingPetrusEO"]);
+}
 
-    SearchPetrus->SetSearchSpins(SearchSpins);
+void MainWindow::printPetrus_F2L()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingPetrusF2L"]);
+}
 
-    SearchPetrus->SetMetric(static_cast<Metrics>(ui->comboBox_Metric->currentIndex()));
-
-    // Start blocks search
-    ui->textBrowser_report->append(CurrentLang["SearchingBlocks"]);
-    qApp->processEvents();
-
-    if (ui->checkBox_Cache->isChecked())
-    {
-        bool found = false;
-        for (const auto& c : Cache) // Search in cache
-        {
-            if (c.Scramble == Scramble && c.Depth >= Depth1 && !c.Solves.empty())
-            {
-                ui->textBrowser_report->append(CurrentLang["Cache"]);
-                qApp->processEvents();
-                SearchPetrus->EvaluateBlock(c.Solves, Inspections);
-                SearchPetrus->SetTimeBlock(c.Time);
-                SearchPetrus->SetDepthBlock(c.Depth);
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) // Solves not found in cache
-        {
-            Cache.clear(); // Cache memory usage can be large, clear previous cache
-            const auto time_block_start = std::chrono::system_clock::now();
-
-            DeepSearch BaseSearch(Scramble);
-            BaseSearch.SearchBase(Depth1, Plc::BEST_SOLVES, ui->spinBox_Cores->value());
-
-            if (BaseSearch.Solves.empty())
-            {
-                ui->textBrowser_report->clear();
-                ui->textBrowser_report->append(CurrentLang["NoPetrusBlock"]);
-                return;
-            }
-
-            SearchPetrus->EvaluateBlock(BaseSearch.Solves, Inspections);
-
-            const std::chrono::duration<double> block_elapsed_seconds = std::chrono::system_clock::now() - time_block_start;
-            SearchPetrus->SetTimeBlock(block_elapsed_seconds.count());
-            SearchPetrus->SetDepthBlock(Depth1);
-
-            // Add current solves into cache
-            CacheUnit CU;
-            CU.Scramble = Scramble;
-            CU.Depth = Depth1;
-            CU.Time = SearchPetrus->GetTimeBlock();
-            CU.Solves = BaseSearch.Solves;
-            Cache.push_back(CU);
-        }
-    }
-    else // No cache
-    {
-        if (!SearchPetrus->SearchBlock(Depth1, Inspections))
-        {
-            ui->textBrowser_report->clear();
-            ui->textBrowser_report->append(CurrentLang["NoPetrusBlock"]);
-            return;
-        }
-    }
-
-    // Start expanded blocks search
-    ui->textBrowser_report->append(CurrentLang["SearchingEB"]);
-    qApp->processEvents();
-    SearchPetrus->SearchExpandedBlock();
-
-    // Start EO search
-    ui->textBrowser_report->append(CurrentLang["SearchingEO"]);
-    qApp->processEvents();
-    SearchPetrus->SearchEO();
-
-    // Start F2L search
-    ui->textBrowser_report->append(CurrentLang["SearchingF2L"]);
-    qApp->processEvents();
-    SearchPetrus->SearchF2L(Depth2);
-
-    // Start last layer search
-    ui->textBrowser_report->append(CurrentLang["SearchingLL"]);
-    qApp->processEvents();
-    if (ui->comboBox_Variant->currentIndex() == 1)
-    {
-        SearchPetrus->SearchOCLL(); // Start OCLL search
-        SearchPetrus->SearchPLL(); // Start PLL search
-    }
-    else if (ui->comboBox_Variant->currentIndex() == 2)
-    {
-        SearchPetrus->SearchCOLL(); // Start COLL search
-        SearchPetrus->SearchEPLL(); // Start EPLL search
-    }
-    else // if (ui->comboBox_Variant->currentIndex() == 0)
-    {
-        SearchPetrus->SearchZBLL(); // Start ZBLL search
-    }
-
-    if (ui->checkBox_Regrips->isChecked()) SearchPetrus->SetRegrips();
-
-    ui->textBrowser_report->clear();
-
-    ui->textBrowser_report->append(QString::fromStdString(SearchPetrus->GetReport(ui->checkBox_Cancellations->isChecked(), false)));
-    ui->textBrowser_report->append(QString::fromStdString("Best solve for " + SearchPetrus->GetBestReport(ui->checkBox_Cancellations->isChecked())));
-    ui->textBrowser_report->append(QString::fromStdString(SearchPetrus->GetTimeReport()));
-
-    AddToHistory(CurrentLang["PetrusSolve"]);
-
-    delete SearchPetrus;
+void MainWindow::printPetrus_LL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingPetrusLL"]);
 }
 
   /*****************************************************************************************************************/
  /*** ZZ **********************************************************************************************************/
 /*****************************************************************************************************************/
 
-void MainWindow::sZZ(const std::string& Scr)
+void MainWindow::sZZ(const std::string& Scramble)
 {
-    const Algorithm Scramble(Scr);
+    ui->pushButton_StartSearch->setDisabled(true);
+    ui->pushButton_Skip->setEnabled(true);
 
-    // Read the allowed orientations
-    std::vector<Spn> SearchSpins;
-    GetSearchSpins(SearchSpins);
-    uint nSpins = SearchSpins.size();
+    SearchThread->doStartSearchZZ(QString::fromStdString(Scramble),
+                                      ui->spinBox_Cores->value(),
+                                      ui->checkBox_Cache->isChecked(),
+                                      ui->comboBox_Variant->currentIndex(),
+                                      ui->comboBox_Option->currentIndex(),
+                                      ui->comboBox_Speed->currentIndex(),
+                                      ui->comboBox_Orientation->currentIndex(),
+                                      ui->comboBox_Amount->currentIndex(),
+                                      ui->comboBox_Metric->currentIndex(),
+                                      ui->checkBox_Regrips->isChecked(),
+                                      ui->checkBox_Cancellations->isChecked());
+}
 
-    uint Depth;
-    switch (ui->comboBox_Speed->currentIndex())
-    {
-    case 0: Depth = 6u; break;
-    case 1: Depth = 7u; break;
-    case 2: Depth = 8u; break;
-    case 3: Depth = 8u; break;
-    default: Depth = 6u; break;
-    }
+void MainWindow::printZZ_EOX()
+{
+    ui->textBrowser_report->setText(CurrentLang["SearchingZZEOX"]);
+}
 
-    uint Inspections;
-    switch (ui->comboBox_Amount->currentIndex())
-    {
-    case 0: Inspections = 1u; break;
-    case 1: if (nSpins > 20u) Inspections = 1u; else if (nSpins > 4u) Inspections = 3u; else Inspections = 6u; break;
-    case 2: if (nSpins > 20u) Inspections = 2u; else if (nSpins > 4u) Inspections = 6u; else Inspections = 12u; break;
-    case 3: if (nSpins > 20u) Inspections = 4u; else if (nSpins > 4u) Inspections = 12u; else Inspections = 24u; break;
-    case 4: if (nSpins > 20u) Inspections = 8u; else if (nSpins > 4u) Inspections = 24u; else Inspections = 48u; break;
-    default: Inspections = 1u; break;
-    }
+void MainWindow::printZZ_F2L()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingZZF2L"]);
+}
 
-    // Create search
-    ZZ* SearchZZ = new ZZ(Scramble, ui->spinBox_Cores->value());
-
-    SearchZZ->SetSearchSpins(SearchSpins);
-
-    SearchZZ->SetMetric(static_cast<Metrics>(ui->comboBox_Metric->currentIndex()));
-
-    // Start EOX search
-    ui->textBrowser_report->append(CurrentLang["SearchingEOX"]);
-    qApp->processEvents();
-
-    if (ui->checkBox_Cache->isChecked())
-    {
-        bool found = false;
-        for (const auto& c : Cache) // Search in cache
-        {
-          if (c.Scramble == Scramble && c.Depth >= Depth && !c.Solves.empty())
-          {
-              ui->textBrowser_report->append(CurrentLang["Cache"]);
-              qApp->processEvents();
-              SearchZZ->EvaluateEOX(c.Solves, Inspections);
-              SearchZZ->SetTimeEOX(c.Time);
-              SearchZZ->SetDepthEOX(c.Depth);
-              found = true;
-              break;
-          }
-        }
-
-        if (!found) // Solves not found in cache
-        {
-            Cache.clear(); // Cache memory usage can be large, clear previous cache
-            const auto time_eoline_start = std::chrono::system_clock::now();
-
-            DeepSearch BaseSearch(Scramble);
-            BaseSearch.SearchBase(Depth, Plc::BEST_SOLVES, ui->spinBox_Cores->value());
-
-            if (BaseSearch.Solves.empty())
-            {
-              ui->textBrowser_report->clear();
-              ui->textBrowser_report->append(CurrentLang["NoZZBlock"]);
-              return;
-            }
-
-            SearchZZ->EvaluateEOX(BaseSearch.Solves, Inspections);
-
-            const std::chrono::duration<double> eoline_elapsed_seconds = std::chrono::system_clock::now() - time_eoline_start;
-            SearchZZ->SetTimeEOX(eoline_elapsed_seconds.count());
-            SearchZZ->SetDepthEOX(Depth);
-
-            // Add current solves into cache
-            CacheUnit CU;
-            CU.Scramble = Scramble;
-            CU.Depth = Depth;
-            CU.Time = SearchZZ->GetTimeEOX();
-            CU.Solves = BaseSearch.Solves;
-            Cache.push_back(CU);
-        }
-    }
-    else // No cache
-    {
-        if (!SearchZZ->SearchEOX(Depth, Inspections))
-        {
-            ui->textBrowser_report->clear();
-            ui->textBrowser_report->append(CurrentLang["NoZZBlock"]);
-            return;
-        }
-    }
-
-    // Start F2L search
-    ui->textBrowser_report->append(CurrentLang["SearchingF2L"]);
-    qApp->processEvents();
-    SearchZZ->SearchF2L();
-
-    // Start last layer search
-    ui->textBrowser_report->append(CurrentLang["SearchingLL"]);
-    qApp->processEvents();
-    if (ui->comboBox_Variant->currentIndex() == 1)
-    {
-      SearchZZ->SearchOCLL(); // Start OCLL search
-      SearchZZ->SearchPLL(); // Start PLL search
-    }
-    else if (ui->comboBox_Variant->currentIndex() == 2)
-    {
-      SearchZZ->SearchCOLL(); // Start COLL search
-      SearchZZ->SearchEPLL(); // Start EPLL search
-    }
-    else // if (ui->comboBox_Variant->currentIndex() == 0)
-    {
-      SearchZZ->SearchZBLL(); // Start ZBLL search
-    }
-
-    if (ui->checkBox_Regrips->isChecked()) SearchZZ->SetRegrips();
-
-    ui->textBrowser_report->clear();
-
-    ui->textBrowser_report->append(QString::fromStdString(SearchZZ->GetReport(ui->checkBox_Cancellations->isChecked(), false)));
-    ui->textBrowser_report->append(QString::fromStdString("Best solve for " + SearchZZ->GetBestReport(ui->checkBox_Cancellations->isChecked())));
-    ui->textBrowser_report->append(QString::fromStdString(SearchZZ->GetTimeReport()));
-
-    AddToHistory(CurrentLang["ZZSolve"]);
-
-    delete SearchZZ;
+void MainWindow::printZZ_LL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingZZLL"]);
 }
 
   /*****************************************************************************************************************/
  /*** CEOR ********************************************************************************************************/
 /*****************************************************************************************************************/
 
-void MainWindow::sCEOR(const std::string& Scr)
+void MainWindow::sCEOR(const std::string& Scramble)
 {
-    const Algorithm Scramble(Scr);
+    ui->pushButton_StartSearch->setDisabled(true);
+    ui->pushButton_Skip->setEnabled(true);
 
-    // Read the allowed orientations
-    std::vector<Spn> SearchSpins;
-    GetSearchSpins(SearchSpins);
-    uint nSpins = SearchSpins.size();
+    SearchThread->doStartSearchCEOR(QString::fromStdString(Scramble),
+                                    ui->spinBox_Cores->value(),
+                                    ui->checkBox_Cache->isChecked(),
+                                    ui->comboBox_Variant->currentIndex(),
+                                    ui->comboBox_Option->currentIndex(),
+                                    ui->comboBox_Speed->currentIndex(),
+                                    ui->comboBox_Orientation->currentIndex(),
+                                    ui->comboBox_Amount->currentIndex(),
+                                    ui->comboBox_Metric->currentIndex(),
+                                    ui->checkBox_Regrips->isChecked(),
+                                    ui->checkBox_Cancellations->isChecked());
+}
 
-    uint Depth1, Depth2;
-    switch (ui->comboBox_Speed->currentIndex())
-    {
-    case 0: Depth1 = 6u; Depth2 = 5u; break;
-    case 1: Depth1 = 6u; Depth2 = 6u; break;
-    case 2: Depth1 = 7u; Depth2 = 6u; break;
-    case 3: Depth1 = 7u; Depth2 = 7u; break;
-    default: Depth1 = 6u; Depth2 = 5u; break;
-    }
+void MainWindow::printCEOR_Lines()
+{
+    ui->textBrowser_report->setText(CurrentLang["SearchingYruRULines"]);
+}
 
-    uint Inspections;
-    switch (ui->comboBox_Amount->currentIndex())
-    {
-    case 0: Inspections = 1u; break;
-    case 1: if (nSpins > 20u) Inspections = 1u; else if (nSpins > 4u) Inspections = 3u; else Inspections = 6u; break;
-    case 2: if (nSpins > 20u) Inspections = 2u; else if (nSpins > 4u) Inspections = 6u; else Inspections = 12u; break;
-    case 3: if (nSpins > 20u) Inspections = 4u; else if (nSpins > 4u) Inspections = 12u; else Inspections = 24u; break;
-    case 4: if (nSpins > 20u) Inspections = 8u; else if (nSpins > 4u) Inspections = 24u; else Inspections = 48u; break;
-    default: Inspections = 1u; break;
-    }
+void MainWindow::printCEOR_CP()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingYruRUCP"]);
+}
 
-    // Create search
-    YruRU* SearchYruRU = new YruRU(Scramble, ui->spinBox_Cores->value());
+void MainWindow::printCEOR_CPLines()
+{
+    ui->textBrowser_report->setText(CurrentLang["SearchingYruRUCPLines"]);
+}
 
-    SearchYruRU->SetSearchSpins(SearchSpins);
+void MainWindow::printCEOR_pEO()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingpYruRUpEOExtension"]);
+}
 
-    SearchYruRU->SetMetric(static_cast<Metrics>(ui->comboBox_Metric->currentIndex()));
+void MainWindow::printCEOR_EOBF()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingYruRUEOBF"]);
+}
 
-    if (ui->comboBox_Option->currentIndex() == 1)
-    {
-        // Start Line search
-        ui->textBrowser_report->append(CurrentLang["SearchingLines"]);
-        qApp->processEvents();
+void MainWindow::printCEOR_F2L()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingYruRUF2L"]);
+}
 
-        if (ui->checkBox_Cache->isChecked())
-        {
-            bool found = false;
-            for (const auto& c : Cache) // Search in cache
-            {
-              if (c.Scramble == Scramble && c.Depth >= 6u && !c.Solves.empty())
-              {
-                  ui->textBrowser_report->append(CurrentLang["Cache"]);
-                  qApp->processEvents();
-                  SearchYruRU->EvaluateLines(c.Solves, Inspections);
-                  SearchYruRU->SetTimeLines(c.Time);
-                  SearchYruRU->SetDepthCPLines(c.Depth);
-                  found = true;
-                  break;
-              }
-            }
-
-            if (!found) // Solves not found in cache
-            {
-                Cache.clear(); // Cache memory usage can be large, clear previous cache
-                const auto time_line_start = std::chrono::system_clock::now();
-
-                DeepSearch BaseSearch(Scramble);
-                BaseSearch.SearchBase(6u, Plc::BEST_SOLVES, ui->spinBox_Cores->value());
-
-                if (BaseSearch.Solves.empty())
-                {
-                  ui->textBrowser_report->clear();
-                  ui->textBrowser_report->append(CurrentLang["NoLines"]);
-                  return;
-                }
-
-                SearchYruRU->EvaluateLines(BaseSearch.Solves, Inspections);
-
-                const std::chrono::duration<double> line_elapsed_seconds = std::chrono::system_clock::now() - time_line_start;
-                SearchYruRU->SetTimeLines(line_elapsed_seconds.count());
-                SearchYruRU->SetDepthCPLines(6u);
-
-                // Add current solves into cache
-                CacheUnit CU;
-                CU.Scramble = Scramble;
-                CU.Depth = 6u;
-                CU.Time = SearchYruRU->GetTimeLines();
-                CU.Solves = BaseSearch.Solves;
-                Cache.push_back(CU);
-            }
-        }
-        else // No cache
-        {
-            if (!SearchYruRU->SearchLines(6u, Inspections))
-            {
-                ui->textBrowser_report->clear();
-                ui->textBrowser_report->append(CurrentLang["NoLines"]);
-                return;
-            }
-        }
-
-        // Start CP search
-        ui->textBrowser_report->append(CurrentLang["SearchingCP"]);
-        qApp->processEvents();
-        SearchYruRU->SearchCP();
-    }
-    else // if (ui->comboBox_Option->currentIndex() == 0)
-    {
-        // Start Line+CP search
-        ui->textBrowser_report->append(CurrentLang["SearchingCPLines"]);
-        qApp->processEvents();
-
-        if (ui->checkBox_Cache->isChecked())
-        {
-            bool found = false;
-            for (const auto& c : Cache) // Search in cache
-            {
-                if (c.Scramble == Scramble && c.Depth >= 6u && !c.Solves.empty())
-                {
-                    ui->textBrowser_report->append(CurrentLang["Cache"]);
-                    qApp->processEvents();
-                    SearchYruRU->EvaluateCPLines(c.Solves, Inspections);
-                    SearchYruRU->SetTimeCPLines(c.Time);
-                    SearchYruRU->SetDepthCPLines(c.Depth);
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) // Solves not found in cache
-            {
-                Cache.clear(); // Cache memory usage can be large, clear previous cache
-                const auto time_cpline_start = std::chrono::system_clock::now();
-
-                DeepSearch BaseSearch(Scramble);
-                BaseSearch.SearchBase(6u, Plc::BEST_SOLVES, ui->spinBox_Cores->value());
-
-                if (BaseSearch.Solves.empty())
-                {
-                  ui->textBrowser_report->clear();
-                  ui->textBrowser_report->append(CurrentLang["NoCPLines"]);
-                  return;
-                }
-
-                SearchYruRU->EvaluateCPLines(BaseSearch.Solves, Inspections);
-
-                const std::chrono::duration<double> cpline_elapsed_seconds = std::chrono::system_clock::now() - time_cpline_start;
-                SearchYruRU->SetTimeCPLines(cpline_elapsed_seconds.count());
-                SearchYruRU->SetDepthCPLines(6u);
-
-                // Add current solves into cache
-                CacheUnit CU;
-                CU.Scramble = Scramble;
-                CU.Depth = 6u;
-                CU.Time = SearchYruRU->GetTimeCPLines();
-                CU.Solves = BaseSearch.Solves;
-                Cache.push_back(CU);
-            }
-        }
-        else // No cache
-        {
-            if (!SearchYruRU->SearchCPLines(6u, Inspections))
-            {
-                ui->textBrowser_report->clear();
-                ui->textBrowser_report->append(CurrentLang["NoCPLines"]);
-                return;
-            }
-        }
-    }
-
-    // Start pEO-extension search
-    ui->textBrowser_report->append(CurrentLang["SearchingpEOExtension"]);
-    qApp->processEvents();
-    SearchYruRU->SearchpEO(Depth1);
-
-    // Start EOBF search
-    ui->textBrowser_report->append(CurrentLang["SearchingEOBF"]);
-    qApp->processEvents();
-    SearchYruRU->SearchEO(9u);
-    SearchYruRU->SearchEOBF(Depth2);
-
-    // Start F2L search
-    ui->textBrowser_report->append(CurrentLang["SearchingF2L"]);
-    qApp->processEvents();
-    SearchYruRU->SearchF2L(13u);
-
-    // Start last layer search
-    ui->textBrowser_report->append(CurrentLang["SearchingLL"]);
-    qApp->processEvents();
-    SearchYruRU->Search2GLL();
-
-    if (ui->checkBox_Regrips->isChecked()) SearchYruRU->SetRegrips();
-
-    ui->textBrowser_report->clear();
-
-    ui->textBrowser_report->append(QString::fromStdString(SearchYruRU->GetReport(ui->checkBox_Cancellations->isChecked(), false)));
-    ui->textBrowser_report->append(QString::fromStdString("Best solve for " + SearchYruRU->GetBestReport(ui->checkBox_Cancellations->isChecked())));
-    ui->textBrowser_report->append(QString::fromStdString(SearchYruRU->GetTimeReport()));
-
-    AddToHistory(CurrentLang["CEORSolve"]);
-
-    delete SearchYruRU;
+void MainWindow::printCEOR_LL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingYruRULL"]);
 }
 
   /*****************************************************************************************************************/
  /*** Mehta *******************************************************************************************************/
 /*****************************************************************************************************************/
 
-void MainWindow::sMehta(const std::string& Scr)
+void MainWindow::sMehta(const std::string& Scramble)
 {
-    const Algorithm Scramble(Scr);
+    ui->pushButton_StartSearch->setDisabled(true);
+    ui->pushButton_Skip->setEnabled(true);
 
-    // Read the allowed orientations
-    std::vector<Spn> SearchSpins;
-    GetSearchSpins(SearchSpins);
-    uint nSpins = SearchSpins.size();
-
-    uint Depth1, Depth2;
-    switch (ui->comboBox_Speed->currentIndex())
-    {
-    case 0: Depth1 = 6u; Depth2 = 6u; break;
-    case 1: Depth1 = 7u; Depth2 = 6u; break;
-    case 2: Depth1 = 7u; Depth2 = 7u; break;
-    case 3: Depth1 = 8u; Depth2 = 7u; break;
-    default: Depth1 = 6u; Depth2 = 6u; break;
-    }
-
-    uint Inspections;
-    switch (ui->comboBox_Amount->currentIndex())
-    {
-    case 0: Inspections = 1u; break;
-    case 1: if (nSpins > 20u) Inspections = 1u; else if (nSpins > 4u) Inspections = 3u; else Inspections = 6u; break;
-    case 2: if (nSpins > 20u) Inspections = 2u; else if (nSpins > 4u) Inspections = 6u; else Inspections = 12u; break;
-    case 3: if (nSpins > 20u) Inspections = 4u; else if (nSpins > 4u) Inspections = 12u; else Inspections = 24u; break;
-    case 4: if (nSpins > 20u) Inspections = 8u; else if (nSpins > 4u) Inspections = 24u; else Inspections = 48u; break;
-    default: Inspections = 1u; break;
-    }
-
-    // Create search
-    Mehta* SearchMehta = new Mehta(Scramble, ui->spinBox_Cores->value());
-
-    SearchMehta->SetSearchSpins(SearchSpins);
-
-    SearchMehta->SetMetric(static_cast<Metrics>(ui->comboBox_Metric->currentIndex()));
-
-    // Start first blocks search
-    ui->textBrowser_report->append(CurrentLang["SearchingFB"]);
-    qApp->processEvents();
-
-    if (ui->checkBox_Cache->isChecked())
-    {
-        bool found = false;
-        for (const auto& c : Cache) // Search in cache
-        {
-            if (c.Scramble == Scramble && c.Depth >= Depth1 && !c.Solves.empty())
-            {
-                ui->textBrowser_report->append(CurrentLang["Cache"]);
-                qApp->processEvents();
-                SearchMehta->EvaluateFB(c.Solves, Inspections);
-                SearchMehta->SetTimeFB(c.Time);
-                SearchMehta->SetDepthFB(c.Depth);
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) // Solves not found in cache
-        {
-            Cache.clear(); // Cache memory usage can be large, clear previous cache
-            const auto time_fb_start = std::chrono::system_clock::now();
-
-            DeepSearch BaseSearch(Scramble);
-            BaseSearch.SearchBase(Depth1, Plc::BEST_SOLVES, ui->spinBox_Cores->value());
-
-            if (BaseSearch.Solves.empty())
-            {
-                ui->textBrowser_report->clear();
-                ui->textBrowser_report->append(CurrentLang["NoFB"]);
-                return;
-            }
-
-            SearchMehta->EvaluateFB(BaseSearch.Solves, Inspections);
-
-            const std::chrono::duration<double> fb_elapsed_seconds = std::chrono::system_clock::now() - time_fb_start;
-            SearchMehta->SetTimeFB(fb_elapsed_seconds.count());
-            SearchMehta->SetDepthFB(Depth1);
-
-            // Add current solves into cache
-            CacheUnit CU;
-            CU.Scramble = Scramble;
-            CU.Depth = Depth1;
-            CU.Time = SearchMehta->GetTimeFB();
-            CU.Solves = BaseSearch.Solves;
-            Cache.push_back(CU);
-        }
-    }
-    else // No cache
-    {
-        if (!SearchMehta->SearchFB(Depth1, Inspections))
-        {
-            ui->textBrowser_report->clear();
-            ui->textBrowser_report->append(CurrentLang["NoFB"]);
-            return;
-        }
-    }
-
-    // Start 3QB search
-    ui->textBrowser_report->append(CurrentLang["Searching3QB"]);
-    qApp->processEvents();
-    SearchMehta->Search3QB(Depth2);
-
-    // Start EOLE search
-    ui->textBrowser_report->append(CurrentLang["SearchingEOLE"]);
-    qApp->processEvents();
-    SearchMehta->SearchEOLE();
-
-    if (ui->comboBox_Variant->currentIndex() == 1)
-    {
-        ui->textBrowser_report->append(CurrentLang["Searching6CO"]);
-        qApp->processEvents();
-        SearchMehta->Search6CO();
-
-        ui->textBrowser_report->append(CurrentLang["Searching6CP"]);
-        qApp->processEvents();
-        SearchMehta->Search6CP();
-
-        ui->textBrowser_report->append(CurrentLang["SearchingL5EP"]);
-        qApp->processEvents();
-        SearchMehta->SearchL5EP();
-    }
-    else if (ui->comboBox_Variant->currentIndex() == 2)
-    {
-        ui->textBrowser_report->append(CurrentLang["Searching6CO"]);
-        qApp->processEvents();
-        SearchMehta->Search6CO();
-
-        ui->textBrowser_report->append(CurrentLang["SearchingAPDR"]);
-        qApp->processEvents();
-        SearchMehta->SearchAPDR();
-
-        ui->textBrowser_report->append(CurrentLang["SearchingPLL"]);
-        qApp->processEvents();
-        SearchMehta->SearchPLL();
-    }
-    else if (ui->comboBox_Variant->currentIndex() == 3)
-    {
-        ui->textBrowser_report->append(CurrentLang["SearchingDCAL"]);
-        qApp->processEvents();
-        SearchMehta->SearchDCAL();
-
-        ui->textBrowser_report->append(CurrentLang["SearchingCDRLL"]);
-        qApp->processEvents();
-        SearchMehta->SearchCDRLL();
-
-        ui->textBrowser_report->append(CurrentLang["SearchingL5EP"]);
-        qApp->processEvents();
-        SearchMehta->SearchL5EP();
-    }
-    else if (ui->comboBox_Variant->currentIndex() == 4)
-    {
-        ui->textBrowser_report->append(CurrentLang["SearchingDCAL"]);
-        qApp->processEvents();
-        SearchMehta->SearchDCAL();
-
-        ui->textBrowser_report->append(CurrentLang["SearchingJTLE"]);
-        qApp->processEvents();
-        SearchMehta->SearchJTLE();
-
-        ui->textBrowser_report->append(CurrentLang["SearchingPLL"]);
-        qApp->processEvents();
-        SearchMehta->SearchPLL();
-    }
-    else // Mehta-TDR
-    {
-        ui->textBrowser_report->append(CurrentLang["SearchingTDR"]);
-        qApp->processEvents();
-        SearchMehta->SearchTDR();
-
-        ui->textBrowser_report->append(CurrentLang["SearchingZBLL"]);
-        qApp->processEvents();
-        SearchMehta->SearchZBLL();
-    }
-
-    if (ui->checkBox_Regrips->isChecked()) SearchMehta->SetRegrips();
-
-    ui->textBrowser_report->clear();
-
-    ui->textBrowser_report->append(QString::fromStdString(SearchMehta->GetReport(ui->checkBox_Cancellations->isChecked(), false)));
-    ui->textBrowser_report->append(QString::fromStdString("Best solve for " + SearchMehta->GetBestReport(ui->checkBox_Cancellations->isChecked())));
-    ui->textBrowser_report->append(QString::fromStdString(SearchMehta->GetTimeReport()));
-
-    AddToHistory(CurrentLang["MehtaSolve"]);
-
-    delete SearchMehta;
+    SearchThread->doStartSearchMehta(QString::fromStdString(Scramble),
+                                     ui->spinBox_Cores->value(),
+                                     ui->checkBox_Cache->isChecked(),
+                                     ui->comboBox_Variant->currentIndex(),
+                                     ui->comboBox_Option->currentIndex(),
+                                     ui->comboBox_Speed->currentIndex(),
+                                     ui->comboBox_Orientation->currentIndex(),
+                                     ui->comboBox_Amount->currentIndex(),
+                                     ui->comboBox_Metric->currentIndex(),
+                                     ui->checkBox_Regrips->isChecked(),
+                                     ui->checkBox_Cancellations->isChecked());
 }
 
+void MainWindow::printMehta_FB()
+{
+    ui->textBrowser_report->setText(CurrentLang["SearchingMehtaFB"]);
+}
 
+void MainWindow::printMehta_3QB()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingMehta3QB"]);
+}
+
+void MainWindow::printMehta_EOLE()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingMehtaEOLE"]);
+}
+
+void MainWindow::printMehta_6CO()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingMehta6CO"]);
+}
+
+void MainWindow::printMehta_6CP()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingMehta6CP"]);
+}
+
+void MainWindow::printMehta_L5EP()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingMehtaL5EP"]);
+}
+
+void MainWindow::printMehta_APDR()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingMehtaAPDR"]);
+}
+
+void MainWindow::printMehta_PLL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingMehtaPLL"]);
+}
+
+void MainWindow::printMehta_DCAL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingMehtaDCAL"]);
+}
+
+void MainWindow::printMehta_CDRLL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingMehtaCDRLL"]);
+}
+
+void MainWindow::printMehta_JTLE()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingMehtaJTLE"]);
+}
+
+void MainWindow::printMehta_TDR()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingMehtaTDR"]);
+}
+
+void MainWindow::printMehta_ZBLL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingMehtaZBLL"]);
+}
+
+  /*****************************************************************************************************************/
+ /*** Nautilus ****************************************************************************************************/
+/*****************************************************************************************************************/
+
+void MainWindow::sNautilus(const std::string& Scramble)
+{
+  ui->pushButton_StartSearch->setDisabled(true);
+  ui->pushButton_Skip->setEnabled(true);
+
+  SearchThread->doStartSearchNautilus(QString::fromStdString(Scramble),
+                                      ui->spinBox_Cores->value(),
+                                      ui->checkBox_Cache->isChecked(),
+                                      ui->comboBox_Variant->currentIndex(),
+                                      ui->comboBox_Option->currentIndex(),
+                                      ui->comboBox_Speed->currentIndex(),
+                                      ui->comboBox_Orientation->currentIndex(),
+                                      ui->comboBox_Amount->currentIndex(),
+                                      ui->comboBox_Metric->currentIndex(),
+                                      ui->checkBox_Regrips->isChecked(),
+                                      ui->checkBox_Cancellations->isChecked());
+}
+
+void MainWindow::printNautilus_FB()
+{
+    ui->textBrowser_report->setText(CurrentLang["SearchingNautilusFB"]);
+}
+
+void MainWindow::printNautilus_SB()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingNautilusSB"]);
+}
+
+void MainWindow::printNautilus_dFR()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingNautilusdFR"]);
+}
+
+void MainWindow::printNautilus_NCLL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingNautilusNCLL"]);
+}
+
+void MainWindow::printNautilus_NCOLL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingNautilusNCOLL"]);
+}
+
+void MainWindow::printNautilus_TNCLL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingNautilusTNCLL"]);
+}
+
+void MainWindow::printNautilus_L5E()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingNautilusL5E"]);
+}
+
+void MainWindow::printNautilus_EODF()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingNautilusEODF"]);
+}
+
+void MainWindow::printNautilus_F2L()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingNautilusF2L"]);
+}
+
+void MainWindow::printNautilus_LL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingNautilusLL"]);
+}
+
+  /*****************************************************************************************************************/
+ /*** LEOR ********************************************************************************************************/
+/*****************************************************************************************************************/
+
+void MainWindow::sLEOR(const std::string& Scramble)
+{
+  ui->pushButton_StartSearch->setDisabled(true);
+  ui->pushButton_Skip->setEnabled(true);
+
+  SearchThread->doStartSearchLEOR(QString::fromStdString(Scramble),
+                                  ui->spinBox_Cores->value(),
+                                  ui->checkBox_Cache->isChecked(),
+                                  ui->comboBox_Variant->currentIndex(),
+                                  ui->comboBox_Option->currentIndex(),
+                                  ui->comboBox_Speed->currentIndex(),
+                                  ui->comboBox_Orientation->currentIndex(),
+                                  ui->comboBox_Amount->currentIndex(),
+                                  ui->comboBox_Metric->currentIndex(),
+                                  ui->checkBox_Regrips->isChecked(),
+                                  ui->checkBox_Cancellations->isChecked());
+}
+
+void MainWindow::printLEOR_FB()
+{
+    ui->textBrowser_report->setText(CurrentLang["SearchingLEORFB"]);
+}
+
+void MainWindow::printLEOR_EOStripe()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingLEOREOStripe"]);
+}
+
+void MainWindow::printLEOR_FLPair()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingLEORFLPair"]);
+}
+
+void MainWindow::printLEOR_EODF()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingLEOREODF"]);
+}
+
+void MainWindow::printLEOR_SB()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingLEORSB"]);
+}
+
+void MainWindow::printLEOR_LL()
+{
+    ui->textBrowser_report->append(CurrentLang["SearchingLEORLL"]);
+}
+
+void MainWindow::on_pushButton_Collections_clicked()
+{
+    if (aw == nullptr) aw = new Algset();
+    aw->show();
+}
 

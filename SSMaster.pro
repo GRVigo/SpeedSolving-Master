@@ -28,6 +28,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     algorithm.cpp \
+    algset.cpp \
+    ceor.cpp \
     cfop.cpp \
     collection.cpp \
     corners.cpp \
@@ -36,17 +38,22 @@ SOURCES += \
     deep_search.cpp \
     edges.cpp \
     lbl.cpp \
+    leor.cpp \
     main.cpp \
     mainwindow.cpp \
     mehta.cpp \
+    method.cpp \
+    nautilus.cpp \
     petrus.cpp \
     roux.cpp \
+    searchthread.cpp \
     tinyxml2.cpp \
-    yruru.cpp \
     zz.cpp
 
 HEADERS += \
     algorithm.h \
+    algset.h \
+    ceor.h \
     cfop.h \
     collection.h \
     corners.h \
@@ -56,15 +63,19 @@ HEADERS += \
     deep_search.h \
     edges.h \
     lbl.h \
+    leor.h \
     mainwindow.h \
     mehta.h \
+    method.h \
+    nautilus.h \
     petrus.h \
     roux.h \
+    searchthread.h \
     tinyxml2.h \
-    yruru.h \
     zz.h
 
 FORMS += \
+    algset.ui \
     mainwindow.ui
 
 # Default rules for deployment.

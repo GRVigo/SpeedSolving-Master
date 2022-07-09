@@ -24,48 +24,27 @@
 
 #include "cube_definitions.h"
 #include "deep_search.h"
+#include "method.h"
 
 namespace grcube3
 {
     // Class to search a solve for a Rubik's cube using ZZ method
-    class ZZ
+    class ZZ : public Method
     {
     public:
-        // Constructor with scramble
-        ZZ(const Algorithm& Scr, const int NumCores = 0)
-        {
-            Scramble = Scr;
-            CubeBase = Cube(Scramble);
-            Cores = NumCores;
-            Reset();
-        }
+        // Constructor
+        ZZ(const Algorithm& Scr, const int NumCores = 0) : Method(Scr, NumCores) { Reset(); }
 
-		// Destructor
-        ~ZZ() {}
-
-		// Reset the search results
-		void Reset();
-
-        // Set spins for search
-        void SetSearchSpins(const std::vector<Spn>& SS)
-        {
-            SearchSpins.clear();
-            if (SS.empty()) for (int s = 0; s < 24; s++) SearchSpins.push_back(static_cast<Spn>(s));
-            else for (const auto s : SS) SearchSpins.push_back(s);
-        }
-		
-		// Set the metric for evaluations
-		void SetMetric(const Metrics m) { Metric = m; }
+		void Reset(); // Reset the search results
 
         // Search the best EOX solve with the given search depth
-        // Return false if no EOX found
-        bool SearchEOX(const uint, const uint = 1u);
+        bool SearchEOX(const uint, const uint = 1u); // Return false if no EOX found
         void SearchF2L(); // Complete the two first layers (F2L)
-        void SearchZBLL(); // Complete the last layer using ZBLL algorithms
-        void SearchOCLL(); // Complete the last layer using OCLL algorithms
-        void SearchPLL(); // Complete the last layer using PLL algorithms
-        void SearchCOLL(); // Complete the last layer using COLL algorithms
-        void SearchEPLL(); // Complete the last layer using EPLL algorithms
+        void SearchZBLL(const Plc = Plc::FIRST); // Complete the last layer using ZBLL algorithms
+        void SearchOCLL(const Plc = Plc::FIRST); // Complete the last layer using OCLL algorithms
+        void SearchPLL(const Plc = Plc::FIRST); // Complete the last layer using PLL algorithms
+        void SearchCOLL(const Plc = Plc::FIRST); // Complete the last layer using COLL algorithms
+        void SearchEPLL(const Plc = Plc::FIRST); // Complete the last layer using EPLL algorithms
 
         // Search the best EOX solve algorithms from an algorithms vector
         void EvaluateEOX(const std::vector<Algorithm>&, const uint = 1u);
@@ -74,13 +53,14 @@ namespace grcube3
         void SetRegrips();
 		
 		// If the EOLine is search externally, use this function to set the EOLine search time
-        void SetTimeEOX(double t) { TimeEOX = t; }
+        void SetTimeFS(double t) { TimeEOX = t; }
 
         // If the EOLine is search externally, use this function to set the EOLine search depth
-        void SetDepthEOX(uint d) { MaxDepthEOX = d; }
+        void SetDepthFS(uint d) { MaxDepthEOX = d; }
+
+        Algorithm GetFullSolve(const Spn, const uint) const; // Get the full solve
 
 		// Get search algorithms texts
-        std::string GetTextScramble() const { return Scramble.ToString(); }
         std::string GetTextEOLine(const Spn sp, const uint n) const { return EOX[static_cast<int>(sp)][n].ToString(); }
         std::string GetTextF2L_1(const Spn sp, const uint n) const { return F2L_1[static_cast<int>(sp)][n].ToString(); }
         std::string GetTextF2L_2(const Spn sp, const uint n) const { return F2L_2[static_cast<int>(sp)][n].ToString(); }
@@ -95,7 +75,6 @@ namespace grcube3
         std::string GetTextEPLL(const Spn sp, const uint n) const { return AlgEPLL[static_cast<int>(sp)][n].ToString(); }
 
         // Get search solves lengths
-        uint GetLengthScramble() const { return Scramble.GetNumSteps(); }
         uint GetLengthEOX(const Spn sp, const uint n) const { return EOX[static_cast<int>(sp)][n].GetNumSteps(); }
         uint GetLengthF2L_1(const Spn sp, const uint n) const { return F2L_1[static_cast<int>(sp)][n].GetNumSteps(); }
         uint GetLengthF2L_2(const Spn sp, const uint n) const { return F2L_2[static_cast<int>(sp)][n].GetNumSteps(); }
@@ -112,8 +91,6 @@ namespace grcube3
                                                                     GetLengthPLL(sp, n) + GetLengthCOLL(sp, n) + GetLengthEPLL(sp, n); }
 
         // Get metric values
-        float GetMetricSolve(const Spn, const uint) const; // Get the full solve metric
-		float GetMetricScramble() const { return Scramble.GetMetric(Metric); }
         float GetMetricEOX(const Spn sp, const uint n) const { return EOX[static_cast<int>(sp)][n].GetMetric(Metric); }
         float GetMetricF2L_1(const Spn sp, const uint n) const { return F2L_1[static_cast<int>(sp)][n].GetMetric(Metric); }
         float GetMetricF2L_2(const Spn sp, const uint n) const { return F2L_2[static_cast<int>(sp)][n].GetMetric(Metric); }
@@ -138,18 +115,8 @@ namespace grcube3
         
         // Get a general solve report (all spins with results)
         std::string GetReport(const bool, bool = false) const; // cancellations, debug
-        std::string GetReport(const Spn, const uint n) const; // Get a solve report for given spin
+        std::string GetReport(const Spn, const uint n) const; // Get a solve report for given spin and inspection
         std::string GetTimeReport() const; // Get a solve time report
-        std::string GetBestReport(const bool = false) const; // Get the best solve report (STM with or without cancellations)
-
-        // Get the full solve with cancellations
-        Algorithm GetCancellations(const Spn, const uint) const;
-
-        // Get the solve with cancellations metric
-		float GetMetricCancellations(const Spn spin, const uint n) const { return GetCancellations(spin, n).GetMetric(Metric); }
-
-		// Get used cores in the solve
-		int GetUsedCores() const { return Cores; }
 
         // Get the time elapsed searching ZZ
         double GetTimeEOX() const { return TimeEOX; }
@@ -162,29 +129,9 @@ namespace grcube3
         double GetTimeLL() const { return GetTimeZBLL() + GetTimeOCLL() + GetTimePLL() + GetTimeCOLL() + GetTimeEPLL(); }
         double GetTime() const { return GetTimeEOX() + GetTimeF2L() + GetTimeLL(); }
 
-        // Check if in the given spin the solve is OK
-        bool IsSolved(const Spn, const uint n) const;
-
-        // Check if ZZ EOX is built for given spin
-        static bool IsEOLineBuilt(const Cube&, const Spn);
-        static bool IsEOArrowBuilt(const Cube&, const Spn);
-        static bool IsEOCrossBuilt(const Cube&, const Spn);
-        static bool IsXEOLineBuilt(const Cube&, const Spn);
-        static bool IsXEOCrossBuilt(const Cube&, const Spn);
-        static bool IsEO223Built(const Cube&, const Spn);
-
-        // Returns best EOX/F2L solve from the Solves vector class member and his score
-        static bool EvaluateEOXResult(std::vector<Algorithm>&, const uint, const std::vector<Algorithm>&, const Cube&, const Spn, const Plc);
-        static bool EvaluateF2LResult(std::vector<Algorithm>&, const uint, const std::vector<Algorithm>&, const Cube&, const Spn, const Plc);
-		
 	private:
-		
-        Algorithm Scramble; // Cube scramble
-                  
-        std::vector<Spn> SearchSpins;
         
-        std::vector<Algorithm> Inspections[24], // Algorithms for inspections
-                               EOX[24], // Algorithms for EOLine (ZZ first step)
+        std::vector<Algorithm> EOX[24], // Algorithms for EOLine (ZZ first step)
                                F2L_1[24], // Algorithms for F2L 1
                                F2L_2[24], // Algorithms for F2L 2
                                F2L_3[24], // Algorithms for F2L 3
@@ -194,10 +141,6 @@ namespace grcube3
                                AlgPLL[24], // PLL algorithms
                                AlgCOLL[24], // COLL algorithms
                                AlgEPLL [24]; // EPLL algorithms
-		
-		Cube CubeBase;
-		
-		Metrics Metric; // Metric for measures
 
         // Last used maximum EOX depth
         uint MaxDepthEOX;
@@ -207,18 +150,15 @@ namespace grcube3
                                  CasesPLL[24], // PLL cases found for each spin
                                  CasesCOLL[24], // COLL cases found for each spin
                                  CasesEPLL[24]; // EPLL cases found for each spin
-        
-		// Cores to use in the search: -1 = no multithreading, 0 = all avaliable cores, other = use this amount of cores
-		int Cores;
 
 		// Times
         double TimeEOX, TimeF2L, TimeZBLL, TimeOCLL, TimePLL, TimeCOLL, TimeEPLL;
 
         // Complete the two first layers (F2L) after EO Line (No EO Cross)
-        void SearchF2L_EOLine(const Spn, const uint);
+        bool SearchF2L_EOLine(const Spn, const uint);
 
         // Complete the two first layers (F2L) after EO Cross (similar to CFOP F2L)
-        void SearchF2L_EOCross(const Spn, const uint);
+        bool SearchF2L_EOCross(const Spn, const uint);
 
         // Check if the solves for the given spin are consistent (all needed algorithms are present)
         bool CheckSolveConsistency(const Spn) const;

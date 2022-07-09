@@ -30,9 +30,6 @@
 
 namespace grcube3
 {
-	// Supported metrics
-    enum class Metrics { Movements, HTM, QTM, STM, QSTM, ETM, ATM, PTM, HTM15, OBTM };
-
 	class Algorithm
 	{
 	public:
@@ -56,7 +53,7 @@ namespace grcube3
 		bool Erase(const uint, const uint); // Erase movements (steps) in given range
 		void EraseLast() { Movs.pop_back(); } // Erase last movememnt
 		void EraseFirst() { Movs.erase(Movs.begin()); } // Erase first movement
-		bool Empty() const { return Movs.empty(); } // Algorithm is empty
+        bool Empty() const { return Movs.empty() || (Movs.size() == 1u && Movs[0] == Stp::NONE); } // Algorithm is empty
 	
 		uint GetSize() const { return static_cast<uint>(Movs.size()); } // Get the algorithm length (number of steps in the list)
 		uint GetNumSteps() const; // Get the number of steps in the algorithm (parentheses are developed in the count)
@@ -64,8 +61,6 @@ namespace grcube3
 		bool Find(std::vector<uint>&, const Algorithm&) const; // Searchs a algorithm inside the current algorithm, returns his position(s)
 		static Algorithm Compress(const Algorithm&, const Algorithm&); // Returns equivalent algorithm with the subalgorithm expressed with repetitions
 		
-		// Get the slice turn metric (STM) for current algorithm
-		// uint GetSTM() const { Algorithm A = GetDeveloped(); A = A.GetWithoutTurns(); return A.GetSize(); }
 		// Get metrics
         uint GetHTM() const; // Half turn metric (HTM), also known as face turn metric (FTM)
         uint GetQTM() const; // Quarter turn metric (QTM)
@@ -80,11 +75,16 @@ namespace grcube3
 		
 		int GetParenthesesNesting() const; // Gets parentheses nesting - 0 for parentheses OK
 		
-		// Gets a subjective score in function of algorithm movements
-		uint GetSubjectiveScore() const { uint s = 0u; for (const auto m : Movs) { s += m_scores[static_cast<int>(m)]; } return s; }
+		// Gets a subjective score in function of algorithm movements (higher score, worst algorithm)
+		uint GetSubjectiveScore() const 
+		{ 
+			uint s = 0u; 
+			for (const auto m : Movs) s += m_scores[static_cast<int>(m)];
+			return s;
+		}
 
-		Stp First() const { return GetSize() > 0u ? Movs.front() : Stp::NONE; }  // Get the algorithm first step
-		Stp Last() const { return GetSize() > 0u ? Movs.back() : Stp::NONE; } // Get the algorithm last step
+		Stp First() const { return Movs.empty() ? Stp::NONE : Movs.front(); }  // Get the algorithm first step
+		Stp Last() const { return Movs.empty() ? Stp::NONE : Movs.back(); } // Get the algorithm last step
 		Stp Penultimate() const { return GetSize() < 2u ? Stp::NONE : Movs[GetSize() - 2u]; } // Gets the penultimate step in the algorithm
 		Stp PenultimateInverted() const { return GetSize() < 2u ? Stp::NONE : m_inverted[static_cast<int>(Movs[GetSize() - 2u])]; } // Gets the inverted penultimate step in the algorithm
 

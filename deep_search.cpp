@@ -27,28 +27,24 @@
 
 namespace grcube3
 {
-    uint SearchUnit::UnitsAmount = 0u;
+    uint SearchUnit::UnitsAmount = 0u; // Initialize static variable
 	
 	// Algorithm search class constructor
     DeepSearch::DeepSearch(const Algorithm& scr, const Plc Pol) // Scramble to start the search
 	{	
-        MaxSearchDeep = MinSearchDeep = 0u;
+        MaxDepth = MinDepth = 0u;
         SearchPolicy = Pol;
 		UsedCores = 0; // Not used cores yet
-		Cores = GetSystemCores(); // For multithreading
 		RootBranches = 0u;
-		MandatorySolveMask.Clear();
-		OptionalSolveMasks.clear();
-		MandatoryOrientedPos.clear();
-        SetNewScramble(scr); // Apply the scramble
+        SetScramble(scr); // Apply the scramble
 	}
 
 	// Add a single piece to mandatory pieces mask
 	void DeepSearch::AddToMandatoryPieces(const Pcp P)
 	{
 		// Separate pieces in edges and corners
-		if (Cube::IsEdge(P)) MandatorySolveMask.MaskE |= Cube::GetMaskSolvedEdge(Cube::PcpToEdp(P));
-		else if (Cube::IsCorner(P)) MandatorySolveMask.MaskC |= Cube::GetMaskSolvedCorner(Cube::PcpToCnp(P));
+        if (Cube::IsEdge(P)) MandatorySolvedMasks.MaskE |= Cube::GetMaskSolvedEdge(Cube::PcpToEdp(P));
+        else if (Cube::IsCorner(P)) MandatorySolvedMasks.MaskC |= Cube::GetMaskSolvedCorner(Cube::PcpToCnp(P));
 	}
 
 	// Add a group of pieces to mandatory pieces mask
@@ -71,7 +67,7 @@ namespace grcube3
 		else if (Cube::IsCorner(P)) AuxCornersList.push_back(Cube::PcpToCnp(P));
 		else return;
 		
-		OptionalSolveMasks.push_back(MasksPair(Cube::GetMaskSolvedEdges(AuxEdgesList), Cube::GetMaskSolvedCorners(AuxCornersList)));
+        OptionalSolvedMasks.push_back(MasksPair(Cube::GetMaskSolvedEdges(AuxEdgesList), Cube::GetMaskSolvedCorners(AuxCornersList)));
 	}
 
 	// Add a pieces positions group as optional solved pieces positions
@@ -89,7 +85,7 @@ namespace grcube3
 			if (Cube::IsEdge(P)) AuxEdgesList.push_back(Cube::PcpToEdp(P));
 			else if (Cube::IsCorner(P)) AuxCornersList.push_back(Cube::PcpToCnp(P));
 		}
-		OptionalSolveMasks.push_back(MasksPair(Cube::GetMaskSolvedEdges(AuxEdgesList), Cube::GetMaskSolvedCorners(AuxCornersList)));
+        OptionalSolvedMasks.push_back(MasksPair(Cube::GetMaskSolvedEdges(AuxEdgesList), Cube::GetMaskSolvedCorners(AuxCornersList)));
 	}
 
 	// Add a piece as mandatory solved piece positions for orientation
@@ -109,8 +105,8 @@ namespace grcube3
 	void DeepSearch::AddToMandatoryPositions(const Pcp P)
 	{
 		// Separate pieces in edges and corners
-		if (Cube::IsEdge(P)) MandatorySolveMask.MaskE |= Cube::GetMaskEdgePosition(Cube::PcpToEdp(P));
-		else if (Cube::IsCorner(P)) MandatorySolveMask.MaskC |= Cube::GetMaskCornerPosition(Cube::PcpToCnp(P));
+        if (Cube::IsEdge(P)) MandatorySolvedMasks.MaskE |= Cube::GetMaskEdgePosition(Cube::PcpToEdp(P));
+        else if (Cube::IsCorner(P)) MandatorySolvedMasks.MaskC |= Cube::GetMaskCornerPosition(Cube::PcpToCnp(P));
 	}
 
 	// Add a pieces group as mandatory pieces in his position (orientation not needed)
@@ -130,11 +126,11 @@ namespace grcube3
 		Roots.clear();
 		if (Levels.empty()) return false;
 
-        for (const auto& U : Levels[0].Unit) // First level only
+        for (const auto& U : Levels[0].Units) // First level only
 		{
 			switch (U.Type)
 			{
-			case SequenceType::SINGLE:
+            case SequenceTypes::SINGLE:
                 for (const auto S : U.MainSteps)
 				{
 					Algorithm R;
@@ -143,7 +139,7 @@ namespace grcube3
 				}
 				break;
 
-			case SequenceType::DOUBLE:
+            case SequenceTypes::DOUBLE:
                 for (const auto S1 : U.MainSteps)
 				{
                     for (const auto S2 : U.MainSteps)
@@ -160,7 +156,7 @@ namespace grcube3
 				}
 				break;
 
-			case SequenceType::TRIPLE:
+            case SequenceTypes::TRIPLE:
                 for (const auto S1 : U.MainSteps)
 				{
                     for (const auto S2 : U.MainSteps)
@@ -182,7 +178,7 @@ namespace grcube3
 				}
 				break;
 
-			case SequenceType::RETURN_FIXED_SINGLE:
+            case SequenceTypes::CONJUGATE_SINGLE:
                 for (const auto aS : U.AuxSteps)
 				{
                     for (const auto S : U.MainSteps)
@@ -196,11 +192,11 @@ namespace grcube3
 				}
 				break;
 
-			case SequenceType::CONST:
+            case SequenceTypes::SEQUENCE:
                 for (const auto& A : U.MainAlgs) Roots.push_back(A);
 				break;
 				
-			case SequenceType::RETURN_CONST:
+            case SequenceTypes::CONJUGATE:
                 for (const auto aS : U.AuxSteps)
 				{
                     for (const auto& A : U.MainAlgs)
@@ -213,8 +209,6 @@ namespace grcube3
 					}
 				}
 				break;
-				
-			// TODO: Add more sequence types
 			
 			default: return false;
 			}
@@ -230,7 +224,7 @@ namespace grcube3
 		
 		if (UseThreads >= 0) // Multithreading
 		{
-			UsedCores = (UseThreads == 0) || (UseThreads >= Cores) ? Cores : UseThreads;
+            UsedCores = (UseThreads == 0) || (UseThreads >= GetSystemCores()) ? GetSystemCores() : UseThreads;
 
 			std::vector<std::thread> Pool; // Threads pool
 
@@ -249,33 +243,33 @@ namespace grcube3
     
 	// Recursive search code
     void DeepSearch::RunSearch(const Algorithm& Alg, // Current search algorithm
-							   uint Deep, // Current search deep
+							   uint Depth, // Current search depth
                                const uint SeqId, // Current sequence identifier (0 means root sequence or not in a sequence)
                                uint SeqSize) // Current sequence size
 	{
 		if (SeqId == 0u) // Root or not in a sequence
 		{
 			// Check if current algorithm solves the pieces
-			if (Levels[Deep].Check == SearchCheck::CHECK) CheckSolve(Alg);
+			if (Levels[Depth].Check == SearchCheck::CHECK) CheckSolve(Alg);
 			
-			if (IncCheckDeep(Deep)) return; // It's no necessary to continue the search
+			if (IncCheckDepth(Depth)) return; // It's no necessary to continue the search
 
-			NextLevel(Alg, Deep); // Prepare the branches for the next level of the search
+			NextLevel(Alg, Depth); // Prepare the branches for the next level of the search
 		}
 			
-        else for (const auto& U : Levels[Deep].Unit)
+        else for (const auto& U : Levels[Depth].Units)
 		{
             if (U.Id == SeqId)
 			{
 				switch (U.Type)
 				{
-				case SequenceType::RETURN_FIXED_SINGLE: 
+                case SequenceTypes::CONJUGATE_SINGLE:
 
 					if (SeqSize >= 3u) // Check if sequence is completed
 					{
-						if (Levels[Deep].Check == SearchCheck::CHECK) CheckSolve(Alg); // Check if current algorithm solves the pieces
-						if (IncCheckDeep(Deep)) return; // It's no necessary to continue the search
-						NextLevel(Alg, Deep); // Go to next level
+						if (Levels[Depth].Check == SearchCheck::CHECK) CheckSolve(Alg); // Check if current algorithm solves the pieces
+						if (IncCheckDepth(Depth)) return; // It's no necessary to continue the search
+						NextLevel(Alg, Depth); // Go to next level
 					}
 					else // Sequence is not completed
 					{
@@ -284,25 +278,25 @@ namespace grcube3
                             for (const auto S : U.MainSteps)
 							{
 								Algorithm Alg2 = Alg;
-                                if (!Alg2.AppendShrink(S)) RunSearch(Alg2, Deep, SeqId, SeqSize); // Recursive
+                                if (!Alg2.AppendShrink(S)) RunSearch(Alg2, Depth, SeqId, SeqSize); // Recursive
 							}
 						}
 						else // Sequence size == 3u -> Add the last step
 						{
 							Algorithm Alg2 = Alg;
 							Alg2.Append(Alg.PenultimateInverted());
-                            RunSearch(Alg2, Deep, SeqId, SeqSize); // Recursive
+                            RunSearch(Alg2, Depth, SeqId, SeqSize); // Recursive
 						}
 					}
 					break;
 					
-				case SequenceType::RETURN_CONST: 
+                case SequenceTypes::CONJUGATE:
 
 					if (SeqSize >= 3u) // Check if sequence is completed
 					{
-						if (Levels[Deep].Check == SearchCheck::CHECK) CheckSolve(Alg); // Check if current algorithm solves the pieces
-						if (IncCheckDeep(Deep)) return; // It's no necessary to continue the search
-						NextLevel(Alg, Deep); // Go to next level
+						if (Levels[Depth].Check == SearchCheck::CHECK) CheckSolve(Alg); // Check if current algorithm solves the pieces
+						if (IncCheckDepth(Depth)) return; // It's no necessary to continue the search
+						NextLevel(Alg, Depth); // Go to next level
 					}
 					else // Sequence is not completed
 					{
@@ -312,14 +306,14 @@ namespace grcube3
 							{
 								Algorithm Alg2 = Alg;
                                 Alg2.Append(MA);
-                                RunSearch(Alg2, Deep, SeqId, SeqSize); // Recursive
+                                RunSearch(Alg2, Depth, SeqId, SeqSize); // Recursive
 							}
 						}
 						else // Sequence size == 3u -> Add the last step
 						{
 							Algorithm Alg2 = Alg;
 							Alg2.Append(Alg.PenultimateInverted());
-                            RunSearch(Alg2, Deep, SeqId, SeqSize); // Recursive
+                            RunSearch(Alg2, Depth, SeqId, SeqSize); // Recursive
 						}
 					}
 					break;
@@ -327,11 +321,11 @@ namespace grcube3
 				default: // Not into a sequence
 					
 					// Check if current algorithm solves the pieces
-					if (Levels[Deep].Check == SearchCheck::CHECK) CheckSolve(Alg);
+					if (Levels[Depth].Check == SearchCheck::CHECK) CheckSolve(Alg);
 				
-					if (IncCheckDeep(Deep)) return; // It's no necessary to continue the search
+					if (IncCheckDepth(Depth)) return; // It's no necessary to continue the search
 
-					NextLevel(Alg, Deep); // Prepare the branches for the next level of the search
+					NextLevel(Alg, Depth); // Prepare the branches for the next level of the search
 					break;
 				}
 			}
@@ -344,24 +338,24 @@ namespace grcube3
 		Cube CubeTest = CubeBase;
 		CubeTest.ApplyAlgorithm(A);
 
-        if (CubeTest.IsSolved(MandatorySolveMask.MaskE, MandatorySolveMask.MaskC) && // True if no mandatory pieces
+        if (CubeTest.IsSolved(MandatorySolvedMasks.MaskE, MandatorySolvedMasks.MaskC) && // True if no mandatory pieces
 			CubeTest.CheckOrientation(MandatoryOrientedPos))
 		{
-			if (OptionalSolveMasks.empty()) // Solve algorithm found (only mandatory)
+            if (OptionalSolvedMasks.empty()) // Solve algorithm found (only mandatory)
 			{
-				std::lock_guard<std::mutex> guard(SearchMutex);
-                if (SearchPolicy == Plc::SHORT && A.GetSize() < MaxSearchDeep) MaxSearchDeep = A.GetSize() + 1u;
-				Solves.push_back(A); // Thread safe code
+				std::lock_guard<std::mutex> guard(SearchMutex); // Thread safe code
+                if (SearchPolicy == Plc::SHORT && A.GetSize() < MaxDepth) MaxDepth = A.GetSize() + 1u;
+				Solves.push_back(A); 
 			}
 			else // Check solve algorithm found (mandatory + at least an optional)
 			{
-				for (const auto& O : OptionalSolveMasks)
+                for (const auto& O : OptionalSolvedMasks)
 				{
 					if (CubeTest.IsSolved(O.MaskE, O.MaskC))
 					{ // Solve algorithm found
-						std::lock_guard<std::mutex> guard(SearchMutex);
-                        if (SearchPolicy == Plc::SHORT && A.GetSize() < MaxSearchDeep) MaxSearchDeep = A.GetSize() + 1u;
-						Solves.push_back(A); // Thread safe code
+						std::lock_guard<std::mutex> guard(SearchMutex); // Thread safe code
+                        if (SearchPolicy == Plc::SHORT && A.GetSize() < MaxDepth) MaxDepth = A.GetSize() + 1u;
+						Solves.push_back(A);  
                         break;
 					}
 				}
@@ -372,14 +366,14 @@ namespace grcube3
 	// Prepare the branches for the next level of the search
     inline void DeepSearch::NextLevel(const Algorithm& A, const uint D)
 	{
-		if (A.GetSize() == 0u || D >= MaxSearchDeep) return;
+		if (A.GetSize() == 0u || D >= MaxDepth) return;
 		
 		Stp LastStep = A.Last();
-		for (const auto& U : Levels[D].Unit)
+		for (const auto& U : Levels[D].Units)
 		{
 			switch (U.Type)
 			{
-			case SequenceType::SINGLE:
+            case SequenceTypes::SINGLE:
 				for (const auto S : U.MainSteps)
 				{
 					if (Algorithm::OppositeSteps(LastStep, S) && LastStep > S) continue; // As in an algorithm "... U D ..." branch is the same than "... D U ..." branch, compute only one.
@@ -387,7 +381,7 @@ namespace grcube3
 					if (!Alg2.AppendShrink(S)) RunSearch(Alg2, D, U.Id); // Recursive
 				}
 				break;
-			case SequenceType::CONST:
+            case SequenceTypes::SEQUENCE:
                 for (const auto& MA : U.MainAlgs)
 				{
 					Algorithm Alg2 = A;
@@ -395,8 +389,8 @@ namespace grcube3
 					RunSearch(Alg2, D); // Recursive
 				}
 				break;
-			case SequenceType::RETURN_FIXED_SINGLE:
-			case SequenceType::RETURN_CONST:
+            case SequenceTypes::CONJUGATE_SINGLE:
+            case SequenceTypes::CONJUGATE:
 				for (const auto S : U.AuxSteps)
 				{
 					if (Algorithm::OppositeSteps(LastStep, S) && LastStep > S) continue; // As in an algorithm "... U D ..." branch is the same than "... D U ..." branch, compute only one.
@@ -420,7 +414,7 @@ namespace grcube3
         for (const auto& s : Solves) // Check each solve to get the best one
         {
             Score = (1000u - s.GetSize()) * 100u;
-			if (EvaluateMovs) Score += s.GetSubjectiveScore();
+			if (EvaluateMovs) Score -= s.GetSubjectiveScore();
 
             if (Score > MaxScore)
             {
@@ -436,9 +430,9 @@ namespace grcube3
     }
 
 	// Search the best solve algorithms with the given search depth
-	void DeepSearch::SearchBase(const uint MaxDepth, const Plc pol, const int cores)
+	void DeepSearch::SearchBase(const uint depth, const Plc pol, const int cores)
 	{
-		ResetSolvedPieces();
+		ResetPieces();
 		ResetSearchLevels();
 		Solves.clear();
 
@@ -493,7 +487,7 @@ namespace grcube3
 			AddToOptionalPieces(Pgr::LB_B1);
 		}
 
-		else // Plc::BEST_SOLVES => Exhaustive search
+		else // Plc::BEST => Exhaustive search
 		{
 			AddToOptionalPieces(Pgr::UF_B1S2);
 			AddToOptionalPieces(Pgr::UB_B1S2);
@@ -541,8 +535,8 @@ namespace grcube3
 			AddToOptionalPieces(Pgr::CPLINE_LU);
 		}
 
-		const SearchUnit URoot(SequenceType::DOUBLE);
-		const SearchUnit U(SequenceType::SINGLE);
+        const SearchUnit URoot(SequenceTypes::DOUBLE);
+        const SearchUnit U(SequenceTypes::SINGLE);
 
 		SearchLevel L_Root(SearchCheck::NO_CHECK);
 		L_Root.Add(URoot);
@@ -550,12 +544,8 @@ namespace grcube3
 		SearchLevel L_Check(SearchCheck::CHECK);
 		L_Check.Add(U);
 
-		SearchLevel L_NoCheck(SearchCheck::NO_CHECK);
-		L_NoCheck.Add(U);
-
 		AddSearchLevel(L_Root); // Level 1 (two steps -DOUBLE- root algorithms)
-		AddSearchLevel(L_NoCheck); // Level 2
-		for (uint l = 3u; l < MaxDepth; l++) AddSearchLevel(L_Check); // Levels 3 to CrossDepth
+		for (uint l = 2u; l < depth; l++) AddSearchLevel(L_Check); // Levels 2 to given depth
 
 		UpdateRootData();
 

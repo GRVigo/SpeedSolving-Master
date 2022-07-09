@@ -21,9 +21,8 @@
 */
 
 #include "lbl.h"
-#include "cfop.h"
+#include "method.h"
 
-#include <chrono>
 #include <algorithm>
 
 namespace grcube3
@@ -84,7 +83,7 @@ namespace grcube3
         Algorithm Cross_Aux, // Auxiliary algorithm for cross search
                   A1_Cross, A2_Cross, A3_Cross, A4_Cross; // Algorithms for cross
 				  
-		const SearchUnit U1(SequenceType::SINGLE, Sst::SINGLE_ALL);
+        const SearchUnit U1(SequenceTypes::SINGLE, Sst::SINGLE_ALL);
 
         SearchLevel L(SearchCheck::CHECK);
         L.Add(U1);
@@ -198,7 +197,7 @@ namespace grcube3
 				Cross_Found = true;
 			}
 			
-            Cores = DS_Cross.GetCoresUsed();
+            Cores = DS_Cross.GetUsedCores();
 
         } while (Cross_Found);
 
@@ -218,8 +217,8 @@ namespace grcube3
         Algorithm FL_Aux, // Auxiliary algorithm for FL search
                   A1_FL, A2_FL, A3_FL, A4_FL; // Algorithms for FL
 				  
-		const SearchUnit U_Up(SequenceType::SINGLE, Sst::SINGLE_U);
-        const SearchUnit U_Lat(SequenceType::RETURN_FIXED_SINGLE, Sst::SINGLE_U, Sst::LATERAL_UD);
+        const SearchUnit U_Up(SequenceTypes::SINGLE, Sst::SINGLE_U);
+        const SearchUnit U_Lat(SequenceTypes::CONJUGATE_SINGLE, Sst::SINGLE_U, Sst::LATERAL_UD);
 
         SearchLevel L_FL_Check(SearchCheck::CHECK);
         L_FL_Check.Add(U_Up);
@@ -369,8 +368,8 @@ namespace grcube3
         Algorithm SL_Aux, // Auxiliary algorithm for second layer search
                   A1_SL, A2_SL, A3_SL, A4_SL; // Algorithms for second layer
 
-        const SearchUnit U_Up(SequenceType::SINGLE, Sst::SINGLE_U);
-        const SearchUnit U_Lat(SequenceType::RETURN_FIXED_SINGLE, Sst::SINGLE_U, Sst::LATERAL_UD);
+        const SearchUnit U_Up(SequenceTypes::SINGLE, Sst::SINGLE_U);
+        const SearchUnit U_Lat(SequenceTypes::CONJUGATE_SINGLE, Sst::SINGLE_U, Sst::LATERAL_UD);
 
         SearchLevel L_SL_Check(SearchCheck::CHECK);
         L_SL_Check.Add(U_Up);
@@ -472,7 +471,7 @@ namespace grcube3
 			DS_SL.Run(Cores);
 
 			std::vector<Algorithm> SLSolves;
-			CFOP::EvaluateF2LResult(SLSolves, 1u, DS_SL.Solves, CubeSL, FirstLayer, Plc::SHORT);
+            Method::EvaluateCFOPF2LResult(SLSolves, 1u, DS_SL.GetSolves(), CubeSL, FirstLayer, Plc::SHORT);
 
 			if (SLSolves.empty()) return false;
 
@@ -567,8 +566,8 @@ namespace grcube3
 		default: return;
 		}
 		
-		const SearchUnit U1(SequenceType::SINGLE, Sst::SINGLE_U);
-        SearchUnit U2(SequenceType::CONST, Sst::NONE);
+        const SearchUnit U1(SequenceTypes::SINGLE, Sst::SINGLE_U);
+        SearchUnit U2(SequenceTypes::SEQUENCE, Sst::NONE);
         U2.AddAlgorithm(Cross1Algorithm);
 		
         SearchLevel L(SearchCheck::CHECK);
@@ -643,8 +642,8 @@ namespace grcube3
 		default: return;
 		}
 		
-		const SearchUnit U1(SequenceType::SINGLE, Sst::SINGLE_U);
-        SearchUnit U2(SequenceType::CONST, Sst::NONE);
+        const SearchUnit U1(SequenceTypes::SINGLE, Sst::SINGLE_U);
+        SearchUnit U2(SequenceTypes::SEQUENCE, Sst::NONE);
         U2.AddAlgorithm(Cross2Algorithm);
 		
         SearchLevel L(SearchCheck::CHECK);
@@ -726,8 +725,8 @@ namespace grcube3
 		default: return;
 		}
 		
-		const SearchUnit U1(SequenceType::SINGLE, Sst::SINGLE_U);
-        SearchUnit U2(SequenceType::CONST, Sst::NONE);
+        const SearchUnit U1(SequenceTypes::SINGLE, Sst::SINGLE_U);
+        SearchUnit U2(SequenceTypes::SEQUENCE, Sst::NONE);
         U2.AddAlgorithm(Corners1Algorithm);
 		
         SearchLevel L(SearchCheck::CHECK);
@@ -765,8 +764,8 @@ namespace grcube3
 		
 		DSLLCorners2.AddToMandatoryPieces(Pgr::ALL);
 		
-		const SearchUnit U1(SequenceType::SINGLE, Sst::SINGLE_U);
-        SearchUnit U2(SequenceType::CONST, Sst::NONE);        
+        const SearchUnit U1(SequenceTypes::SINGLE, Sst::SINGLE_U);
+        SearchUnit U2(SequenceTypes::SEQUENCE, Sst::NONE);
         U2.AddAlgorithm(Corners2Algorithm2);
 		
         SearchLevel L(SearchCheck::CHECK);
@@ -783,7 +782,7 @@ namespace grcube3
 
         DSLLCorners2.Run(Cores);
 		
-        EvaluateLLCOResult(LLCorners2, DSLLCorners2.Solves);
+        EvaluateLLCOResult(LLCorners2, DSLLCorners2.GetSolves());
 		
 		const std::chrono::duration<double> llcorners2_elapsed_seconds = std::chrono::system_clock::now() - time_llcorners2_start;
         TimeLLCorners2 = llcorners2_elapsed_seconds.count();
@@ -857,7 +856,7 @@ namespace grcube3
 			// Last movement must be an U-Slice
 			if (Algorithm::GetLayer(s.Last()) != Lyr::U) { Index++; continue; }
 			Score = (1000u - s.GetSize()) * 100u;
-			Score += s.GetSubjectiveScore();
+			Score -= s.GetSubjectiveScore();
 
 			if (Score > MaxScore)
 			{
@@ -911,10 +910,11 @@ namespace grcube3
     // Get a solve report
     std::string LBL::GetReport() const
     {
-        std::string Report  = "LBL search with first layer ";
-        Report += Cube::GetLayerChar(FirstLayer);
-        Report += ":\n---------------------------------\n";
-        Report += "Scramble (" + std::to_string(Scramble.GetNumSteps()) + "): " + GetTextScramble() + "\n";
+        std::string Report;
+        // Report = "LBL search with first layer ";
+        // Report += Cube::GetLayerChar(FirstLayer);
+        // Report += ":\n---------------------------------\n";
+        // Report += "Scramble (" + std::to_string(Scramble.GetNumSteps()) + "): " + GetTextScramble() + "\n\n";
 
         if (!IsFLCrossSolved())
         {
@@ -923,11 +923,9 @@ namespace grcube3
             return Report;
         }
 
-        const std::string Inspection = GetTextInspection();
-        if (!Inspection.empty()) Report +=  "Inspection: " + Inspection + "\n";
+        if (GetLengthInspection() > 0u) Report += GetTextInspection() + " // Inspection\n";
 
 		// Show first layer cross solves
-        Report += "\nFirst layer cross (" + Algorithm::GetMetricValue(GetMetricFLCross()) + "): ";
 		std::string CrossString = GetTextFLEdge_1();
         if (!CrossString.empty()) Report += "(" + CrossString + ") ";
         CrossString = GetTextFLEdge_2();
@@ -936,7 +934,7 @@ namespace grcube3
         if (!CrossString.empty()) Report += "(" + CrossString + ") ";
         CrossString = GetTextFLEdge_4();
         if (!CrossString.empty()) Report += "(" + CrossString + ")";
-		Report += "\n";
+        Report += " // First layer cross (" + Algorithm::GetMetricValue(GetMetricFLCross()) + ")\n";
 
         // Show first layer (corners) solves
         if (!IsFLSolved())
@@ -946,7 +944,6 @@ namespace grcube3
             return Report;
         }
 
-		Report += "First layer corners (" + Algorithm::GetMetricValue(GetMetricFLCorners()) + "): ";
         std::string FLString = GetTextFLCorner_1();
         if (!FLString.empty()) Report += "(" + FLString + ") ";
         FLString = GetTextFLCorner_2();
@@ -955,7 +952,7 @@ namespace grcube3
         if (!FLString.empty()) Report += "(" + FLString + ") ";
         FLString = GetTextFLCorner_4();
         if (!FLString.empty()) Report += "(" + FLString + ")";
-		Report += "\n";
+        Report += " // First layer corners (" + Algorithm::GetMetricValue(GetMetricFLCorners()) + ")\n";
 		
         // Show second layer solves
         if (!IsSLSolved())
@@ -965,7 +962,6 @@ namespace grcube3
             return Report;
         }
 
-		Report += "Second layer edges (" + Algorithm::GetMetricValue(GetMetricSL()) + "): ";
         std::string SLString = GetTextSLEdge_1();
         if (!SLString.empty()) Report += "(" + SLString + ") ";
         SLString = GetTextSLEdge_2();
@@ -974,16 +970,20 @@ namespace grcube3
         if (!SLString.empty()) Report += "(" + SLString + ") ";
         SLString = GetTextSLEdge_4();
         if (!SLString.empty()) Report += "(" + SLString + ")";
-		Report += "\n";
+        Report += " // Second layer edges (" + Algorithm::GetMetricValue(GetMetricSL()) + ")\n";
 
 		// Show last layer solves
-       	Report += "Last layer cross orientation (" + Algorithm::GetMetricValue(GetMetricLLCross1()) + "): " + GetTextLLCross_1(true) + "\n";
-		Report += "Last layer cross permutation (" + Algorithm::GetMetricValue(GetMetricLLCross2()) + "): " + GetTextLLCross_2(true) + "\n";
-		Report += "Last layer corners permutation (" + Algorithm::GetMetricValue(GetMetricLLCorners1()) + "): " + GetTextLLCorners_1(true) + "\n";
-		Report += "Last layer corners orientation (" + Algorithm::GetMetricValue(GetMetricLLCorners2()) + "): " + GetTextLLCorners_2(true) + "\n";
+        if (GetLengthLLCross1() > 0u)
+            Report += GetTextLLCross_1(true) + " // Last layer cross orientation (" + Algorithm::GetMetricValue(GetMetricLLCross1()) + ")\n";
+        if (GetLengthLLCross2() > 0u)
+            Report += GetTextLLCross_2(true) + " // Last layer cross permutation (" + Algorithm::GetMetricValue(GetMetricLLCross2()) + ")\n";
+        if (GetLengthLLCorners1() > 0u)
+            Report += GetTextLLCorners_1(true) + " // Last layer corners permutation (" + Algorithm::GetMetricValue(GetMetricLLCorners1()) + ")\n";
+        if (GetLengthLLCorners2() > 0u)
+            Report += GetTextLLCorners_2(true) + " // Last layer corners orientation (" + Algorithm::GetMetricValue(GetMetricLLCorners2()) + ")\n";
 		
         // Show metric
-        Report += "\nSolve metric: " + Algorithm::GetMetricValue(GetMetricSolve()) + " " + Algorithm::GetMetricString(Metric) + "\n";
+        Report += "\nMetric: " + Algorithm::GetMetricValue(GetMetricSolve()) + " " + Algorithm::GetMetricString(Metric) + "\n";
 
         return Report;
     };
@@ -993,289 +993,15 @@ namespace grcube3
     {
         std::string Report;
 
-        Report += "Total search time: " + std::to_string(GetTime()) + " s\n";
-        Report += "First layer cross search time: " + std::to_string(GetTimeFLCross()) + " s\n";
-        Report += "First layer corners search time: " + std::to_string(GetTimeFLCorners()) + " s\n";
-        Report += "Second layer search time: " + std::to_string(GetTimeSL()) + " s\n";
-        Report += "Last layer search time: " + std::to_string(GetTimeLL()) + " s\n";
+        Report += "Total time: " + std::to_string(GetTime()) + " s\n";
+        Report += "First layer cross time: " + std::to_string(GetTimeFLCross()) + " s\n";
+        Report += "First layer corners time: " + std::to_string(GetTimeFLCorners()) + " s\n";
+        Report += "Second layer time: " + std::to_string(GetTimeSL()) + " s\n";
+        Report += "Last layer time: " + std::to_string(GetTimeLL()) + " s\n";
 
         return Report;
     }
 
-    std::string LBL::GetHtmlReport() const
-    {
-        std::string HtmlReport = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n";
-        HtmlReport += "<html>\n";
-        HtmlReport += "\t<head>\n";
-        HtmlReport +=  "\t\t<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"content-type\">\n";
-        HtmlReport +=  "\t\t<title>Layer by layer solve</title>\n";
-        HtmlReport += "\t</head>\n";
-        HtmlReport += "\t</body>\n";
-        HtmlReport += "\t\t<a href=";
-        HtmlReport += GetSolveLink();
-        HtmlReport += "><strong>Layer by layer search for scramble (";
-        HtmlReport += std::to_string(GetLengthScramble());
-        HtmlReport += "): ";
-        HtmlReport += GetTextScramble();
-        HtmlReport += "</strong></a>\n";
-        HtmlReport += "\t\t<br>\n";
-        HtmlReport += "\t\t<br>\n";
-
-        if (IsSolved())
-        {
-            // Show inspection
-            const std::string Inspection = GetTextInspection();
-            if (!Inspection.empty())
-            {
-                HtmlReport += "\t\tInspection: <span style=\"color: rgb(102, 0, 0);\">";
-                HtmlReport += Inspection;
-                HtmlReport += "</span>\n";
-                HtmlReport += "\t\t<br>\n";
-                HtmlReport += "\t\t<br>\n";
-            }
-
-            // Show first layer cross solves
-            HtmlReport += "\t\tFirst layer cross (";
-            HtmlReport += Algorithm::GetMetricValue(GetMetricFLCross());
-            HtmlReport += "): ";
-            std::string CrossString = GetTextFLEdge_1();
-            if (!CrossString.empty())
-            {
-                HtmlReport += "(<span style=\"color: rgb(204, 0, 0);\">";
-                HtmlReport += CrossString;
-                HtmlReport += "</span>) ";
-            }
-            CrossString = GetTextFLEdge_2();
-            if (!CrossString.empty())
-            {
-                HtmlReport += "(<span style=\"color: rgb(204, 0, 0);\">";
-                HtmlReport += CrossString;
-                HtmlReport += "</span>) ";
-            }
-            CrossString = GetTextFLEdge_3();
-            if (!CrossString.empty())
-            {
-                HtmlReport += "(<span style=\"color: rgb(204, 0, 0);\">";
-                HtmlReport += CrossString;
-                HtmlReport += "</span>) ";
-            }
-            CrossString = GetTextFLEdge_4();
-            if (!CrossString.empty())
-            {
-                HtmlReport += "(<span style=\"color: rgb(204, 0, 0);\">";
-                HtmlReport += CrossString;
-                HtmlReport += "</span>)";
-            }
-            HtmlReport += "\t\t<br>\n";
-
-            // Show first layer corners solves
-            HtmlReport += "\t\tFirst layer corners (";
-            HtmlReport += Algorithm::GetMetricValue(GetMetricFLCorners()).c_str();
-            HtmlReport += "): ";
-            std::string FLString = GetTextFLCorner_1();
-            if (!FLString.empty())
-            {
-                HtmlReport += "(<span style=\"color: rgb(204, 102, 0);\">";
-                HtmlReport += FLString;
-                HtmlReport += "</span>) ";
-            }
-            FLString = GetTextFLCorner_2();
-            if (!FLString.empty())
-            {
-                HtmlReport += "(<span style=\"color: rgb(204, 102, 0);\">";
-                HtmlReport += FLString;
-                HtmlReport += "</span>) ";
-            }
-            FLString = GetTextFLCorner_3();
-            if (!FLString.empty())
-            {
-                HtmlReport += "(<span style=\"color: rgb(204, 102, 0);\">";
-                HtmlReport += FLString;
-                HtmlReport += "</span>) ";
-            }
-            FLString = GetTextFLCorner_4();
-            if (!FLString.empty())
-            {
-                HtmlReport += "(<span style=\"color: rgb(204, 102, 0);\">";
-                HtmlReport += FLString;
-                HtmlReport += "</span>)";
-            }
-            HtmlReport += "\t\t<br>\n";
-
-            // Show second layer edges solves
-            HtmlReport += "\t\tSecond layer edges (";
-            HtmlReport += Algorithm::GetMetricValue(GetMetricSL());
-            HtmlReport += "): ";
-            std::string SLString = GetTextSLEdge_1();
-            if (!SLString.empty())
-            {
-                HtmlReport += "(<span style=\"color: rgb(153, 153, 0);\">";
-                HtmlReport += SLString;
-                HtmlReport += "</span>) ";
-            }
-            SLString = GetTextSLEdge_2();
-            if (!SLString.empty())
-            {
-                HtmlReport += "(<span style=\"color: rgb(153, 153, 0);\">";
-                HtmlReport += SLString;
-                HtmlReport += "</span>) ";
-            }
-            SLString = GetTextSLEdge_3();
-            if (!SLString.empty())
-            {
-                HtmlReport += "(<span style=\"color: rgb(153, 153, 0);\">";
-                HtmlReport += SLString;
-                HtmlReport += "</span>) ";
-            }
-            SLString = GetTextSLEdge_4();
-            if (!SLString.empty())
-            {
-                HtmlReport += "(<span style=\"color: rgb(153, 153, 0);\">";
-                HtmlReport += SLString;
-                HtmlReport += "</span>)";
-            }
-            HtmlReport += "\t\t<br>\n";
-
-            // Show last layer solves
-            std::string LLString = GetTextLLCross_1(false);
-            if (!LLString.empty())
-            {
-                HtmlReport += "\t\tLast layer cross orientation (";
-                HtmlReport += Algorithm::GetMetricValue(GetMetricLLCross1());
-                HtmlReport += "): <span style=\"color: rgb(0, 153, 0);\">";
-                HtmlReport += LLString;
-                HtmlReport += "</span>\n";
-                HtmlReport += "\t\t<br>\n";
-            }
-            LLString = GetTextLLCross_2(false);
-            if (!SLString.empty())
-            {
-                HtmlReport += "\t\tLast layer cross permutation (";
-                HtmlReport += Algorithm::GetMetricValue(GetMetricLLCross2());
-                HtmlReport += "): <span style=\"color: rgb(0, 153, 0);\">";
-                HtmlReport += LLString;
-                HtmlReport += "</span>\n";
-                HtmlReport += "\t\t<br>\n";
-            }
-            LLString = GetTextLLCorners_1(false);
-            if (!SLString.empty())
-            {
-                HtmlReport += "\t\tLast layer corners permutation (";
-                HtmlReport += Algorithm::GetMetricValue(GetMetricLLCorners1());
-                HtmlReport += "): <span style=\"color: rgb(0, 0, 153);\">";
-                HtmlReport += LLString;
-                HtmlReport += "</span>\n";
-                HtmlReport += "\t\t<br>\n";
-            }
-            LLString = GetTextLLCorners_2(true);
-            if (!SLString.empty())
-            {
-                HtmlReport += "\t\tLast layer corners orientation (";
-                HtmlReport += Algorithm::GetMetricValue(GetMetricLLCorners2());
-                HtmlReport += "): <span style=\"color: rgb(0, 0, 153);\">";
-                HtmlReport += LLString;
-                HtmlReport += "</span>\n";
-                HtmlReport += "\t\t<br>\n";
-            }
-            HtmlReport += "\t\t<br>\n";
-
-            // Show metric
-            HtmlReport += "\t\tSolve metric: ";
-            HtmlReport += Algorithm::GetMetricValue(GetMetricSolve());
-            HtmlReport += " ";
-            HtmlReport += Algorithm::GetMetricString(GetMetric());
-            HtmlReport += "\t\t<br>\n";
-        }
-        else
-        {
-            HtmlReport += "\t\tCube not solved!\n";
-            HtmlReport += "\t\t<br>\n";
-            HtmlReport += "\t\t<br>\n";
-            HtmlReport += "\t\tSearch time: ";
-            HtmlReport += GetTime();
-            HtmlReport += " s\n";
-            HtmlReport += "\t\t<br>\n";
-        }
-        HtmlReport += "\t</body>\n";
-        HtmlReport += "</html>\n";
-
-        return HtmlReport;
-    }
-	
-	// Get alg.cubing.net link for the solve
-	std::string LBL::GetSolveLink() const
-	{
-		std::string Link = "https://alg.cubing.net/";
-		
-		Link += "?setup=";
-		
-		std::string Txt = GetTextScramble();
-		std::replace(Txt.begin(), Txt.end(), ' ', '_');
-		std::replace(Txt.begin(), Txt.end(), '\'', '-');
-		Link += Txt;
-		
-        Link += "&alg=";
-		
-		Txt = GetTextInspection();
-        if (!Txt.empty())
-		{
-			std::replace(Txt.begin(), Txt.end(), ' ', '_');
-			std::replace(Txt.begin(), Txt.end(), '\'', '-');
-			Link += Txt + "_%2F%2F_Inspection%0A";
-		}
-
-        Txt = "(" + GetTextFLEdge_1() + ")(" + GetTextFLEdge_2() + ")(" + GetTextFLEdge_3() + ")(" + GetTextFLEdge_4() + ")";
-		std::replace(Txt.begin(), Txt.end(), ' ', '_');
-		std::replace(Txt.begin(), Txt.end(), '\'', '-');
-		Link += Txt + "_%2F%2F_First_layer_edges%0A";
-
-        Txt = "(" + GetTextFLCorner_1() + ")(" + GetTextFLCorner_2() + ")(" + GetTextFLCorner_3() + ")(" + GetTextFLCorner_4() + ")";
-		std::replace(Txt.begin(), Txt.end(), ' ', '_');
-		std::replace(Txt.begin(), Txt.end(), '\'', '-');
-		Link += Txt + "_%2F%2F_First_layer_corners%0A";
-		
-        Txt = "(" + GetTextSLEdge_1() + ")(" + GetTextSLEdge_2() + ")(" + GetTextSLEdge_3() + ")(" + GetTextSLEdge_4() + ")";
-		std::replace(Txt.begin(), Txt.end(), ' ', '_');
-		std::replace(Txt.begin(), Txt.end(), '\'', '-');
-		Link += Txt + "_%2F%2F_Second_layer_edges%0A";
-		
-		Txt = GetTextLLCross_1(false);
-		if (!Txt.empty())
-		{
-			std::replace(Txt.begin(), Txt.end(), ' ', '_');
-			std::replace(Txt.begin(), Txt.end(), '\'', '-');
-			Link += Txt + "_%2F%2FLast_layer_edges_orientation%0A";
-		}
-		
-		Txt = GetTextLLCross_2(false);
-		if (!Txt.empty())
-		{
-			std::replace(Txt.begin(), Txt.end(), ' ', '_');
-			std::replace(Txt.begin(), Txt.end(), '\'', '-');
-			Link += Txt + "_%2F%2FLast_layer_edges_permutation%0A";
-		}
-		Txt = GetTextLLCorners_1(false);
-		if (!Txt.empty())
-		{
-			std::replace(Txt.begin(), Txt.end(), ' ', '_');
-			std::replace(Txt.begin(), Txt.end(), '\'', '-');
-			Link += Txt + "_%2F%2FLast_layer_corners_permutation%0A";
-		}
-		
-		Txt = GetTextLLCorners_2(false);
-		if (!Txt.empty())
-		{
-			std::replace(Txt.begin(), Txt.end(), ' ', '_');
-			std::replace(Txt.begin(), Txt.end(), '\'', '-');
-			Link += Txt + "_%2F%2FLast_layer_corners_orientation%0A";
-		}
-		
-        Link += "&view=playback";
-		
-		return Link;
-	}
-
-	
 	// Get the solve metric
     float LBL::GetMetricSolve() const
     {

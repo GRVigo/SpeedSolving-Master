@@ -39,7 +39,8 @@ namespace grcube3
 	// Scramble evaluation class constructor
     DeepEval::DeepEval(const Algorithm& scr, const uint d) // Scramble to evaluate, maximum depth
 	{	
-		MaxDepth = (d < 4u ? 4u : (d > 8u ? 8u : d)); // Between 4 and 8
+		MaxDepth = (d < 5u ? 5u : (d > 8u ? 8u : d)); // Between 5 and 8
+		Time = 0.0f;
 		UsedCores = 0; // Not used cores yet
 		Cores = GetSystemCores(); // For multithreading
         RootBranches = 0u; // Will be updated during the evaluation
@@ -74,7 +75,7 @@ namespace grcube3
         ResetGroups();
         const std::vector<Pcp> Empty;
 
-        nSpins = SearchSpins.size();
+        nSpins = static_cast<uint>(SearchSpins.size());
 
         for (const auto spin : SearchSpins)
         {
@@ -186,6 +187,8 @@ namespace grcube3
 	// Run the evaluation -> -1: use no threads, 0: use all threads avaliable, other: use specified number of threads
 	void DeepEval::Run(const int UseThreads)
 	{
+		const auto time_eval_start = std::chrono::system_clock::now();
+
 		UpdateRootData();
 
 		if (RootBranches == 0u) return;
@@ -204,6 +207,9 @@ namespace grcube3
             for (uint n = 0; n < Roots.size(); n++) RunEvaluation(Roots[n], RootFlags[n]);
 			UsedCores = -1;
 		}
+
+		const std::chrono::duration<double> eval_elapsed_seconds = std::chrono::system_clock::now() - time_eval_start;
+        Time = eval_elapsed_seconds.count();
 	}
 	
     // Run search a thread
@@ -255,16 +261,17 @@ namespace grcube3
 	}
 
     // Get score
-    float DeepEval::GetScore()
+    float DeepEval::GetScore(const uint SDepth) const
     {
-        if (Results[5].size() % nSpins != 0u) return -1.0f;
+		uint D = SDepth > MaxDepth ? MaxDepth : SDepth;
+        if (Results[D].size() % nSpins != 0u) return -1.0f;
 
         float Score = 0.0f;
 
-        for (uint i = 0u; i < Results[5].size(); i += nSpins)
+        for (uint i = 0u; i < Results[D].size(); i += nSpins)
         {
             float GScore = 0.0f;
-            for (uint j = 0u; j < nSpins; j++) GScore += std::log10(1.0f + Results[5][i+j]);
+            for (uint j = 0u; j < nSpins; j++) GScore += std::log10(1.0f + Results[D][i+j]);
             GScore /= nSpins;
             Score += GScore;
         }

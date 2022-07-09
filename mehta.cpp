@@ -23,9 +23,6 @@
 #include "mehta.h"
 #include "collection.h"
 
-#include <chrono>
-#include <algorithm>
-
 namespace grcube3
 {	
 	// Reset the search results
@@ -62,11 +59,9 @@ namespace grcube3
         }
 		 
         MaxDepthFB = MaxDepth3QB = 0u;
-        TimeFB = Time3QB = TimeEOLE = Time6CO = Time6CP = TimeL5EP = TimeAPDR = TimePLL = TimeDCAL = TimeCDRLL = TimeJTLE = TimeTDR = TimeZBLL = 0.0;
 
-		SearchSpins.clear();
-		for (int s = 0; s < 24; s++) SearchSpins.push_back(static_cast<Spn>(s));
-		
+		TimeFB = Time3QB = TimeEOLE = Time6CO = Time6CP = TimeL5EP = TimeAPDR = TimePLL = TimeDCAL = TimeCDRLL = TimeJTLE = TimeTDR = TimeZBLL = 0.0;
+
 		Metric = Metrics::Movements; // Default metric
 	}
 
@@ -78,43 +73,45 @@ namespace grcube3
 
         MaxDepthFB = (MaxDepth <= 4u ? 4u : MaxDepth);
 
-        DeepSearch DSFB(Scramble); // Deep search for first block
+        // Deep search for first block
+		DS.Clear();
+        DS.SetScramble(Scramble);
 		
 		// Mheta first blocks are Roux first blocks with other spin
-        DSFB.AddToOptionalPieces(Pgr::RB_B1);
-		DSFB.AddToOptionalPieces(Pgr::LF_B1);
-		DSFB.AddToOptionalPieces(Pgr::BL_B1);
-		DSFB.AddToOptionalPieces(Pgr::FR_B1);
+        DS.AddToOptionalPieces(Pgr::RB_B1);
+		DS.AddToOptionalPieces(Pgr::LF_B1);
+		DS.AddToOptionalPieces(Pgr::BL_B1);
+		DS.AddToOptionalPieces(Pgr::FR_B1);
 
-		DSFB.AddToOptionalPieces(Pgr::LB_B1);
-		DSFB.AddToOptionalPieces(Pgr::RF_B1);
-		DSFB.AddToOptionalPieces(Pgr::FL_B1);
-		DSFB.AddToOptionalPieces(Pgr::BR_B1);
+		DS.AddToOptionalPieces(Pgr::LB_B1);
+		DS.AddToOptionalPieces(Pgr::RF_B1);
+		DS.AddToOptionalPieces(Pgr::FL_B1);
+		DS.AddToOptionalPieces(Pgr::BR_B1);
 
-		DSFB.AddToOptionalPieces(Pgr::LD_B1);
-		DSFB.AddToOptionalPieces(Pgr::RU_B1);
-		DSFB.AddToOptionalPieces(Pgr::UL_B1);
-		DSFB.AddToOptionalPieces(Pgr::DR_B1);
+		DS.AddToOptionalPieces(Pgr::LD_B1);
+		DS.AddToOptionalPieces(Pgr::RU_B1);
+		DS.AddToOptionalPieces(Pgr::UL_B1);
+		DS.AddToOptionalPieces(Pgr::DR_B1);
 
-		DSFB.AddToOptionalPieces(Pgr::RD_B1);
-		DSFB.AddToOptionalPieces(Pgr::LU_B1);
-		DSFB.AddToOptionalPieces(Pgr::DL_B1);
-		DSFB.AddToOptionalPieces(Pgr::UR_B1);
+		DS.AddToOptionalPieces(Pgr::RD_B1);
+		DS.AddToOptionalPieces(Pgr::LU_B1);
+		DS.AddToOptionalPieces(Pgr::DL_B1);
+		DS.AddToOptionalPieces(Pgr::UR_B1);
 
-		DSFB.AddToOptionalPieces(Pgr::FD_B1);
-		DSFB.AddToOptionalPieces(Pgr::BU_B1);
-		DSFB.AddToOptionalPieces(Pgr::DB_B1);
-		DSFB.AddToOptionalPieces(Pgr::UF_B1);
+		DS.AddToOptionalPieces(Pgr::FD_B1);
+		DS.AddToOptionalPieces(Pgr::BU_B1);
+		DS.AddToOptionalPieces(Pgr::DB_B1);
+		DS.AddToOptionalPieces(Pgr::UF_B1);
 
-		DSFB.AddToOptionalPieces(Pgr::BD_B1);
-		DSFB.AddToOptionalPieces(Pgr::FU_B1);
-		DSFB.AddToOptionalPieces(Pgr::UB_B1);
-		DSFB.AddToOptionalPieces(Pgr::DF_B1);
+		DS.AddToOptionalPieces(Pgr::BD_B1);
+		DS.AddToOptionalPieces(Pgr::FU_B1);
+		DS.AddToOptionalPieces(Pgr::UB_B1);
+		DS.AddToOptionalPieces(Pgr::DF_B1);
 
 		// First level is extended in the search to improve the multithreading - first level will not be checked
 		// (it's supose that the first block not will be solved in a single movement)
-        const SearchUnit URoot(SequenceType::DOUBLE);
-        const SearchUnit U(SequenceType::SINGLE);
+        const SearchUnit URoot(SequenceTypes::DOUBLE);
+        const SearchUnit U(SequenceTypes::SINGLE);
 
         SearchLevel L_Root(SearchCheck::NO_CHECK);
         L_Root.Add(URoot);
@@ -125,37 +122,39 @@ namespace grcube3
         SearchLevel L_NoCheck(SearchCheck::NO_CHECK);
         L_NoCheck.Add(U);
 
-        DSFB.AddSearchLevel(L_Root); // Level 1 (two steps -DOUBLE- root algorithms)
-        DSFB.AddSearchLevel(L_NoCheck); // Level 2
-        DSFB.AddSearchLevel(L_Check); // Level 3
-        for (uint l = 4u; l < MaxDepthFB; l++) DSFB.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
+        DS.AddSearchLevel(L_Root); // Level 1 (two steps -DOUBLE- root algorithms)
+        DS.AddSearchLevel(L_NoCheck); // Level 2
+        DS.AddSearchLevel(L_Check); // Level 3
+        for (uint l = 4u; l < MaxDepthFB; l++) DS.AddSearchLevel(L_Check); // Levels 4 to MaxDepth
 
-        DSFB.UpdateRootData();
-		// DSFB.SetMinDeep(DSFB.GetMaxDepth() - 2u);
+        DS.UpdateRootData();
+		// DS.SetMinDepth(DS.GetMaxDepth() - 2u);
 
-        DSFB.Run(Cores);
+        DS.Run(Cores);
 
-        Cores = DSFB.GetCoresUsed(); // Update to the real number of cores used
+        Cores = DS.GetUsedCores(); // Update to the real number of cores used
 
-        EvaluateFB(DSFB.Solves, MaxSolves);
+        EvaluateFB(DS.GetSolves(), MaxSolves);
 
         const std::chrono::duration<double> fb_elapsed_seconds = std::chrono::system_clock::now() - time_fb_start;
         TimeFB = fb_elapsed_seconds.count();
 
-        return !DSFB.Solves.empty();
+        return !DS.GetSolves().empty();
 	}
 
 	// Search 3 Quarters Belt - Solve 3 E-slice edges relative to the centers
 	void Mehta::Search3QB(const uint MaxDepth)
 	{
 		const auto time_3qb_start = std::chrono::system_clock::now();
+		
+		bool Skip = false; // Skip the search (for multi threading)
 
 		MaxDepth3QB = (MaxDepth <= 4u ? 4u : MaxDepth);
 
 		// First level is extended in the search to improve the multithreading - first level will not be checked
 		// (it's supose that the first block not will be solved in a single movement)
-		const SearchUnit URoot(SequenceType::DOUBLE);
-		const SearchUnit U(SequenceType::SINGLE);
+        const SearchUnit URoot(SequenceTypes::DOUBLE);
+        const SearchUnit U(SequenceTypes::SINGLE);
 
 		SearchLevel L_Root(SearchCheck::NO_CHECK);
 		L_Root.Add(URoot);
@@ -209,45 +208,44 @@ namespace grcube3
 			uint n = 0u;
 			for (const auto& FB : AlgFB[sp])
 			{
+				Alg3QB[sp].push_back(Algorithm(""));
+				
+				if (Skip) continue;
+				
 				Algorithm AlgStart = Scramble;
 				AlgStart.Append(Inspections[sp][n]);
 				AlgStart.Append(FB);
 				
 				Cube CubeMehta(AlgStart);
 				
-				if (!IsFBBuilt(CubeMehta, spin))
-				{
-					Alg3QB[sp].push_back(Algorithm(""));
-					continue;
-				}
+				if (!IsMehtaFBBuilt(CubeMehta, spin)) continue;
 
-				DeepSearch DS3QB(AlgStart); // Deep search for 3QB
+				// Deep search for 3QB
+				DS.Clear();
+                DS.SetScramble(AlgStart);
 
-				DS3QB.AddToMandatoryPieces(B1);
-				DS3QB.AddToOptionalPieces(BELT1);
-				DS3QB.AddToOptionalPieces(BELT2);
-				DS3QB.AddToOptionalPieces(BELT3);
-				DS3QB.AddToOptionalPieces(BELT4);
+				DS.AddToMandatoryPieces(B1);
+				DS.AddToOptionalPieces(BELT1);
+				DS.AddToOptionalPieces(BELT2);
+				DS.AddToOptionalPieces(BELT3);
+				DS.AddToOptionalPieces(BELT4);
 
-				DS3QB.AddSearchLevel(L_Root); // Level 1 (two steps -DOUBLE- root algorithms)
-				for (uint l = 2u; l < MaxDepth3QB; l++) DS3QB.AddSearchLevel(L_Check); // Add needed search levels
+				DS.AddSearchLevel(L_Root); // Level 1 (two steps -DOUBLE- root algorithms)
+				for (uint l = 2u; l < MaxDepth3QB; l++) DS.AddSearchLevel(L_Check); // Add needed search levels
 
-				DS3QB.UpdateRootData();
+				DS.UpdateRootData();
 
-				DS3QB.Run(Cores);
-
-				Cores = DS3QB.GetCoresUsed(); // Update to the real number of cores used
+				DS.Run(Cores);
+				Skip = DS.CheckSkipSearch();
 
 				std::vector<Algorithm> Solves;
 				
-				Evaluate3QBResult(Solves, 1u, DS3QB.Solves, CubeMehta, spin, Plc::BEST_SOLVES);
+                EvaluateMehta3QBResult(Solves, 1u, DS.GetSolves(), CubeMehta, spin, Plc::BEST);
 
-				if (Solves.empty()) Alg3QB[sp].push_back(Algorithm(""));
-				else
+				if (!Solves.empty())
 				{
 					CubeMehta.ApplyAlgorithm(Solves[0]);
-					if (Is3QBBuilt(CubeMehta)) Alg3QB[sp].push_back(Solves[0]);
-					else Alg3QB[sp].push_back(Algorithm(""));
+					if (IsMehta3QBBuilt(CubeMehta)) Alg3QB[sp][n] = Solves[0];
 				}
 				n++;
 			}
@@ -258,7 +256,7 @@ namespace grcube3
 	}
 	
 	// Edge Orientation + Last Edge - Insert the remaining E-slice edge while orienting all the edges
-	void Mehta::SearchEOLE()
+	void Mehta::SearchEOLE(const Plc Pol)
 	{
 		const auto time_eole_start = std::chrono::system_clock::now();
 
@@ -281,12 +279,14 @@ namespace grcube3
 				Cube CubeEOLE = CubeBase;
 				CubeEOLE.ApplyAlgorithm(Alg);
 				
-				if (!Is3QBBuilt(CubeEOLE, spin)) continue;
+				if (!IsMehta3QBBuilt(CubeEOLE, spin)) continue;
 
 				bool Found = false;
 
-				for (uint Index = 0u; Index < Collection::GetEOLECases(); Index++)
+				for (uint Index = 0u; Index < Algset_EOLE.GetCasesNumber(); Index++)
 				{
+					const Algorithm A = Algset_EOLE.GetAlgorithm(Index, Pol, Metric);
+
 					for (const auto UMov : Algorithm::UMovs) // U movement before algorithm
 					{
 						for (const auto EMov : Algorithm::EMovs) // E movement before algorithm
@@ -295,14 +295,14 @@ namespace grcube3
 
 							if (UMov != Stp::NONE) CubeMetha.ApplyStep(UMov);
 							if (EMov != Stp::NONE) CubeMetha.ApplyStep(EMov);
-							CubeMetha.ApplyAlgorithm(Collection::GetEOLE(Index));
+							CubeMetha.ApplyAlgorithm(A);
 							if (EMov != Stp::NONE) CubeMetha.ApplyStep(Algorithm::InvertedStep(EMov));
 
-							if (IsEOLEBuilt(CubeMetha, spin))
+							if (IsMehtaEOLEBuilt(CubeMetha, spin))
 							{
 								Found = true;
 
-								CasesEOLE[sp][n] = Collection::GetEOLECase(Index);
+								CasesEOLE[sp][n] = Algset_EOLE.GetCaseName(Index);
 
 								if (UMov != Stp::NONE)
 								{
@@ -317,7 +317,7 @@ namespace grcube3
 									AlgEOLE[sp][n].Append(EMov);
 									AlgEOLE[sp][n].Append(Stp::PARENTHESIS_CLOSE_1_REP);
 								}
-								AlgEOLE[sp][n].Append(Collection::GetEOLE(Index));
+								AlgEOLE[sp][n].Append(A);
 								if (EMov != Stp::NONE)
 								{
 									AlgEOLE[sp][n].Append(Stp::PARENTHESIS_OPEN);
@@ -339,7 +339,7 @@ namespace grcube3
 	}
 	
 	// Orient the 6 remaining corners
-	void Mehta::Search6CO()
+	void Mehta::Search6CO(const Plc Pol)
 	{
 		const auto time_6co_start = std::chrono::system_clock::now();
 
@@ -363,24 +363,26 @@ namespace grcube3
 				Cube Cube6CO = CubeBase;
 				Cube6CO.ApplyAlgorithm(Alg);
 				
-				if (!IsEOLEBuilt(Cube6CO, spin)) continue;
+				if (!IsMehtaEOLEBuilt(Cube6CO, spin)) continue;
 
 				bool Found = false;
 
-				for (uint Index = 0u; Index < Collection::Get6COCases(); Index++)
+				for (uint Index = 0u; Index < Algset_6CO.GetCasesNumber(); Index++)
 				{
+					const Algorithm A = Algset_6CO.GetAlgorithm(Index, Pol, Metric);
+
 					for (const auto UMov : Algorithm::UMovs) // U movement before algorithm
 					{
 						Cube CubeMetha = Cube6CO;
 
 						if (UMov != Stp::NONE) CubeMetha.ApplyStep(UMov);
-						CubeMetha.ApplyAlgorithm(Collection::Get6CO(Index));
+						CubeMetha.ApplyAlgorithm(A);
 
-						if (Is6COBuilt(CubeMetha, spin))
+						if (IsMehta6COBuilt(CubeMetha, spin))
 						{
 							Found = true;
 
-							Cases6CO[sp][n] = Collection::Get6COCase(Index);
+							Cases6CO[sp][n] = Algset_6CO.GetCaseName(Index);
 
 							if (UMov != Stp::NONE)
 							{
@@ -389,7 +391,7 @@ namespace grcube3
 								Alg6CO[sp][n].Append(Stp::PARENTHESIS_CLOSE_1_REP);
 							}
 
-							Alg6CO[sp][n].Append(Collection::Get6CO(Index));
+							Alg6CO[sp][n].Append(A);
 
 							break;
 						}
@@ -404,7 +406,7 @@ namespace grcube3
 	}
 	
 	// Permute the 6 remaining corners
-	void Mehta::Search6CP()
+	void Mehta::Search6CP(const Plc Pol)
 	{
 		const auto time_6cp_start = std::chrono::system_clock::now();
 
@@ -429,12 +431,14 @@ namespace grcube3
 				Cube Cube6CP = CubeBase;
 				Cube6CP.ApplyAlgorithm(Alg);
 				
-				if (!Is6COBuilt(Cube6CP, spin)) continue;
+				if (!IsMehta6COBuilt(Cube6CP, spin)) continue;
 
 				bool Found = false;
 
-				for (uint Index = 0u; Index < Collection::Get6CPCases(); Index++)
+				for (uint Index = 0u; Index < Algset_6CP.GetCasesNumber(); Index++)
 				{
+					const Algorithm A = Algset_6CP.GetAlgorithm(Index, Pol, Metric);
+
 					for (const auto U1Mov : Algorithm::UMovs) // U movement before algorithm
 					{
 						for (const auto U2Mov : Algorithm::UMovs) // U movement after algorithm
@@ -442,14 +446,14 @@ namespace grcube3
 							Cube CubeMetha = Cube6CP;
 
 							if (U1Mov != Stp::NONE) CubeMetha.ApplyStep(U1Mov);
-							CubeMetha.ApplyAlgorithm(Collection::Get6CP(Index));
+							CubeMetha.ApplyAlgorithm(A);
 							if (U2Mov != Stp::NONE) CubeMetha.ApplyStep(U2Mov);
 
-							if (Is6CPBuilt(CubeMetha, spin))
+							if (IsMehta6CPBuilt(CubeMetha, spin))
 							{
 								Found = true;
 
-								Cases6CP[sp][n] = Collection::Get6CPCase(Index);
+								Cases6CP[sp][n] = Algset_6CP.GetCaseName(Index);
 
 								if (U1Mov != Stp::NONE)
 								{
@@ -458,7 +462,7 @@ namespace grcube3
 									Alg6CP[sp][n].Append(Stp::PARENTHESIS_CLOSE_1_REP);
 								}
 
-								Alg6CP[sp][n].Append(Collection::Get6CP(Index));
+								Alg6CP[sp][n].Append(A);
 
 								if (U2Mov != Stp::NONE)
 								{
@@ -482,7 +486,7 @@ namespace grcube3
 	}
 	
 	// Solve the cube by permuting the last 5 edges
-    void Mehta::SearchL5EP()
+    void Mehta::SearchL5EP(const Plc Pol)
 	{
 		const auto time_l5ep_start = std::chrono::system_clock::now();
 
@@ -517,13 +521,15 @@ namespace grcube3
 				Cube CubeL5EP = CubeBase;
 				CubeL5EP.ApplyAlgorithm(Alg);
 				
-				if ((!Alg6CP[sp].empty() && !Is6CPBuilt(CubeL5EP, spin)) || 
-				    (!AlgCDRLL[sp].empty() && !IsCDRLLBuilt(CubeL5EP, spin))) continue;
+				if ((!Alg6CP[sp].empty() && !IsMehta6CPBuilt(CubeL5EP, spin)) ||
+				    (!AlgCDRLL[sp].empty() && !IsMehtaCDRLLBuilt(CubeL5EP, spin))) continue;
 
 				bool Found = false;
 
-				for (uint Index = 0u; Index < Collection::GetL5EPCases(); Index++)
+				for (uint Index = 0u; Index < Algset_L5EP.GetCasesNumber(); Index++)
 				{
+					const Algorithm A = Algset_L5EP.GetAlgorithm(Index, Pol, Metric);
+
 					for (const auto U1Mov : Algorithm::UMovs) // U movement before algorithm
 					{
 						for (const auto U2Mov : Algorithm::UMovs) // U movement after algorithm
@@ -531,14 +537,14 @@ namespace grcube3
 							Cube CubeMetha = CubeL5EP;
 
 							if (U1Mov != Stp::NONE) CubeMetha.ApplyStep(U1Mov);
-							CubeMetha.ApplyAlgorithm(Collection::GetL5EP(Index));
+							CubeMetha.ApplyAlgorithm(A);
 							if (U2Mov != Stp::NONE) CubeMetha.ApplyStep(U2Mov);
 
 							if (CubeMetha.IsSolved())
 							{
 								Found = true;
 
-								CasesL5EP[sp][n] = Collection::GetL5EPCase(Index);
+								CasesL5EP[sp][n] = Algset_L5EP.GetCaseName(Index);
 
 								if (U1Mov != Stp::NONE)
 								{
@@ -547,7 +553,7 @@ namespace grcube3
 									AlgL5EP[sp][n].Append(Stp::PARENTHESIS_CLOSE_1_REP);
 								}
 
-								AlgL5EP[sp][n].Append(Collection::GetL5EP(Index));
+								AlgL5EP[sp][n].Append(A);
 
 								if (U2Mov != Stp::NONE)
 								{
@@ -571,7 +577,7 @@ namespace grcube3
 	}
 
 	// Solve the DR block
-	void Mehta::SearchAPDR()
+	void Mehta::SearchAPDR(const Plc Pol)
 	{
 		const auto time_apdr_start = std::chrono::system_clock::now();
 
@@ -596,24 +602,26 @@ namespace grcube3
 				Cube CubeAPDR = CubeBase;
 				CubeAPDR.ApplyAlgorithm(Alg);
 				
-				if (!Is6COBuilt(CubeAPDR, spin)) continue;
+				if (!IsMehta6COBuilt(CubeAPDR, spin)) continue;
 
 				bool Found = false;
 
-				for (uint Index = 0u; Index < Collection::GetAPDRCases(); Index++)
+				for (uint Index = 0u; Index < Algset_APDR.GetCasesNumber(); Index++)
 				{
+					const Algorithm A = Algset_APDR.GetAlgorithm(Index, Pol, Metric);
+
 					for (const auto UMov : Algorithm::UMovs) // U movement before algorithm
 					{
 						Cube CubeMetha = CubeAPDR;
 
 						if (UMov != Stp::NONE) CubeMetha.ApplyStep(UMov);
-						CubeMetha.ApplyAlgorithm(Collection::GetAPDR(Index));
+						CubeMetha.ApplyAlgorithm(A);
 
-						if (IsAPDRBuilt(CubeMetha, spin))
+						if (IsMehtaAPDRBuilt(CubeMetha, spin))
 						{
 							Found = true;
 
-							CasesAPDR[sp][n] = Collection::GetAPDRCase(Index);
+							CasesAPDR[sp][n] = Algset_APDR.GetCaseName(Index);
 
 							if (UMov != Stp::NONE)
 							{
@@ -622,7 +630,7 @@ namespace grcube3
 								AlgAPDR[sp][n].Append(Stp::PARENTHESIS_CLOSE_1_REP);
 							}
 
-							AlgAPDR[sp][n].Append(Collection::GetAPDR(Index));
+							AlgAPDR[sp][n].Append(A);
 
 							break;
 						}
@@ -637,7 +645,7 @@ namespace grcube3
 	}
 	
 	// Solve the last layer
-	void Mehta::SearchPLL()
+	void Mehta::SearchPLL(const Plc Pol)
 	{
 		const auto time_PLL_start = std::chrono::system_clock::now();
 
@@ -672,11 +680,11 @@ namespace grcube3
 				Cube CubePLL = CubeBase;
 				CubePLL.ApplyAlgorithm(Alg);
 				
-				if (!IsAPDRBuilt(CubePLL, spin)) continue; // IsJTLEBuilt == IsAPDRBuit
+				if (!IsMehtaAPDRBuilt(CubePLL, spin)) continue; // IsJTLEBuilt == IsAPDRBuit
 
 				Stp AUFStep;
 
-				Collection::SolveLL(AlgPLL[sp][n], CasesPLL[sp][n], AUFStep, AlgSets::PLL, CubePLL);
+				SolveLL(AlgPLL[sp][n], CasesPLL[sp][n], AUFStep, Algset_PLL, Pol, Metric, CubePLL);
 
 				if (AUFStep != Stp::NONE) AlgPLL[sp][n].Append(AUFStep);
 			}
@@ -687,7 +695,7 @@ namespace grcube3
 	}
 	
 	// Solve the 2 corners of the D layer
-	void Mehta::SearchDCAL()
+	void Mehta::SearchDCAL(const Plc Pol)
 	{
 		const auto time_dcal_start = std::chrono::system_clock::now();
 
@@ -711,24 +719,26 @@ namespace grcube3
 				Cube CubeDCAL = CubeBase;
 				CubeDCAL.ApplyAlgorithm(Alg);
 				
-				if (!IsEOLEBuilt(CubeDCAL, spin)) continue;
+				if (!IsMehtaEOLEBuilt(CubeDCAL, spin)) continue;
 
 				bool Found = false;
 
-				for (uint Index = 0u; Index < Collection::GetDCALCases(); Index++)
+				for (uint Index = 0u; Index < Algset_DCAL.GetCasesNumber(); Index++)
 				{
+					const Algorithm A = Algset_DCAL.GetAlgorithm(Index, Pol, Metric);
+
 					for (const auto UMov : Algorithm::UMovs) // U movement before algorithm
 					{
 						Cube CubeMetha = CubeDCAL;
 
 						if (UMov != Stp::NONE) CubeMetha.ApplyStep(UMov);
-						CubeMetha.ApplyAlgorithm(Collection::GetDCAL(Index));
+						CubeMetha.ApplyAlgorithm(A);
 
-						if (IsDCALBuilt(CubeMetha, spin))
+						if (IsMehtaDCALBuilt(CubeMetha, spin))
 						{
 							Found = true;
 
-							CasesDCAL[sp][n] = Collection::GetDCALCase(Index);
+							CasesDCAL[sp][n] = Algset_DCAL.GetCaseName(Index);
 
 							if (UMov != Stp::NONE)
 							{
@@ -737,7 +747,7 @@ namespace grcube3
 								AlgDCAL[sp][n].Append(Stp::PARENTHESIS_CLOSE_1_REP);
 							}
 
-							AlgDCAL[sp][n].Append(Collection::GetDCAL(Index));
+							AlgDCAL[sp][n].Append(A);
 
 							break;
 						}
@@ -752,7 +762,7 @@ namespace grcube3
 	}		
 	
 	// Orient and permute the U layer corners (like COLL)
-	void Mehta::SearchCDRLL()
+	void Mehta::SearchCDRLL(const Plc Pol)
 	{
 		const auto time_cdrll_start = std::chrono::system_clock::now();
 
@@ -777,12 +787,14 @@ namespace grcube3
 				Cube CubeCDRLL = CubeBase;
 				CubeCDRLL.ApplyAlgorithm(Alg);
 				
-				if (!IsDCALBuilt(CubeCDRLL, spin)) continue;
+				if (!IsMehtaDCALBuilt(CubeCDRLL, spin)) continue;
 
 				bool Found = false;
 
-				for (uint Index = 0u; Index < Collection::GetCDRLLCases(); Index++)
+				for (uint Index = 0u; Index < Algset_CDRLL.GetCasesNumber(); Index++)
 				{
+					const Algorithm A = Algset_CDRLL.GetAlgorithm(Index, Pol, Metric);
+
 					for (const auto U1Mov : Algorithm::UMovs) // U movement before algorithm
 					{
 						for (const auto U2Mov : Algorithm::UMovs) // U movement after algorithm
@@ -790,14 +802,14 @@ namespace grcube3
 							Cube CubeMetha = CubeCDRLL;
 
 							if (U1Mov != Stp::NONE) CubeMetha.ApplyStep(U1Mov);
-							CubeMetha.ApplyAlgorithm(Collection::GetCDRLL(Index));
+							CubeMetha.ApplyAlgorithm(A);
 							if (U2Mov != Stp::NONE) CubeMetha.ApplyStep(U2Mov);
 
-							if (IsCDRLLBuilt(CubeMetha, spin))
+							if (IsMehtaCDRLLBuilt(CubeMetha, spin))
 							{
 								Found = true;
 
-								CasesCDRLL[sp][n] = Collection::GetCDRLLCase(Index);
+								CasesCDRLL[sp][n] = Algset_CDRLL.GetCaseName(Index);
 
 								if (U1Mov != Stp::NONE)
 								{
@@ -806,7 +818,7 @@ namespace grcube3
 									AlgCDRLL[sp][n].Append(Stp::PARENTHESIS_CLOSE_1_REP);
 								}
 
-								AlgCDRLL[sp][n].Append(Collection::GetCDRLL(Index));
+								AlgCDRLL[sp][n].Append(A);
 
 								if (U2Mov != Stp::NONE)
 								{
@@ -830,7 +842,7 @@ namespace grcube3
 	}		
 	
 	// Orient the U layer corners while inserting the DR edge
-	void Mehta::SearchJTLE()
+	void Mehta::SearchJTLE(const Plc Pol)
 	{
 		const auto time_jtle_start = std::chrono::system_clock::now();
 
@@ -855,24 +867,26 @@ namespace grcube3
 				Cube CubeJTLE = CubeBase;
 				CubeJTLE.ApplyAlgorithm(Alg);
 				
-				if (!IsDCALBuilt(CubeJTLE, spin)) continue;
+				if (!IsMehtaDCALBuilt(CubeJTLE, spin)) continue;
 
 				bool Found = false;
 
-				for (uint Index = 0u; Index < Collection::GetJTLECases(); Index++)
+				for (uint Index = 0u; Index < Algset_JTLE.GetCasesNumber(); Index++)
 				{
+					const Algorithm A = Algset_JTLE.GetAlgorithm(Index, Pol, Metric);
+
 					for (const auto UMov : Algorithm::UMovs) // U movement before algorithm
 					{
 						Cube CubeMetha = CubeJTLE;
 
 						if (UMov != Stp::NONE) CubeMetha.ApplyStep(UMov);
-						CubeMetha.ApplyAlgorithm(Collection::GetJTLE(Index));
+						CubeMetha.ApplyAlgorithm(A);
 
-						if (IsJTLEBuilt(CubeMetha, spin))
+						if (IsMehtaJTLEBuilt(CubeMetha, spin))
 						{
 							Found = true;
 
-							CasesJTLE[sp][n] = Collection::GetJTLECase(Index);
+							CasesJTLE[sp][n] = Algset_JTLE.GetCaseName(Index);
 
 							if (UMov != Stp::NONE)
 							{
@@ -881,7 +895,7 @@ namespace grcube3
 								AlgJTLE[sp][n].Append(Stp::PARENTHESIS_CLOSE_1_REP);
 							}
 
-							AlgJTLE[sp][n].Append(Collection::GetJTLE(Index));
+							AlgJTLE[sp][n].Append(A);
 
 							break;
 						}
@@ -896,7 +910,7 @@ namespace grcube3
 	}
 	
 	// Solve the DR 1x1x3 block
-	void Mehta::SearchTDR()
+	void Mehta::SearchTDR(const Plc Pol)
 	{
 		const auto time_tdr_start = std::chrono::system_clock::now();
 
@@ -920,26 +934,28 @@ namespace grcube3
 				Cube CubeTDR = CubeBase;
 				CubeTDR.ApplyAlgorithm(Alg);
 				
-				if (!IsEOLEBuilt(CubeTDR, spin)) continue;
+				if (!IsMehtaEOLEBuilt(CubeTDR, spin)) continue;
 
 				bool Found = false;
 
-				for (uint Index = 0u; Index < Collection::GetTDRCases(); Index++)
+				for (uint Index = 0u; Index < Algset_TDR.GetCasesNumber(); Index++)
 				{
+					const Algorithm A = Algset_TDR.GetAlgorithm(Index, Pol, Metric);
+
 					for (const auto UMov : Algorithm::UMovs) // U movement before algorithm
 					{
 						for (const auto DMov : Algorithm::DMovs) // D movement after algorithm
 						{
 							Cube CubeMetha = CubeTDR;
 							if (UMov != Stp::NONE) CubeMetha.ApplyStep(UMov);
-							CubeMetha.ApplyAlgorithm(Collection::GetTDR(Index));
+							CubeMetha.ApplyAlgorithm(A);
 							if (DMov != Stp::NONE) CubeMetha.ApplyStep(DMov);
 
-							if (IsTDRBuilt(CubeMetha, spin))
+							if (IsMehtaTDRBuilt(CubeMetha, spin))
 							{
 								Found = true;
 
-								CasesTDR[sp][n] = Collection::GetTDRCase(Index);
+								CasesTDR[sp][n] = Algset_TDR.GetCaseName(Index);
 
 								if (UMov != Stp::NONE)
 								{
@@ -947,7 +963,7 @@ namespace grcube3
 									AlgTDR[sp][n].Append(UMov);
 									AlgTDR[sp][n].Append(Stp::PARENTHESIS_CLOSE_1_REP);
 								}
-								AlgTDR[sp][n].Append(Collection::GetTDR(Index));
+								AlgTDR[sp][n].Append(A);
 								if (DMov != Stp::NONE)
 								{
 									AlgTDR[sp][n].Append(Stp::PARENTHESIS_OPEN);
@@ -969,7 +985,7 @@ namespace grcube3
 	}
 
 	// Solve last layer
-	void Mehta::SearchZBLL()
+	void Mehta::SearchZBLL(const Plc Pol)
 	{
 		const auto time_ZBLL_start = std::chrono::system_clock::now();
 
@@ -994,11 +1010,11 @@ namespace grcube3
 				Cube CubeZBLL = CubeBase;
 				CubeZBLL.ApplyAlgorithm(Alg);
 				
-				if (!IsTDRBuilt(CubeZBLL, spin)) continue;
+				if (!IsMehtaTDRBuilt(CubeZBLL, spin)) continue;
 
 				Stp AUFStep;
 
-				Collection::SolveLL(AlgZBLL[sp][n], CasesZBLL[sp][n], AUFStep, AlgSets::ZBLL, CubeZBLL);
+				SolveLL(AlgZBLL[sp][n], CasesZBLL[sp][n], AUFStep, Algset_ZBLL, Pol, Metric, CubeZBLL);
 
 				if (AUFStep != Stp::NONE) AlgZBLL[sp][n].Append(AUFStep);
 			}
@@ -1015,25 +1031,28 @@ namespace grcube3
         for (const auto spin : SearchSpins)
         {
 			int sp = static_cast<int>(spin);
-			EvaluateFBResult(AlgFB[sp], MaxSolves, Solves, CubeBase, spin, Plc::SHORT);
-        }
-
-		for (int sp = 0; sp < 24; sp++)
-		{
-			Spn spin = static_cast<Spn>(sp);
 			Stp T1, T2;
-			Cube::GetSpinsSteps(CubeBase.GetSpin(), spin, T1, T2);
 			Algorithm Insp;
-			if (T1 != Stp::NONE) Insp.Append(T1);
-			if (T2 != Stp::NONE) Insp.Append(T2);
 
-			for (auto& block : AlgFB[sp])
+			EvaluateMehtaFBResult(AlgFB[sp], MaxSolves, Solves, CubeBase, spin, Plc::SHORT);
+
+			Inspections[sp].clear();
+
+			if (!AlgFB[sp].empty())
 			{
-				if (T1 != Stp::NONE) block.TransformTurn(T1);
-				if (T2 != Stp::NONE) block.TransformTurn(T2);
-				Inspections[sp].push_back(Insp);
+				Insp.Clear();
+				Cube::GetSpinsSteps(CubeBase.GetSpin(), spin, T1, T2);
+				if (T1 != Stp::NONE) Insp.Append(T1);
+				if (T2 != Stp::NONE) Insp.Append(T2);
+
+				for (auto& fb : AlgFB[sp])
+				{
+					if (T1 != Stp::NONE) fb.TransformTurn(T1);
+					if (T2 != Stp::NONE) fb.TransformTurn(T2);
+					Inspections[sp].push_back(Insp);
+				}
 			}
-		}
+        }
 	}
 
 	// Set regrips
@@ -1059,481 +1078,12 @@ namespace grcube3
 		}
 	}
 
-	// Check if the Mehta first block is built
-	bool Mehta::IsFBBuilt(const Cube& C)
-	{
-		switch (C.GetSpin())
-		{
-		case Spn::UF: return C.IsSolved(Pgr::RB_B1);
-		case Spn::UB: return C.IsSolved(Pgr::LF_B1);
-		case Spn::UR: return C.IsSolved(Pgr::BL_B1);
-		case Spn::UL: return C.IsSolved(Pgr::FR_B1);
-
-		case Spn::DF: return C.IsSolved(Pgr::LB_B1);
-		case Spn::DB: return C.IsSolved(Pgr::RF_B1);
-		case Spn::DR: return C.IsSolved(Pgr::FL_B1);
-		case Spn::DL: return C.IsSolved(Pgr::BR_B1);
-
-		case Spn::FU: return C.IsSolved(Pgr::LD_B1);
-		case Spn::FD: return C.IsSolved(Pgr::RU_B1);
-		case Spn::FR: return C.IsSolved(Pgr::UL_B1);
-		case Spn::FL: return C.IsSolved(Pgr::DR_B1);
-
-		case Spn::BU: return C.IsSolved(Pgr::RD_B1);
-		case Spn::BD: return C.IsSolved(Pgr::LU_B1);
-		case Spn::BR: return C.IsSolved(Pgr::DL_B1);
-		case Spn::BL: return C.IsSolved(Pgr::UR_B1);
-
-		case Spn::RU: return C.IsSolved(Pgr::FD_B1);
-		case Spn::RD: return C.IsSolved(Pgr::BU_B1);
-		case Spn::RF: return C.IsSolved(Pgr::DB_B1);
-		case Spn::RB: return C.IsSolved(Pgr::UF_B1);
-
-		case Spn::LU: return C.IsSolved(Pgr::BD_B1);
-		case Spn::LD: return C.IsSolved(Pgr::FU_B1);
-		case Spn::LF: return C.IsSolved(Pgr::UB_B1);
-		case Spn::LB: return C.IsSolved(Pgr::DF_B1);
-
-		default: return false; // Should not happend
-		}
-	}
-
-	// Check if the first Mehta block is built with the given spin
-	bool Mehta::IsFBBuilt(const Cube& C, const Spn S)
-	{
-		Cube CubeMehta = C;
-		CubeMehta.SetSpin(S); // Mehta cube with desired spin
-		return IsFBBuilt(CubeMehta);
-	}
-
-	// Check if the Mehta 3QB is built (also first block)
-	bool Mehta::Is3QBBuilt(const Cube& C)
-	{
-		if (!IsFBBuilt(C)) return false;
-
-		// Pieces to search
-		Pce E_1, E_2, E_3, E_4;
-
-		// Get the required pieces based on the spin
-		switch (C.GetSpin())
-		{
-		case Spn::UF:
-		case Spn::UB:
-		case Spn::UR:
-		case Spn::UL:
-		case Spn::DF:
-		case Spn::DB:
-		case Spn::DR:
-		case Spn::DL: E_1 = Pce::FR; E_2 = Pce::FL; E_3 = Pce::BR; E_4 = Pce::BL; break;
-
-		case Spn::FU:
-		case Spn::FD:
-		case Spn::FR:
-		case Spn::FL:
-		case Spn::BU:
-		case Spn::BD:
-		case Spn::BR:
-		case Spn::BL: E_1 = Pce::UR; E_2 = Pce::UL; E_3 = Pce::DR; E_4 = Pce::DL; break;
-
-		case Spn::RU:
-		case Spn::RD:
-		case Spn::RF:
-		case Spn::RB:
-		case Spn::LU:
-		case Spn::LD:
-		case Spn::LF:
-		case Spn::LB: E_1 = Pce::UF; E_2 = Pce::UB; E_3 = Pce::DF; E_4 = Pce::DB; break;
-
-		default: return false; // Invalid spin (should not happend)
-		}
-
-		uint score = 0u;
-
-		if (C.IsSolved(E_1)) score++;
-		if (C.IsSolved(E_2)) score++;
-		if (C.IsSolved(E_3)) score++;
-		if (C.IsSolved(E_4)) score++;
-
-		return score >= 3u;
-	}
-
-	// Check if Mehta 3QB is built with the given spin
-	bool Mehta::Is3QBBuilt(const Cube& C, const Spn S)
-	{
-		Cube CubeMehta = C;
-		CubeMehta.SetSpin(S); // Mehta cube with desired spin
-		return Is3QBBuilt(CubeMehta);
-	}
-
-	// Check if the Mehta EOLE is built (also first block)
-	bool Mehta::IsEOLEBuilt(const Cube& C)
-	{
-		if (!IsFBBuilt(C) || !C.CheckOrientation(Pgr::ALL_EDGES)) return false;
-
-		// Get the required pieces based on the spin
-		switch (C.GetSpin())
-		{
-		case Spn::UF: case Spn::UB: case Spn::UR: case Spn::UL:
-		case Spn::DF: case Spn::DB: case Spn::DR: case Spn::DL: return C.IsSolved(Lyr::E);
-
-		case Spn::FU: case Spn::FD: case Spn::FR: case Spn::FL:
-		case Spn::BU: case Spn::BD: case Spn::BR: case Spn::BL: return C.IsSolved(Lyr::S);
-
-		case Spn::RU: case Spn::RD: case Spn::RF: case Spn::RB:
-		case Spn::LU: case Spn::LD: case Spn::LF: case Spn::LB: return C.IsSolved(Lyr::M);
-
-		default: return false; // Invalid spin (should not happend)
-		}
-	}
-
-	// Check if Mehta EOLE is built with the given spin
-	bool Mehta::IsEOLEBuilt(const Cube& C, const Spn S)
-	{
-		Cube CubeMehta = C;
-		CubeMehta.SetSpin(S); // Mehta cube with desired spin
-		return IsEOLEBuilt(CubeMehta);
-	}
-	
-	// Check if the Mehta 6CO is built
-	bool Mehta::Is6COBuilt(const Cube& C)
-	{
-		return IsEOLEBuilt(C) && C.CheckOrientation(Pgr::ALL_CORNERS);
-	}
-
-	// Check if Mehta 6CO is built with the given spin
-	bool Mehta::Is6COBuilt(const Cube& C, const Spn S)
-	{
-		Cube CubeMehta = C;
-		CubeMehta.SetSpin(S); // Mehta cube with desired spin
-		return Is6COBuilt(CubeMehta);
-	}
-
-	// Check if the Mehta 6CP is built
-	bool Mehta::Is6CPBuilt(const Cube& C)
-	{
-		return IsEOLEBuilt(C) && C.IsSolved(Pgr::ALL_CORNERS);
-	}
-
-	// Check if Mehta 6CP is built with the given spin
-	bool Mehta::Is6CPBuilt(const Cube& C, const Spn S)
-	{
-		Cube CubeMehta = C;
-		CubeMehta.SetSpin(S); // Mehta cube with desired spin
-		return Is6CPBuilt(CubeMehta);
-	}
-
-	// Check if the Mehta APDR is built
-	bool Mehta::IsAPDRBuilt(const Cube& C)
-	{
-		// Get the required pieces based on the spin
-		switch (C.GetSpin())
-		{
-		case Spn::UF: case Spn::UB: case Spn::UR: case Spn::UL: return C.IsSolved(Lyr::D) && C.IsSolved(Lyr::E) && C.CheckOrientation(Pgr::LAYER_U);
-		case Spn::DF: case Spn::DB: case Spn::DR: case Spn::DL: return C.IsSolved(Lyr::U) && C.IsSolved(Lyr::E) && C.CheckOrientation(Pgr::LAYER_D);
-
-		case Spn::FU: case Spn::FD: case Spn::FR: case Spn::FL: return C.IsSolved(Lyr::B) && C.IsSolved(Lyr::S) && C.CheckOrientation(Pgr::LAYER_F);
-		case Spn::BU: case Spn::BD: case Spn::BR: case Spn::BL: return C.IsSolved(Lyr::F) && C.IsSolved(Lyr::S) && C.CheckOrientation(Pgr::LAYER_B);
-
-		case Spn::RU: case Spn::RD: case Spn::RF: case Spn::RB: return C.IsSolved(Lyr::L) && C.IsSolved(Lyr::M) && C.CheckOrientation(Pgr::LAYER_R);
-		case Spn::LU: case Spn::LD: case Spn::LF: case Spn::LB: return C.IsSolved(Lyr::R) && C.IsSolved(Lyr::M) && C.CheckOrientation(Pgr::LAYER_L);
-
-		default: return false; // Invalid spin (should not happend)
-		}
-	}
-
-	// Check if Mehta APDR is built with the given spin
-	bool Mehta::IsAPDRBuilt(const Cube& C, const Spn S)
-	{
-		Cube CubeMehta = C;
-		CubeMehta.SetSpin(S); // Mehta cube with desired spin
-		return IsAPDRBuilt(CubeMehta);
-	}
-
-	// Check if the Mehta DCAL is built
-	bool Mehta::IsDCALBuilt(const Cube& C)
-	{
-		if (!IsEOLEBuilt(C)) return false;
-		return C.IsSolved(Cube::FromAbsPosition(App::DFR, C.GetSpin())) && C.IsSolved(Cube::FromAbsPosition(App::DBR, C.GetSpin()));
-	}
-
-	// Check if Mehta DCAL is built with the given spin
-	bool Mehta::IsDCALBuilt(const Cube& C, const Spn S)
-	{
-		Cube CubeMehta = C;
-		CubeMehta.SetSpin(S); // Mehta cube with desired spin
-		return IsDCALBuilt(CubeMehta);
-	}
-
-	// Check if the Mehta CDRLL is built
-	bool Mehta::IsCDRLLBuilt(const Cube& C)
-	{
-		if (!IsDCALBuilt(C)) return false;
-		
-		switch (C.GetSpin())
-		{
-		case Spn::UF: case Spn::UB: case Spn::UR: case Spn::UL: return C.IsSolved(Pgr::CORNERS_U);
-		case Spn::DF: case Spn::DB: case Spn::DR: case Spn::DL: return C.IsSolved(Pgr::CORNERS_D);
-		
-		case Spn::FU: case Spn::FD: case Spn::FR: case Spn::FL: return C.IsSolved(Pgr::CORNERS_F);
-		case Spn::BU: case Spn::BD: case Spn::BR: case Spn::BL: return C.IsSolved(Pgr::CORNERS_B);
-		
-		case Spn::RU: case Spn::RD: case Spn::RF: case Spn::RB: return C.IsSolved(Pgr::CORNERS_R);
-		case Spn::LU: case Spn::LD: case Spn::LF: case Spn::LB: return C.IsSolved(Pgr::CORNERS_L);
-		
-		default: return false;
-		}
-	}
-
-	// Check if Mehta CDRLL is built with the given spin
-	bool Mehta::IsCDRLLBuilt(const Cube& C, const Spn S)
-	{
-		Cube CubeMehta = C;
-		CubeMehta.SetSpin(S); // Mehta cube with desired spin
-		return IsCDRLLBuilt(CubeMehta);
-	}
-
-	// Check if the Mehta JTLE is built (same conditions than APDR)
-	bool Mehta::IsJTLEBuilt(const Cube& C)
-	{
-		return IsAPDRBuilt(C);
-	}
-
-	// Check if Mehta JTLE is built with the given spin
-	bool Mehta::IsJTLEBuilt(const Cube& C, const Spn S)
-	{
-		Cube CubeMehta = C;
-		CubeMehta.SetSpin(S); // Mehta cube with desired spin
-		return IsJTLEBuilt(CubeMehta);
-	}
-
-	// Check if the Mehta TDR is built
-	bool Mehta::IsTDRBuilt(const Cube& C)
-	{
-		if (!C.CheckOrientation(Pgr::ALL_EDGES)) return false;
-		switch (Cube::GetUpSliceLayer(C.GetSpin()))
-		{
-		case Lyr::U: return C.IsSolved(Pgr::LAYER_D) && C.IsSolved(Pgr::LAYER_E);
-		case Lyr::D: return C.IsSolved(Pgr::LAYER_U) && C.IsSolved(Pgr::LAYER_E);
-		case Lyr::F: return C.IsSolved(Pgr::LAYER_B) && C.IsSolved(Pgr::LAYER_S);
-		case Lyr::B: return C.IsSolved(Pgr::LAYER_F) && C.IsSolved(Pgr::LAYER_S);
-		case Lyr::R: return C.IsSolved(Pgr::LAYER_L) && C.IsSolved(Pgr::LAYER_M);
-		case Lyr::L: return C.IsSolved(Pgr::LAYER_R) && C.IsSolved(Pgr::LAYER_M);
-		default: return false;
-		}
-	}
-
-	// Check if Mehta TDR is built with the given spin
-	bool Mehta::IsTDRBuilt(const Cube& C, const Spn S)
-	{
-		Cube CubeMehta = C;
-		CubeMehta.SetSpin(S); // Mehta cube with desired spin
-		return IsTDRBuilt(CubeMehta);
-	}
-
-	// Returns best first block solve algorithm from the Solves vector class member and his score for the given spin
-	bool Mehta::EvaluateFBResult(std::vector<Algorithm>& BestSolves, const uint MaxSolves, const std::vector<Algorithm>& Solves, const Cube& CBase, const Spn Sp, const Plc Policy)
-	{
-		BestSolves.clear();
-
-		if (Solves.empty()) return false; // No solves
-
-		// Pieces to search
-		Pce E_1, E_2, E_3, E_4;
-
-		// Get the required pieces based on the spin
-		switch (Sp)
-		{
-		case Spn::UF: case Spn::UB: case Spn::UR: case Spn::UL:
-		case Spn::DF: case Spn::DB: case Spn::DR: case Spn::DL: 
-			E_1 = Pce::FR; E_2 = Pce::FL; E_3 = Pce::BR; E_4 = Pce::BL; break;
-
-		case Spn::FU: case Spn::FD: case Spn::FR: case Spn::FL:
-		case Spn::BU: case Spn::BD: case Spn::BR: case Spn::BL: 
-			E_1 = Pce::UR; E_2 = Pce::UL; E_3 = Pce::DR; E_4 = Pce::DL; break;
-
-		case Spn::RU: case Spn::RD: case Spn::RF: case Spn::RB:
-		case Spn::LU: case Spn::LD: case Spn::LF: case Spn::LB: 
-			E_1 = Pce::UF; E_2 = Pce::UB; E_3 = Pce::DF; E_4 = Pce::DB; break;
-
-		default: return 0u; // Invalid spin (should not happend)
-		}
-
-		// Based on the search policy, different conditions have different weights in the final score
-		uint SolveSizeMagnitude, SolveBeltMagnitude;
-		switch (Policy)
-		{
-		case Plc::SHORT:
-			SolveSizeMagnitude = 1000u;
-			SolveBeltMagnitude = 100u;
-			break;
-		case Plc::BEST_SOLVES:
-		default:
-			SolveSizeMagnitude = 100u;
-			SolveBeltMagnitude = 1000u;
-			break;
-		}
-
-		uint Score;
-
-		std::vector<std::pair<uint, Algorithm>> ScoredSolves;
-
-		for (const auto& s : Solves) // Check each solve to get the best one
-		{
-			Score = 0u;
-
-			Cube CheckCube = CBase;
-			CheckCube.ApplyAlgorithm(s);
-
-			if (!IsFBBuilt(CheckCube, Sp)) continue; // Invalid solve for this spin
-
-			// Evaluate solve size
-			Score = (s.GetSize() > 50u ? 0u : 50u - s.GetSize()) * SolveSizeMagnitude;
-			Score += s.GetSubjectiveScore();
-
-			// Check belt edges solves
-			if (CheckCube.IsSolved(E_1)) Score += SolveBeltMagnitude;
-			if (CheckCube.IsSolved(E_2)) Score += SolveBeltMagnitude;
-			if (CheckCube.IsSolved(E_3)) Score += SolveBeltMagnitude;
-			if (CheckCube.IsSolved(E_4)) Score += SolveBeltMagnitude;
-
-			if (Score > 0u)
-			{
-				std::pair<uint, Algorithm> ScoredSolve;
-				ScoredSolve.first = Score;
-				ScoredSolve.second = s;
-				ScoredSolves.push_back(ScoredSolve);
-			}
-		}
-
-		if (ScoredSolves.empty()) return false;
-
-		std::sort(ScoredSolves.begin(), ScoredSolves.end(), [](auto a, auto b) { return a.first > b.first; });
-
-		const uint ssize = MaxSolves < ScoredSolves.size() ? MaxSolves : static_cast<uint>(ScoredSolves.size());
-
-		for (uint n = 0u; n < ssize; n++) BestSolves.push_back(ScoredSolves[n].second);
-		return true;
-	}
-
-	// Returns best 3QB solve algorithm from the Solves vector class member and his score for the given spin
-	bool Mehta::Evaluate3QBResult(std::vector<Algorithm>& BestSolves, const uint MaxSolves, const std::vector<Algorithm>& Solves, const Cube& CBase, const Spn Sp, const Plc Policy)
-	{
-		BestSolves.clear();
-
-		if (Solves.empty()) return false; // No solves
-
-		Pce E_1, E_2, E_3, E_4; // Pieces to search
-		Pcp EP_1, EP_2, EP_3, EP_4; // Edge positions to check orientation
-
-		// Get the required pieces based on the spin
-		switch (Sp)
-		{
-		case Spn::UF:
-		case Spn::UB:
-		case Spn::UR:
-		case Spn::UL: E_1 = Pce::FR; E_2 = Pce::FL; E_3 = Pce::BR; E_4 = Pce::BL; EP_1 = Pcp::UF; EP_2 = Pcp::UB; EP_3 = Pcp::UR; EP_4 = Pcp::UL; break;
-
-		case Spn::DF:
-		case Spn::DB:
-		case Spn::DR:
-		case Spn::DL: E_1 = Pce::FR; E_2 = Pce::FL; E_3 = Pce::BR; E_4 = Pce::BL; EP_1 = Pcp::DF; EP_2 = Pcp::DB; EP_3 = Pcp::DR; EP_4 = Pcp::DL; break;
-
-		case Spn::FU:
-		case Spn::FD:
-		case Spn::FR:
-		case Spn::FL: E_1 = Pce::UR; E_2 = Pce::UL; E_3 = Pce::DR; E_4 = Pce::DL; EP_1 = Pcp::UF; EP_2 = Pcp::DF; EP_3 = Pcp::FR; EP_4 = Pcp::FL; break;
-
-		case Spn::BU:
-		case Spn::BD:
-		case Spn::BR:
-		case Spn::BL: E_1 = Pce::UR; E_2 = Pce::UL; E_3 = Pce::DR; E_4 = Pce::DL; EP_1 = Pcp::UB; EP_2 = Pcp::DB; EP_3 = Pcp::BR; EP_4 = Pcp::BL; break;
-
-		case Spn::RU:
-		case Spn::RD:
-		case Spn::RF:
-		case Spn::RB: E_1 = Pce::UF; E_2 = Pce::UB; E_3 = Pce::DF; E_4 = Pce::DB; EP_1 = Pcp::UR; EP_2 = Pcp::DR; EP_3 = Pcp::FR; EP_4 = Pcp::FL; break;
-
-		case Spn::LU:
-		case Spn::LD:
-		case Spn::LF:
-		case Spn::LB: E_1 = Pce::UF; E_2 = Pce::UB; E_3 = Pce::DF; E_4 = Pce::DB; EP_1 = Pcp::UL; EP_2 = Pcp::DL; EP_3 = Pcp::FL; EP_4 = Pcp::BL; break;
-
-		default: return 0u; // Invalid spin (should not happend)
-		}
-
-		// Based on the search policy, different conditions have different weights in the final score
-		uint SolveSizeMagnitude, SolveBeltMagnitude, SolveEOMagnitude;
-		switch (Policy)
-		{
-		case Plc::SHORT:
-			SolveSizeMagnitude = 1000u;
-			SolveBeltMagnitude = 100u;
-			SolveEOMagnitude = 10u;
-			break;
-		case Plc::BEST_SOLVES:
-		default:
-			SolveSizeMagnitude = 10u;
-			SolveBeltMagnitude = 1000u;
-			SolveEOMagnitude = 100u;
-			break;
-		}
-
-		uint Score;
-
-		std::vector<std::pair<uint, Algorithm>> ScoredSolves;
-
-		for (const auto& s : Solves) // Check each solve to get the best one
-		{
-			Score = 0u;
-
-			Cube CheckCube = CBase;
-			CheckCube.ApplyAlgorithm(s);
-
-			if (!Is3QBBuilt(CheckCube, Sp)) continue; // Invalid solve for this spin
-
-			// Evaluate solve size
-			Score = (s.GetSize() > 50u ? 0u : 50u - s.GetSize()) * SolveSizeMagnitude;
-			Score += s.GetSubjectiveScore();
-
-			// Check belt edges solves
-			if (CheckCube.IsSolved(E_1)) Score += SolveBeltMagnitude;
-			if (CheckCube.IsSolved(E_2)) Score += SolveBeltMagnitude;
-			if (CheckCube.IsSolved(E_3)) Score += SolveBeltMagnitude;
-			if (CheckCube.IsSolved(E_4)) Score += SolveBeltMagnitude;
-			
-			// Give preference to belt with unsolved edge in FR absolut position
-			if (!CheckCube.IsSolved(Cube::FromAbsPosition(App::FR, Sp))) Score += SolveBeltMagnitude / 2u;
-			
-			// Check up layer edges orientation
-			if (CheckCube.CheckOrientation(EP_1)) Score += SolveEOMagnitude;
-			if (CheckCube.CheckOrientation(EP_2)) Score += SolveEOMagnitude;
-			if (CheckCube.CheckOrientation(EP_3)) Score += SolveEOMagnitude;
-			if (CheckCube.CheckOrientation(EP_4)) Score += SolveEOMagnitude;
-
-			if (Score > 0u)
-			{
-				std::pair<uint, Algorithm> ScoredSolve;
-				ScoredSolve.first = Score;
-				ScoredSolve.second = s;
-				ScoredSolves.push_back(ScoredSolve);
-			}
-		}
-
-		if (ScoredSolves.empty()) return false;
-
-		std::sort(ScoredSolves.begin(), ScoredSolves.end(), [](auto a, auto b) { return a.first > b.first; });
-
-		const uint ssize = MaxSolves < ScoredSolves.size() ? MaxSolves : static_cast<uint>(ScoredSolves.size());
-
-		for (uint n = 0u; n < ssize; n++) BestSolves.push_back(ScoredSolves[n].second);
-		return true;
-	}
-
     // Get a solve report
     std::string Mehta::GetReport(const bool cancellations, bool debug) const
     {
-        std::string Report  = "Mehta search for Scramble (" + std::to_string(Scramble.GetNumSteps()) + "): " + GetTextScramble(), ReportLine;
-        Report += "\n--------------------------------------------------------------------------------\n";
+        std::string Report, ReportLine;
+        // Report = "Mehta: Scramble [" + std::to_string(Scramble.GetNumSteps()) + "] " + GetTextScramble();
+        // Report += "\n--------------------------------------------------------------------------------\n";
 
 		for (const auto spin : SearchSpins)
 		{
@@ -1549,7 +1099,7 @@ namespace grcube3
 				C.ApplyAlgorithm(Inspections[sp][n]);
 				C.ApplyAlgorithm(AlgFB[sp][n]);
 
-				if (IsFBBuilt(C))
+				if (IsMehtaFBBuilt(C))
 				{
 					ReportLine += "[" + Cube::GetSpinText(spin) + "|" + Algorithm::GetMetricValue(GetMetricSolve(spin, n));
 					if (cancellations) ReportLine += "(" + Algorithm::GetMetricValue(GetMetricCancellations(spin, n)) + ")";
@@ -1573,7 +1123,7 @@ namespace grcube3
 
 				C.ApplyAlgorithm(Alg3QB[sp][n]);
 
-				if (Is3QBBuilt(C)) ReportLine += " (" + Alg3QB[sp][n].ToString() + ")";
+				if (IsMehta3QBBuilt(C)) ReportLine += " (" + Alg3QB[sp][n].ToString() + ")";
 				else
 				{
 					ReportLine += "3QB not built in " + std::to_string(MaxDepth3QB) + " steps";
@@ -1585,7 +1135,7 @@ namespace grcube3
 
 				C.ApplyAlgorithm(AlgEOLE[sp][n]);
 
-				if (IsEOLEBuilt(C)) ReportLine += " (" + AlgEOLE[sp][n].ToString() + ")";
+				if (IsMehtaEOLEBuilt(C)) ReportLine += " (" + AlgEOLE[sp][n].ToString() + ")";
 				else
 				{
 					ReportLine += "EOLE not built";
@@ -1599,7 +1149,7 @@ namespace grcube3
 				{
 					C.ApplyAlgorithm(Alg6CO[sp][n]);
 
-					if (Is6COBuilt(C)) ReportLine += " (" + Alg6CO[sp][n].ToString() + ")";
+					if (IsMehta6COBuilt(C)) ReportLine += " (" + Alg6CO[sp][n].ToString() + ")";
 					else
 					{
 						ReportLine += "6CO not built";
@@ -1613,7 +1163,7 @@ namespace grcube3
 					{
 						C.ApplyAlgorithm(Alg6CP[sp][n]);
 
-						if (Is6CPBuilt(C)) ReportLine += " (" + Alg6CP[sp][n].ToString() + ")";
+						if (IsMehta6CPBuilt(C)) ReportLine += " (" + Alg6CP[sp][n].ToString() + ")";
 						else
 						{
 							ReportLine += "6CP not built";
@@ -1639,7 +1189,7 @@ namespace grcube3
 					{
 						C.ApplyAlgorithm(AlgAPDR[sp][n]);
 
-						if (IsAPDRBuilt(C)) ReportLine += " (" + AlgAPDR[sp][n].ToString() + ")";
+						if (IsMehtaAPDRBuilt(C)) ReportLine += " (" + AlgAPDR[sp][n].ToString() + ")";
 						else
 						{
 							ReportLine += "APDR not built";
@@ -1666,7 +1216,7 @@ namespace grcube3
 				{
 					C.ApplyAlgorithm(AlgDCAL[sp][n]);
 
-					if (IsDCALBuilt(C)) ReportLine += " (" + AlgDCAL[sp][n].ToString() + ")";
+					if (IsMehtaDCALBuilt(C)) ReportLine += " (" + AlgDCAL[sp][n].ToString() + ")";
 					else
 					{
 						ReportLine += "DCAL not built";
@@ -1680,7 +1230,7 @@ namespace grcube3
 					{
 						C.ApplyAlgorithm(AlgCDRLL[sp][n]);
 
-						if (IsCDRLLBuilt(C)) ReportLine += " (" + AlgCDRLL[sp][n].ToString() + ")";
+						if (IsMehtaCDRLLBuilt(C)) ReportLine += " (" + AlgCDRLL[sp][n].ToString() + ")";
 						else
 						{
 							ReportLine += "CDRLL not built";
@@ -1706,7 +1256,7 @@ namespace grcube3
 					{
 						C.ApplyAlgorithm(AlgJTLE[sp][n]);
 
-						if (IsJTLEBuilt(C)) ReportLine += " (" + AlgJTLE[sp][n].ToString() + ")";
+						if (IsMehtaJTLEBuilt(C)) ReportLine += " (" + AlgJTLE[sp][n].ToString() + ")";
 						else
 						{
 							ReportLine += "JTLE not built";
@@ -1733,7 +1283,7 @@ namespace grcube3
 				{
 					C.ApplyAlgorithm(AlgTDR[sp][n]);
 
-					if (IsTDRBuilt(C)) ReportLine += " (" + AlgTDR[sp][n].ToString() + ")";
+					if (IsMehtaTDRBuilt(C)) ReportLine += " (" + AlgTDR[sp][n].ToString() + ")";
 					else
 					{
 						ReportLine += "TDR not built";
@@ -1775,23 +1325,23 @@ namespace grcube3
     {
         std::string Report;
 
-        Report += "Total search time: " + std::to_string(GetFullTime()) + " s\n";
-        Report += "First blocks search time: " + std::to_string(GetTimeFB()) + " s\n";
-        Report += "3QB search time: " + std::to_string(GetTime3QB()) + " s\n";
-		Report += "EOLE search time: " + std::to_string(GetTimeEOLE()) + " s\n";
+        Report += "Total time: " + std::to_string(GetFullTime()) + " s\n";
+        Report += "First blocks time: " + std::to_string(GetTimeFB()) + " s\n";
+        Report += "3QB time: " + std::to_string(GetTime3QB()) + " s\n";
+        Report += "EOLE time: " + std::to_string(GetTimeEOLE()) + " s\n";
 
-        if (GetTime6CO() > 0.0) Report += "6CO search time: " + std::to_string(GetTime6CO()) + " s\n";
-		if (GetTimeDCAL() > 0.0) Report += "DCAL search time: " + std::to_string(GetTimeDCAL()) + " s\n";
-		if (GetTimeTDR() > 0.0) Report += "TDR search time: " + std::to_string(GetTimeTDR()) + " s\n";
-        if (GetTime6CP() > 0.0) Report += "6CP search time: " + std::to_string(GetTime6CP()) + " s\n";
-		if (GetTimeAPDR() > 0.0) Report += "APDR search time: " + std::to_string(GetTimeAPDR()) + " s\n";
-		if (GetTimeCDRLL() > 0.0) Report += "CDRLL search time: " + std::to_string(GetTimeCDRLL()) + " s\n";
-		if (GetTimeJTLE() > 0.0) Report += "JTLE search time: " + std::to_string(GetTimeJTLE()) + " s\n";
-		if (GetTimeL5EP() > 0.0) Report += "L5EP search time: " + std::to_string(GetTimeL5EP()) + " s\n";
-		if (GetTimePLL() > 0.0) Report += "PLL search time: " + std::to_string(GetTimePLL()) + " s\n";
-		if (GetTimeZBLL() > 0.0) Report += "ZBLL search time: " + std::to_string(GetTimeZBLL()) + " s\n";
+        if (GetTime6CO() > 0.0) Report += "6CO time: " + std::to_string(GetTime6CO()) + " s\n";
+        if (GetTimeDCAL() > 0.0) Report += "DCAL time: " + std::to_string(GetTimeDCAL()) + " s\n";
+        if (GetTimeTDR() > 0.0) Report += "TDR time: " + std::to_string(GetTimeTDR()) + " s\n";
+        if (GetTime6CP() > 0.0) Report += "6CP time: " + std::to_string(GetTime6CP()) + " s\n";
+        if (GetTimeAPDR() > 0.0) Report += "APDR time: " + std::to_string(GetTimeAPDR()) + " s\n";
+        if (GetTimeCDRLL() > 0.0) Report += "CDRLL time: " + std::to_string(GetTimeCDRLL()) + " s\n";
+        if (GetTimeJTLE() > 0.0) Report += "JTLE time: " + std::to_string(GetTimeJTLE()) + " s\n";
+        if (GetTimeL5EP() > 0.0) Report += "L5EP time: " + std::to_string(GetTimeL5EP()) + " s\n";
+        if (GetTimePLL() > 0.0) Report += "PLL time: " + std::to_string(GetTimePLL()) + " s\n";
+        if (GetTimeZBLL() > 0.0) Report += "ZBLL time: " + std::to_string(GetTimeZBLL()) + " s\n";
 
-        Report += "Threads used: " + std::to_string(GetUsedCores() > 0 ? GetUsedCores() : 0) +
+        Report += "Threads used: " + std::to_string(GetUsedCores() > 0 ? GetUsedCores() : DeepSearch::GetSystemCores()) +
                   " of " + std::to_string(DeepSearch::GetSystemCores()) + "\n";
 
         return Report;
@@ -1810,93 +1360,94 @@ namespace grcube3
 			return FReport;
 		}
 
-        std::string Report  = "Mehta search with orientation " + Cube::GetSpinText(sp);
-        Report += ":\n---------------------------------\n";
+        std::string Report;
+        // Report += "Mehta search with orientation " + Cube::GetSpinText(sp);
+        // Report += ":\n---------------------------------\n";
         // Report += "Scramble (" + std::to_string(Scramble.GetNumSteps()) + "): " + GetTextScramble() + "\n";
 
 		Cube C = CubeBase;
         C.ApplyAlgorithm(Inspections[si][n]);
-        if (!Inspections[si][n].Empty()) Report += "Inspection [" + C.GetSpinText() + "]: " + Inspections[si][n].ToString() + "\n\n";
+        if (!Inspections[si][n].Empty()) Report += GetTextInspection(sp,n) + " // Inspection [" + C.GetSpinText() + "]\n";
 
         C.ApplyAlgorithm(AlgFB[si][n]);
-        if (!IsFBBuilt(C))
+        if (!IsMehtaFBBuilt(C))
         {
 			Report += "First block not built in " + std::to_string(MaxDepthFB) + " movements\n";
             return Report;
         }
-        Report += "First block (" + Algorithm::GetMetricValue(GetMetricFB(sp, n)) + "): " + AlgFB[si][n].ToString() + "\n";
+        Report += GetTextFB(sp, n) + " // First block (" + Algorithm::GetMetricValue(GetMetricFB(sp, n)) + ")\n";
 
 		C.ApplyAlgorithm(Alg3QB[si][n]);
-		if (!Is3QBBuilt(C))
+		if (!IsMehta3QBBuilt(C))
 		{
 			Report += "3QB not built in " + std::to_string(MaxDepth3QB) + " movements\n";
 			return Report;
 		}
-		Report += "3QB (" + Algorithm::GetMetricValue(GetMetric3QB(sp, n)) + "): " + Alg3QB[si][n].ToString() + "\n";
+        if (!Alg3QB[si][n].Empty()) Report += GetText3QB(sp, n) + " // 3QB (" + Algorithm::GetMetricValue(GetMetric3QB(sp, n)) + ")\n";
 
         C.ApplyAlgorithm(AlgEOLE[si][n]);
-		if (!IsEOLEBuilt(C))
+		if (!IsMehtaEOLEBuilt(C))
 		{
 			Report += "EOLE not built\n";
 			return Report;
 		}
-		Report += "EOLE (" + Algorithm::GetMetricValue(GetMetricEOLE(sp, n)) + "): " + AlgEOLE[si][n].ToString() + "\n";
+        if (!AlgEOLE[si][n].Empty()) Report += GetTextEOLE(sp, n) + " // EOLE (" + Algorithm::GetMetricValue(GetMetricEOLE(sp, n)) + ")\n";
 
 		if (!Alg6CO[si].empty()) // Mehta-6CP or Mehta-APDR
         {
-            C.ApplyAlgorithm(Alg6CO[si][n]);
-            Report += "6CO (" + Algorithm::GetMetricValue(GetMetric6CO(sp, n)) + "): " + Alg6CO[si][n].ToString() + "\n";
+            // C.ApplyAlgorithm(Alg6CO[si][n]);
+            if (!Alg6CO[si][n].Empty()) Report += GetText6CO(sp, n) + " // 6CO (" + Algorithm::GetMetricValue(GetMetric6CO(sp, n)) + ")\n";
 
 			if (!Alg6CP[si].empty()) // Mehta-6CP
 			{
-				C.ApplyAlgorithm(Alg6CP[si][n]);
-				Report += "6CP (" + Algorithm::GetMetricValue(GetMetric6CP(sp, n)) + "): " + Alg6CP[si][n].ToString() + "\n";
+                // C.ApplyAlgorithm(Alg6CP[si][n]);
+                if (!Alg6CP[si][n].Empty()) Report += GetText6CP(sp, n) + " // 6CP (" + Algorithm::GetMetricValue(GetMetric6CP(sp, n)) + ")\n";
 
-				C.ApplyAlgorithm(AlgL5EP[si][n]);
-				Report += "L5EP (" + Algorithm::GetMetricValue(GetMetricL5EP(sp, n)) + "): " + AlgL5EP[si][n].ToString() + "\n";
+                // C.ApplyAlgorithm(AlgL5EP[si][n]);
+                if (!AlgL5EP[si][n].Empty()) Report += GetTextL5EP(sp, n) + " // L5EP (" + Algorithm::GetMetricValue(GetMetricL5EP(sp, n)) + ")\n";
 			}
 			else if (!AlgAPDR[si].empty()) // Mehta-APDR
 			{
-				C.ApplyAlgorithm(AlgAPDR[si][n]);
-				Report += "APDR (" + Algorithm::GetMetricValue(GetMetricAPDR(sp, n)) + "): " + AlgAPDR[si][n].ToString() + "\n";
+                // C.ApplyAlgorithm(AlgAPDR[si][n]);
+                if (!AlgAPDR[si][n].Empty()) Report += GetTextAPDR(sp, n) + " // APDR (" + Algorithm::GetMetricValue(GetMetricAPDR(sp, n)) + ")\n";
 
-				C.ApplyAlgorithm(AlgPLL[si][n]);
-				Report += "PLL (" + Algorithm::GetMetricValue(GetMetricPLL(sp, n)) + "): " + AlgPLL[si][n].ToString() + "\n";
+                // C.ApplyAlgorithm(AlgPLL[si][n]);
+                if (!AlgPLL[si][n].Empty()) Report += GetTextPLL(sp, n) + " // PLL (" + Algorithm::GetMetricValue(GetMetricPLL(sp, n)) + ")\n";
 			}
         }
         else if (!AlgDCAL[si].empty()) // Mehta-CDRLL or Mehta-JTLE
         {
-			C.ApplyAlgorithm(AlgDCAL[si][n]);
-			Report += "DCAL (" + Algorithm::GetMetricValue(GetMetricDCAL(sp, n)) + "): " + AlgDCAL[si][n].ToString() + "\n";
+            // C.ApplyAlgorithm(AlgDCAL[si][n]);
+            if (!AlgDCAL[si][n].Empty()) Report += GetTextDCAL(sp, n) + " // DCAL (" + Algorithm::GetMetricValue(GetMetricDCAL(sp, n)) + ")\n";
 
 			if (!AlgCDRLL[si].empty()) // Mehta-CDRLL
 			{
-				C.ApplyAlgorithm(AlgCDRLL[si][n]);
-				Report += "CDRLL (" + Algorithm::GetMetricValue(GetMetricCDRLL(sp, n)) + "): " + AlgCDRLL[si][n].ToString() + "\n";
+                // C.ApplyAlgorithm(AlgCDRLL[si][n]);
+                if (!AlgCDRLL[si][n].Empty()) Report += GetTextCDRLL(sp, n) + " // CDRLL (" + Algorithm::GetMetricValue(GetMetricCDRLL(sp, n)) + ")\n";
 
-				C.ApplyAlgorithm(AlgL5EP[si][n]);
-				Report += "L5EP (" + Algorithm::GetMetricValue(GetMetricL5EP(sp, n)) + "): " + AlgL5EP[si][n].ToString() + "\n";
+                // C.ApplyAlgorithm(AlgL5EP[si][n]);
+                if (!AlgL5EP[si][n].Empty()) Report += GetTextL5EP(sp, n) + " // L5EP (" + Algorithm::GetMetricValue(GetMetricL5EP(sp, n)) + ")\n";
 			}
 			else if (!AlgJTLE[si].empty()) // Mehta-JTLE
 			{
-				C.ApplyAlgorithm(AlgJTLE[si][n]);
-				Report += "JTLE (" + Algorithm::GetMetricValue(GetMetricJTLE(sp, n)) + "): " + AlgJTLE[si][n].ToString() + "\n";
+                // C.ApplyAlgorithm(AlgJTLE[si][n]);
+                if (!AlgJTLE[si][n].Empty()) Report += GetTextJTLE(sp, n) + " // JTLE (" + Algorithm::GetMetricValue(GetMetricJTLE(sp, n)) + ")\n";
 
-				C.ApplyAlgorithm(AlgPLL[si][n]);
-				Report += "PLL (" + Algorithm::GetMetricValue(GetMetricPLL(sp, n)) + "): " + AlgPLL[si][n].ToString() + "\n";
+                // C.ApplyAlgorithm(AlgPLL[si][n]);
+                if (!AlgPLL[si][n].Empty()) Report += GetTextPLL(sp, n) + " // PLL (" + Algorithm::GetMetricValue(GetMetricPLL(sp, n)) + ")\n";
 			}
         }
         else if (!AlgTDR[si].empty()) // Mehta-TDR
 		{
-			C.ApplyAlgorithm(AlgTDR[si][n]);
-			Report += "TDR (" + Algorithm::GetMetricValue(GetMetricTDR(sp, n)) + "): " + AlgTDR[si][n].ToString() + "\n";
+            // C.ApplyAlgorithm(AlgTDR[si][n]);
+            if (!AlgTDR[si][n].Empty()) Report += GetTextTDR(sp, n) + " // TDR (" + Algorithm::GetMetricValue(GetMetricTDR(sp, n)) + ")\n";
 
-			C.ApplyAlgorithm(AlgZBLL[si][n]);
-			Report += "ZBLL (" + Algorithm::GetMetricValue(GetMetricZBLL(sp, n)) + "): " + AlgZBLL[si][n].ToString() + "\n";
+            // C.ApplyAlgorithm(AlgZBLL[si][n]);
+            if (!AlgZBLL[si][n].Empty()) Report += GetTextZBLL(sp, n) + " // ZBLL (" + Algorithm::GetMetricValue(GetMetricZBLL(sp, n)) + ")\n";
         }
 
         // Show summary
-        Report += "\nSolve metric: " + Algorithm::GetMetricValue(GetMetricSolve(sp, n)) + " " + Algorithm::GetMetricString(Metric) + "\n";
+        Report += "\nMetric: " + Algorithm::GetMetricValue(GetMetricSolve(sp, n)) + " " + Algorithm::GetMetricString(Metric) + "\n";
 		Report += "EOLE case: " + GetTextEOLECase(sp, n) + "\n";
 		if (!Alg6CO[si].empty()) // Metha-6CP or Mehta-APDR
 		{
@@ -1951,115 +1502,12 @@ namespace grcube3
 			   ((AlgTDR[si].size() == n) && (AlgZBLL[si].size() == n))); // Mehta-TDR
 	}
 
-    // Check if in the given spin the solve is OK
-    bool Mehta::IsSolved(const Spn CurrentSpin, const uint n) const
-    {
-        const int Si = static_cast<int>(CurrentSpin); // Spin index
-
-		if (!CheckSolveConsistency(CurrentSpin) || n >= Inspections[Si].size()) return 0u;
-
-        Cube C = CubeBase;
-        C.ApplyAlgorithm(Inspections[Si][n]);
-        C.ApplyAlgorithm(AlgFB[Si][n]);
-        C.ApplyAlgorithm(Alg3QB[Si][n]);
-        C.ApplyAlgorithm(AlgEOLE[Si][n]);
-		if (!Alg6CO[Si].empty())
-		{
-			C.ApplyAlgorithm(Alg6CO[Si][n]);
-			if (!Alg6CP[Si].empty())
-			{
-				C.ApplyAlgorithm(Alg6CP[Si][n]);
-				C.ApplyAlgorithm(AlgL5EP[Si][n]);
-			}
-			else if (!AlgAPDR[Si].empty())
-			{
-				C.ApplyAlgorithm(AlgAPDR[Si][n]);
-				C.ApplyAlgorithm(AlgPLL[Si][n]);
-			}
-		}
-		else if (!AlgDCAL[Si].empty())
-		{
-			C.ApplyAlgorithm(AlgDCAL[Si][n]);
-			if (!AlgCDRLL[Si].empty())
-			{
-				C.ApplyAlgorithm(AlgCDRLL[Si][n]);
-				C.ApplyAlgorithm(AlgL5EP[Si][n]);
-			}
-			else if (!AlgJTLE[Si].empty())
-			{
-				C.ApplyAlgorithm(AlgJTLE[Si][n]);
-				C.ApplyAlgorithm(AlgPLL[Si][n]);
-			}
-		}
-		else if (!AlgTDR[Si].empty())
-		{
-			C.ApplyAlgorithm(AlgTDR[Si][n]);
-			C.ApplyAlgorithm(AlgZBLL[Si][n]);
-		}
-
-        return C.IsSolved();
-    }
-
-	// Get the solve metric
-    float Mehta::GetMetricSolve(const Spn spin, const uint n) const
+	// Get the full solve
+    Algorithm Mehta::GetFullSolve(const Spn spin, const uint n) const
 	{
 		const int si = static_cast<int>(spin); // Spin index
 
-		if (!CheckSolveConsistency(spin) || Inspections[si].size() <= n) return 0u;
-
-		Algorithm A = AlgFB[si][n];
-		A += Alg3QB[si][n];
-		A += AlgEOLE[si][n];
-
-		if (!Alg6CO[si].empty())
-		{
-			A += Alg6CO[si][n];
-			if (!Alg6CP[si].empty())
-			{
-				A += Alg6CP[si][n];
-				A += AlgL5EP[si][n];
-			}
-			else if (!AlgAPDR[si].empty())
-			{
-				A += AlgAPDR[si][n];
-				A += AlgPLL[si][n];
-			}
-		}
-		else if (!AlgDCAL[si].empty())
-		{
-			A += AlgDCAL[si][n];
-			if (!AlgCDRLL[si].empty())
-			{
-				A += AlgCDRLL[si][n];
-				A += AlgL5EP[si][n];
-			}
-			else if (!AlgJTLE[si].empty())
-			{
-				A += AlgJTLE[si][n];
-				A += AlgPLL[si][n];
-			}
-		}
-		else if (!AlgTDR[si].empty())
-		{
-			A += AlgTDR[si][n];
-			A += AlgZBLL[si][n];
-		}
-		
-		return A.GetMetric(Metric);
-	}
-
-	// Get the full solve with cancellations
-	Algorithm Mehta::GetCancellations(const Spn spin, const uint n) const
-	{
-		const int si = static_cast<int>(spin); // Spin index
-
-		if (!CheckSolveConsistency(spin) || Inspections[si].size() <= n)
-		{
-			std::string FReport = "No solve with cancellations for spin ";
-			FReport += Cube::GetSpinText(spin);
-			FReport += ", position " + std::to_string(n) + "\n";
-			return FReport;
-		}
+		if (!CheckSolveConsistency(spin) || n >= Inspections[si].size()) return 0u;
 
 		Algorithm A = Inspections[si][n];
 		A += AlgFB[si][n];
@@ -2099,47 +1547,7 @@ namespace grcube3
 			A += AlgTDR[si][n];
 			A += AlgZBLL[si][n];
 		}
-
-		return A.GetCancellations();
-	}
-
-	// Get the best solve report
-	std::string Mehta::GetBestReport(const bool Cancellations) const
-	{
-		float M, min_M = 0.0f;
-		uint Bestn = 0u;
-		Spn BestSpin = Spn::Default;
-
-		for (int sp = 0; sp < 24; sp++)
-		{
-			const Spn Spin = static_cast<Spn>(sp);
-
-			if (!CheckSolveConsistency(Spin)) continue;
-
-			for (uint n = 0u; n < Inspections[sp].size(); n++)
-			{
-				if (!IsSolved(Spin, n)) continue;
-
-				if (Cancellations) M = GetMetricCancellations(Spin, n);
-                else M = GetMetricSolve(Spin, n);
-				
-				if (min_M == 0.0f || M < min_M)
-				{
-					min_M = M;
-					BestSpin = Spin;
-					Bestn = n;
-				}
-			}
-		}
-		if (min_M == 0.0f) return "No Mehta solves!\n";
-
-		if (Cancellations)
-		{
-			Algorithm C = GetCancellations(BestSpin, Bestn);
-			return GetReport(BestSpin, Bestn) + "\nCancellations (" + Algorithm::GetMetricValue(C.GetMetric(Metric)) + " " + 
-			       Algorithm::GetMetricString(Metric) + "): " + C.ToString() + "\n";
-		}
-
-		return GetReport(BestSpin, Bestn);
+		
+		return A;
 	}
 }

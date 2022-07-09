@@ -24,47 +24,36 @@
 
 #include "cube_definitions.h"
 #include "deep_search.h"
+#include "method.h"
 
 namespace grcube3
 {
     // Class to search a solve for a Rubik's cube using CFOP method
-	class CFOP
+	class CFOP : public Method
 	{
 	public:
-		// Constructor with cube scramble
-		CFOP(const Algorithm& Scr, const int NumCores = 0) 
-		{ 
-			Scramble = Scr;
-			CubeBase = Cube(Scramble);
-			Cores = NumCores;
-			Reset();
-		}
-
-		// Destructor
-		~CFOP() {}
+		// Constructor
+		CFOP(const Algorithm& Scr, const int NumCores = 0) : Method(Scr, NumCores) { Reset(); }
 
 		// Reset the search results
 		void Reset();
 
-		// Set cross layers for search
-		void SetCrossLayers(const std::vector<Lyr>& CL)
-		{
-			CrossLayers.clear();
-			if (CL.empty()) for (const auto ELy : Cube::ExtLayers) CrossLayers.push_back(ELy);
+        // Set cross layers for search
+        void SetCrossLayers(const std::vector<Lyr>& CL)
+        {
+            CrossLayers.clear();
+            if (CL.empty()) for (const auto ELy : Cube::ExtLayers) CrossLayers.push_back(ELy);
             else for (const auto Ly : CL) if (Cube::IsExternalLayer(Ly)) CrossLayers.push_back(Ly);
-		}
-		
-		// Set the metric for evaluations
-		void SetMetric(const Metrics m) { Metric = m; }
+        }
 
         // Solves searchs
         bool SearchCrosses(const uint, const uint = 1u); // Search best solves for given search depth and the maximun inspections, return false if no crosses found
         void SearchF2L();
-		void SearchOLL();
-		void SearchPLL();
-        void Search1LLL();
+		void SearchOLL(const Plc = Plc::FIRST);
+		void SearchPLL(const Plc = Plc::FIRST);
+        void Search1LLL(const Plc = Plc::FIRST);
         void SearchEOLL();
-		void SearchZBLL();
+		void SearchZBLL(const Plc = Plc::FIRST);
 
         // Search the best crosses solves from a given algorithms vector
         void EvaluateCrosses(const std::vector<Algorithm>&, const uint = 1u);
@@ -73,10 +62,10 @@ namespace grcube3
 		void SetRegrips();
 
         // If the crosses are searched externally, use this function to set the crosses search time
-        void SetTimeCrosses(double t) { TimeCrosses = t; }
+        void SetTimeFS(double t) { TimeCrosses = t; }
 
         // If the crosses are searched externally, use this function to set the crosses search depth
-        void SetDepthCrosses(uint d) { DepthCrosses = d; }
+        void SetDepthFS(uint d) { DepthCrosses = d; }
 
         // Get current cases in given cross face
         std::string GetOLLCase(const Fce CrossFace, const uint n) const { return CasesOLL[static_cast<int>(CrossFace)][n]; }
@@ -84,8 +73,10 @@ namespace grcube3
         std::string Get1LLLCase(const Fce CrossFace, const uint n) const { return Cases1LLL[static_cast<int>(CrossFace)][n]; }
         std::string GetZBLLCase(const Fce CrossFace, const uint n) const { return CasesZBLL[static_cast<int>(CrossFace)][n]; }
 
+        Algorithm GetFullSolve(const Spn, const uint) const; // Get the full solve metric
+        Algorithm GetFullSolve(const Fce, const uint) const; // Get the full solve metric
+
         // Get search solves texts
-        std::string GetTextScramble() const { return Scramble.ToString(); }
         std::string GetTextInspection(const Fce CrossFace, const uint n) const { return Inspections[static_cast<int>(CrossFace)][n].ToString(); }
         std::string GetTextCross(const Fce CrossFace, const uint n) const { return Crosses[static_cast<int>(CrossFace)][n].ToString(); }
         std::string GetTextF2L_1(const Fce CrossFace, const uint n) const { return F2L_1[static_cast<int>(CrossFace)][n].ToString(); }
@@ -101,7 +92,6 @@ namespace grcube3
         std::string GetTextAUF(const Fce CrossFace, const uint n) const { return AUF[static_cast<int>(CrossFace)][n].ToString(); }
 
         // Get search solves lengths
-        uint GetLengthScramble() const { return Scramble.GetNumSteps(); }
         uint GetLengthInspection(const Fce CrossFace, const uint n) const { return Inspections[static_cast<int>(CrossFace)][n].GetNumSteps(); }
         uint GetLengthCross(const Fce CrossFace, const uint n) const { return Crosses[static_cast<int>(CrossFace)][n].GetNumSteps(); }
         uint GetLengthF2L_1(const Fce CrossFace, const uint n) const { return F2L_1[static_cast<int>(CrossFace)][n].GetNumSteps(); }
@@ -117,7 +107,7 @@ namespace grcube3
 
         // Get metric values
         float GetMetricSolve(const Fce, const uint) const; // Get the full solve metric
-		float GetMetricScramble() const { return Scramble.GetMetric(Metric); }
+        float GetMetricSolve(const Spn, const uint) const;
         float GetMetricInspection(const Fce CrossFace, const uint n) const { return Inspections[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
         float GetMetricCross(const Fce CrossFace, const uint n) const { return Crosses[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
         float GetMetricF2L_1(const Fce CrossFace, const uint n) const { return F2L_1[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
@@ -130,6 +120,8 @@ namespace grcube3
         float GetMetricEOLL(const Fce CrossFace, const uint n) const { return EOLL[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
         float GetMetricZBLL(const Fce CrossFace, const uint n) const { return A_ZBLL[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
         float GetMetricAUF(const Fce CrossFace, const uint n) const { return AUF[static_cast<int>(CrossFace)][n].GetMetric(Metric); }
+        // Get solve metric with cancellations
+        float GetMetricCancellations(const Fce CF, const uint n) const { return GetCancellations(Cube::FaceToLayer(CF), n).GetMetric(Metric); }
 		
 		// Get text for cases
         std::string GetTextOLLCase(const Fce CrossFace, const uint n) const { return CasesOLL[static_cast<int>(CrossFace)][n]; }
@@ -151,39 +143,19 @@ namespace grcube3
         // Get solves report
         std::string GetReport(const bool, const bool = false) const; // cancellations, debug
         std::string GetReport(const Lyr, const uint) const; // Get a single solve report
+        std::string GetReport(const Spn, const uint n) const; // Get a single solve report (spin selection)
         std::string GetTimeReport() const; // Get solves time report
-        std::string GetBestReport(bool = false) const; // Get the best solve report (STM with or without cancellations)
+        std::string GetBestReport(const bool = false) const; // Get the best solve report (metric with or without cancellations)
 
 		// Get the full solve with cancellations
 		Algorithm GetCancellations(const Lyr, const uint) const;
+        Algorithm GetCancellations(const Spn, const uint) const; // Spin selection
 
-        // Get solve metric with cancellations
-		float GetMetricCancellations(const Fce CF, const uint n) const { return GetCancellations(Cube::FaceToLayer(CF), n).GetMetric(Metric); }
-
-		// Get used cores in the solve
-        int GetCores() const { return Cores; }
-
-		// Returns best F2L solve from the Solves vector class member
-		// F2L pieces are used as evaluation condition
-		static bool EvaluateF2LResult(std::vector<Algorithm>&, const uint, const std::vector<Algorithm>&, const Cube&, const Lyr, const Plc, const bool = true);
-
-        static bool IsCrossBuilt(const Cube&, const Lyr); // Check if the CFOP first cross is built
-        static bool IsXCrossBuilt(const Cube&, const Lyr); // Check if the CFOP first cross is built + first F2L pair
-        static bool IsF2LBuilt(const Cube&, const Lyr); // Check if first two layers are built
-
-		// Check if the last layer is oriented (OLL search completed)
-		static bool IsLastLayerOriented(const Cube& C) { return C.IsFaceOriented(Cube::GetUpSliceLayer(C.GetSpin())); }
-
-		// Check if the given F2L pair is adjacent (the corner next to the edge), orientation is not checked
-		static bool IsF2LAdjacent(const Pgr, const Cube&);
-
-		// Check if the common colors for F2L pair are in the same face
-		static bool IsF2LOriented(const Pgr, const Cube&);
+        // Check if in the given cross face the solve is OK
+        bool IsSolved(const Fce, const uint) const;
+        bool IsSolved(const Spn, const uint n) const;
 
 	private:
-		
-		Algorithm Scramble; // Cube scramble
-
 		std::vector<Lyr> CrossLayers; // Cross layers allowed for search
 			      
 		std::vector<Algorithm> Inspections[6], // Algorithms for inspections
@@ -206,20 +178,12 @@ namespace grcube3
                                  CasesZBLL[6], // ZBLL cases
                                  Cases1LLL[6]; // One-Look Last Layer cases
 
-        Cube CubeBase; // Cube base
-		
-		Metrics Metric; // Metric for measures
-
         double TimeCrosses, TimeF2L, TimeOLL, TimePLL, Time1LLL, TimeEOLL, TimeZBLL; // Times
-
-		int Cores; // Cores to use in the search: -1 = no multithreading, 0 = all avaliable cores, other = use this amount of cores
 
 		const static Algorithm DefaultInspections[6]; 
 		
 		// Check if the solves for the given cross layer are consistent (all needed algorithms are present)
 		bool CheckSolveConsistency(const Lyr) const;
-
-		// Check if in the given cross face the solve is OK
-		bool IsSolved(const Fce, const uint) const;
+        bool CheckSolveConsistency(const Spn) const; // Spin selection
 	};
 }

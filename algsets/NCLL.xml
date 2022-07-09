@@ -1,0 +1,120 @@
+<Collection Name="NCLL" Description="Solve the four corners that are on the U layer. Because this step ignores the U layer edges and the DF edge, the algorithms are ergonomic and have a low move-count." CasesNumber="43">
+    <Case Index="0">O1 (Skip)<Algorithm></Algorithm>
+    </Case>
+    <Case Index="1">O2<Algorithm>(U) R U R' U' R' F R2 U' R' U' R U R' F'</Algorithm>
+        <Algorithm>R' U L' U2 R U' R' U2 R L</Algorithm>
+        <Algorithm>(U) R U R' F' R U R' U' R' F R2 U' R'</Algorithm>
+    </Case>
+    <Case Index="2">O3<Algorithm>r2 D r' U r D' r2 B r U' r' B'</Algorithm>
+        <Algorithm>F R U' R' U' R U R' F' R U R' U' R' F R F'</Algorithm>
+        <Algorithm>F R' F R2 U' R' U' R U R' F' R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="3">H1<Algorithm>(U) R U R' U R U' R' U R U2' R'</Algorithm>
+        <Algorithm>R U2 R' U' R U R' U' R U' R'</Algorithm>
+        <Algorithm>R' U2' R U R' U' R U R' U R</Algorithm>
+    </Case>
+    <Case Index="4">H2<Algorithm>(U2) r U' r2' D' r U' r' D r2 U r'</Algorithm>
+    </Case>
+    <Case Index="5">H3<Algorithm>(U2) R' F' R U2' R' F2 R U' F U F'</Algorithm>
+        <Algorithm>(U) R U2' R2' F R F' U2 R' F R F'</Algorithm>
+        <Algorithm>(U) F R U' R' U R U2 R' U' R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="6">H4<Algorithm>F R U R' U' R U R' U' R U R' U' F'</Algorithm>
+        <Algorithm>F U R U' R' U R U' R' U R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="7">Pi 1<Algorithm>F R U R' U' R U R' U' F'</Algorithm>
+        <Algorithm>R U2 R2 U' R2 U' R2 U2 R</Algorithm>
+        <Algorithm>(U2) F U R U' R' U R U' R' F'</Algorithm>
+        <Algorithm>r' U r2 U' r2 U' r2 U r'</Algorithm>
+    </Case>
+    <Case Index="8">Pi 2<Algorithm>(U) F R' F' R U2 R U' R' U R U2' R'</Algorithm>
+        <Algorithm>(U) F U R U' R2' F' R U2 R U2' R'</Algorithm>
+    </Case>
+    <Case Index="9">Pi 3<Algorithm>(U') R' F R U F U' R U R' U' F'</Algorithm>
+    </Case>
+    <Case Index="10">Pi 4<Algorithm>R U2' R' U2 R' F R2 U R' U' F'</Algorithm>
+        <Algorithm>R U2' R' U' R U R' U2' R' F R F'</Algorithm>
+    </Case>
+    <Case Index="11">Pi 5<Algorithm>(U') r U' r2' D' r U r' D r2 U r'</Algorithm>
+    </Case>
+    <Case Index="12">Pi 6<Algorithm>(U') R' U' R' F R F' R U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="13">U1<Algorithm>R' U' R U' R' U2' R2 U R' U R U2' R'</Algorithm>
+        <Algorithm>(U2) R U R' U R U2' R2' U' R U' R' U2' R</Algorithm>
+        <Algorithm>(U') R U R' U' R U' R' U2 R U' R' U2 R U R'</Algorithm>
+    </Case>
+    <Case Index="14">U2<Algorithm>(U') F R2 D R' U R D' R2' U' F'</Algorithm>
+        <Algorithm>(U') R2' F R F' R U2' R' F' U2' F R</Algorithm>
+    </Case>
+    <Case Index="15">U3<Algorithm>(U2) R2 D R' U2 R D' R' U2 R'</Algorithm>
+    </Case>
+    <Case Index="16">U4<Algorithm>(U2) r U' r' U r' D' r U' r' D r</Algorithm>
+        <Algorithm>(U') R' D R U' R U' R' U R' D' R</Algorithm>
+    </Case>
+    <Case Index="17">U5<Algorithm>R2 D' R U2 R' D R U2 R</Algorithm>
+    </Case>
+    <Case Index="18">U6<Algorithm>(U') F R U R' U' F'</Algorithm>
+        <Algorithm>(U) F U R U' R' F'</Algorithm>
+    </Case>
+    <Case Index="19">T1<Algorithm>F R' F R2 U' R' U' R U R' F2</Algorithm>
+        <Algorithm>R U2' R' U' R U' R2' U2' R U R' U R</Algorithm>
+        <Algorithm>(U2) R' U2' R U R' U R2 U2' R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="20">T2<Algorithm>(U2) r U' r' U' F R' F' R2 U' R'</Algorithm>
+    </Case>
+    <Case Index="21">T3<Algorithm>(U) L' U' L U r U' r' F</Algorithm>
+        <Algorithm>(U') F R U' R' U R U R' F'</Algorithm>
+    </Case>
+    <Case Index="22">T4<Algorithm>r' D' r U r' D r U' r U r'</Algorithm>
+    </Case>
+    <Case Index="23">T5<Algorithm>(U') R U R' U' R' F R F'</Algorithm>
+    </Case>
+    <Case Index="24">T6<Algorithm>(U2) r U' r2' D' r U2 r' D r2 U r'</Algorithm>
+    </Case>
+    <Case Index="25">Sune 1<Algorithm>R U R' U R U2' R'</Algorithm>
+        <Algorithm>(U') R' U2' R U R' U R</Algorithm>
+    </Case>
+    <Case Index="26">Sune 2<Algorithm>F R' F' R U2 R U2' R'</Algorithm>
+    </Case>
+    <Case Index="27">Sune 3<Algorithm>(U) R' F2 R2 U2' R' F R U2' R2' F2 R</Algorithm>
+        <Algorithm>(U') R U R' U R U' R D R' U' R D' R2</Algorithm>
+    </Case>
+    <Case Index="28">Sune 4<Algorithm>r U' r' F R' F' R</Algorithm>
+    </Case>
+    <Case Index="29">Sune 5<Algorithm>L' U2 L U2' r U' r' F</Algorithm>
+        <Algorithm>F U R U2 R' U' R U R' F'</Algorithm>
+    </Case>
+    <Case Index="30">Sune 6<Algorithm>(U2) R U R' U R' F R F' R U2' R'</Algorithm>
+    </Case>
+    <Case Index="31">Anti Sune 1<Algorithm>(U2) R' U' R U' R' U2' R</Algorithm>
+        <Algorithm>(U') R U2' R' U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="32">Anti Sune 2<Algorithm>F' r U r' U2' L' U2 L</Algorithm>
+        <Algorithm>(U') F R U' R' U R U2 R' U' F'</Algorithm>
+    </Case>
+    <Case Index="33">Anti Sune 3<Algorithm>R U2' R' U2 R' F R F'</Algorithm>
+    </Case>
+    <Case Index="34">Anti Sune 4<Algorithm>R' F R F' r U r'</Algorithm>
+    </Case>
+    <Case Index="35">Anti Sune 5<Algorithm>R2 D R' U R D' R' U R' U' R U' R'</Algorithm>
+        <Algorithm>(U') R' F2 R2 U2' R' F' R U2' R2' F2 R</Algorithm>
+    </Case>
+    <Case Index="36">Anti Sune 6<Algorithm>(U) R' U' R U' R' U R' F R F' U R</Algorithm>
+        <Algorithm>(U) R U2' R' U' R U R2' F R F' R U2' R'</Algorithm>
+        <Algorithm>(U2) R U2' R' F R' F' R U' R U' R'</Algorithm>
+    </Case>
+    <Case Index="37">L1<Algorithm>(U) R U2 R' U' R U R' U' R U R' U' R U' R'</Algorithm>
+        <Algorithm>(U) R U R' U R U' R' U R U' R' U R U2' R'</Algorithm>
+    </Case>
+    <Case Index="38">L2<Algorithm>(U') R U2 R D R' U2 R D' R2'</Algorithm>
+        <Algorithm>(U2) R' F' R U R' U' R' F R2 U' R' U2 R</Algorithm>
+    </Case>
+    <Case Index="39">L3<Algorithm>(U') F R' F' R U R U' R'</Algorithm>
+    </Case>
+    <Case Index="40">L4<Algorithm>(U') F R U' R' U' R U R' F'</Algorithm>
+    </Case>
+    <Case Index="41">L5<Algorithm>(U2) R' U2 R' D' R U2 R' D R2</Algorithm>
+    </Case>
+    <Case Index="42">L6<Algorithm>(U') R U2' R2' F R F' R U2' R'</Algorithm>
+    </Case>
+</Collection>

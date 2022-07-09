@@ -1,4 +1,4 @@
-<Collection Name="PLL" Description="Algorithms collection" CasesNumber="22">
+<Collection Name="PLL" Description="Permutation of the Last Layer. The pieces on the top layer have already been oriented so that the top face has all the same color, and they can now be moved into their solved positions" CasesNumber="22">
     <Case Index="0">SKIP<Algorithm></Algorithm>
     </Case>
     <Case Index="1">Ua<Algorithm>(R2 U' R' U') (R U R U) (R U' R)</Algorithm>

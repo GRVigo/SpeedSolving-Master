@@ -119,9 +119,6 @@
        <number>0</number>
       </property>
       <item>
-       <layout class="QGridLayout" name="gridLayout"/>
-      </item>
-      <item>
        <widget class="QPushButton" name="pushButton_Credits">
         <property name="text">
          <string>Credits</string>
@@ -159,6 +156,13 @@
         </property>
         <property name="text">
          <string>Debug</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_Collections">
+        <property name="text">
+         <string>Collections</string>
         </property>
        </widget>
       </item>
@@ -265,8 +269,7 @@
       <item>
        <widget class="QLabel" name="label_Eval">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);
-border-color: rgb(0, 0, 0);</string>
+         <string notr="true">border-color: rgb(0, 0, 0);</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
@@ -382,7 +385,7 @@ border-color: rgb(0, 0, 0);</string>
           </property>
           <item>
            <property name="text">
-            <string>Layer by layer</string>
+            <string>LBL (Layer by layer)</string>
            </property>
           </item>
           <item>
@@ -413,6 +416,16 @@ border-color: rgb(0, 0, 0);</string>
           <item>
            <property name="text">
             <string>Mehta</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Nautilus</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>LEOR</string>
            </property>
           </item>
          </widget>
@@ -793,21 +806,35 @@ border-color: rgb(0, 0, 0);</string>
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="pushButton_Skip">
+        <property name="text">
+         <string>Skip</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="pushButton_StartSearch">
         <property name="enabled">
          <bool>true</bool>
         </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
           <width>80</width>
-          <height>0</height>
+          <height>32</height>
          </size>
         </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(31, 31, 255);
-selection-background-color: rgb(0, 85, 0);
-font: 75 12pt &quot;Droid Sans&quot;;
-color: rgb(255, 255, 255);</string>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
         </property>
         <property name="text">
          <string>Start</string>

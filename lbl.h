@@ -31,11 +31,8 @@ namespace grcube3
 	class LBL
 	{
 	public:
-		// Constructor with cube scramble
+		// Constructor
 		LBL(const Algorithm& Scr, const int NumCores = 0) { Scramble = Scr; Reset(); Cores = NumCores; }
-
-		// Destructor
-		~LBL() {}
 
 		// Reset the search results
 		void Reset();
@@ -188,16 +185,13 @@ namespace grcube3
         // Get a solve report
         std::string GetReport() const;
 
-        std::string GetHtmlReport() const;
-
         // Get a solve time report
         std::string GetTimeReport() const;
-		
-		// Get alg.cubing.net link for the solve
-		std::string GetSolveLink() const;
 
 		// Get used cores in the solve
 		int GetUsedCores() const { return Cores; }
+
+        char GetCrossLayer() const { return Cube::GetLayerChar(FirstLayer); }
 
 		// Returns the shorter LBL last layer corners orientation algorithm from the solves
 		static uint EvaluateLLCOResult(Algorithm& , const std::vector<Algorithm>&);

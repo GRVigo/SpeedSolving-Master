@@ -72,13 +72,10 @@ namespace grcube3
 
         void StandardGroups(const std::vector<Spn>&);
 
-        float GetScore();
-		
-		// Evaluation results
-		std::array<std::vector<uint>, 10> Results;
+        float GetScore(const uint = 5u) const; // Depth 5 for default score
 
-		std::vector<std::string> GroupIds; // Ids for groups
-		
+		double GetTime() const { return Time; } // Evaluation time
+
 		static const std::array<Stp, 18> MainSteps;
 
 	private:
@@ -88,9 +85,15 @@ namespace grcube3
 		int Cores; // Number of phisical cores in the machine
 		uint UsedCores; // Number of cores to limit the threads
 		uint RootBranches; // Number of search root branches to be distributed among cores
+		double Time; // Evaluation time
 
 		Algorithm Scramble; // Cube scramble to start the evaluation
 		Cube CubeBase; // Cube with the scramble already applyed
+
+		// Evaluation results
+		std::array<std::vector<uint>, 10> Results;
+
+		std::vector<std::string> GroupIds; // Ids for groups
 
 		std::vector<bool> SolvedFlagsBase; // Base flags to know if this branch has been solved upper in the tree
 

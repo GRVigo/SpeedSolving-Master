@@ -1,4 +1,4 @@
-<Collection Name="1LLL" Description="1LLL algorithms collection by Jack314" CasesNumber="3916">
+<Collection Name="1LLL" Description="1 Look Last Layer means completing the last layer using only one look by Jack314" CasesNumber="3916">
     <Case Index="0">0<Algorithm>(U') R U R' U R U2 R' U2 R' U' R U' R' U2 R</Algorithm>
     </Case>
     <Case Index="1">1<Algorithm>(U2) R U2 R2 U' R2 U' R2 U2 R U2 R U R' U R U2 R'</Algorithm>

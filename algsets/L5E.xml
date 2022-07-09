@@ -1,0 +1,551 @@
+<Collection Name="L5E" Description="Nautilus Last 5 Edges" CasesNumber="275"><Case Index="0">Solved<Algorithm></Algorithm>
+</Case>
+<Case Index="1">UL+UB - DF Permuted 1<Algorithm>M' U M2 U M U2 M' U M'</Algorithm>
+</Case>
+<Case Index="2">UL+UB - DF Permuted 2<Algorithm>(U) r' U' R U M' U' R' U R</Algorithm>
+</Case>
+<Case Index="3">UL+UB - DF Permuted 3<Algorithm>M' U' M U2 M' U' M</Algorithm>
+</Case>
+<Case Index="4">UL+UB - DF Permuted 4<Algorithm>M U M' U2 M2 U M' U2 M U M' U' M'</Algorithm>
+</Case>
+<Case Index="5">UL+UB - DF Permuted 5<Algorithm>(U) R U R' U' M' U R U' r'</Algorithm>
+</Case>
+<Case Index="6">UL+UB - DF Permuted 6<Algorithm>M2 U' M U2 M' U M U' M' U2 M' U M'</Algorithm><Algorithm>M2 U' M' U M U M U' M U' M U M'</Algorithm>
+</Case>
+<Case Index="7">UL+UB - DF Permuted 7<Algorithm>M' U2 M2 U M U2 M' U M' U M' U' M</Algorithm>
+</Case>
+<Case Index="8">UL+UB - DF Permuted 8<Algorithm>M' U M2 U' M U2 M' U' M' U M' U2 M</Algorithm>
+</Case>
+<Case Index="9">UL+UB - DF Permuted 9<Algorithm>M' U M U M' U M U2 M' U2 M</Algorithm>
+</Case>
+<Case Index="10">UL+UB - DF Permuted 10<Algorithm>(U) M' U2 M U2 M' U M U M' U M</Algorithm>
+</Case>
+<Case Index="11">UL+UB - DF Permuted 11<Algorithm>M' U M' U M' U2 M U2 M' U M U' M' U' M'</Algorithm>
+</Case>
+<Case Index="12">UL+UB - DF Permuted 12<Algorithm>M' U M U' M' U2 M</Algorithm>
+</Case>
+<Case Index="13">UL+UB - DF Permuted 13<Algorithm>(U2) M' U2 M U' M' U M</Algorithm>
+</Case>
+<Case Index="14">UL+UB - DF Permuted 14<Algorithm>(U') M' U2 M' U M U' M' U M' U' M'</Algorithm>
+</Case>
+<Case Index="15">UL+UB - DF Permuted 15<Algorithm>(U) M' U' M' U' M2 U' M U2 M'</Algorithm>
+</Case>
+<Case Index="16">UL+UB - UL Permuted 1<Algorithm>(U') M' U M2 U' M' U2 M U' M'</Algorithm>
+</Case>
+<Case Index="17">UL+UB - UL Permuted 2<Algorithm>(U) M2 U' M' U M U M' U' M U M2</Algorithm>
+</Case>
+<Case Index="18">UL+UB - UL Permuted 3<Algorithm>(U2) M2 U2 M' U M U2 M U M</Algorithm>
+</Case>
+<Case Index="19">UL+UB - UL Permuted 4<Algorithm>(U2) M' U2 M' U' M' U' M U' M' U' M'</Algorithm>
+</Case>
+<Case Index="20">UL+UB - UL Permuted 5<Algorithm>(U') M2 U M' U M' U' M U' M U' M2</Algorithm>
+</Case>
+<Case Index="21">UL+UB - UL Permuted 6<Algorithm>(U2) M' U' M U M' U M</Algorithm><Algorithm>R U' R' U' M' U R U r'</Algorithm>
+</Case>
+<Case Index="22">UL+UB - UL Permuted 7<Algorithm>(U2) M' U M U M U' M2 U' M' U2 M2</Algorithm>
+</Case>
+<Case Index="23">UL+UB - UL Permuted 8<Algorithm>M U M' U2 M U M2 U' M</Algorithm>
+</Case>
+<Case Index="24">UL+UB - UL Permuted 9<Algorithm>M U M U M' U M U M U2 M</Algorithm>
+</Case>
+<Case Index="25">UL+UB - UL Permuted 10<Algorithm>(U') M' U' M U' M' U M</Algorithm><Algorithm>r U' R' U' M U R U R'</Algorithm>
+</Case>
+<Case Index="26">UL+UB - UL Permuted 11<Algorithm>(U) M' U2 M U' M' U2 M U M' U M</Algorithm>
+</Case>
+<Case Index="27">UL+UB - UL Permuted 12<Algorithm>M2 U' M U2 M' U' M U' M</Algorithm>
+</Case>
+<Case Index="28">UL+UB - UL Permuted 13<Algorithm>(U') M' U M' U M U2 M' U M2</Algorithm>
+</Case>
+<Case Index="29">UL+UB - UL Permuted 14<Algorithm>(U2) M' U' M U' M' U2 M U M' U2 M</Algorithm>
+</Case>
+<Case Index="30">UL+UB - UL Permuted 15<Algorithm>M2 U M U' M' U M' U' M'</Algorithm>
+</Case>
+<Case Index="31">UL+UB - UL at UB 1<Algorithm>(U') M U M U2 M' U M2 U' M U2</Algorithm>
+</Case>
+<Case Index="32">UL+UB - UL at UB 2<Algorithm>(U') M2 U' M' U M' U M U' M'</Algorithm>
+</Case>
+<Case Index="33">UL+UB - UL at UB 3<Algorithm>M' U' M U2 M' U M</Algorithm>
+</Case>
+<Case Index="34">UL+UB - UL at UB 4<Algorithm>M2 U M U' M U' M' U2 M U M U M'</Algorithm>
+</Case>
+<Case Index="35">UL+UB - UL at UB 5<Algorithm>(U) M U M' U' M U' M U M2</Algorithm>
+</Case>
+<Case Index="36">UL+UB - UL at UB 6<Algorithm>M' U M U' M' U M U2 M' U2 M</Algorithm><Algorithm>(U) M' U M U' M' U' M U M' U' M</Algorithm>
+</Case>
+<Case Index="37">UL+UB - UL at UB 7<Algorithm>M2 U M' U M U2 M U M' U' M2</Algorithm>
+</Case>
+<Case Index="38">UL+UB - UL at UB 8<Algorithm>M' U M2 U' M U2 M' U' M'</Algorithm>
+</Case>
+<Case Index="39">UL+UB - UL at UB 9<Algorithm>M' U' M U2 M2 U' M' U2 M U' M U' M</Algorithm>
+</Case>
+<Case Index="40">UL+UB - UL at UB 10<Algorithm>(U') M U' M2 U M' U M U' M2 U M'</Algorithm><Algorithm>(U) M2 U2 M' U M U2 M2 U M' U M</Algorithm>
+</Case>
+<Case Index="41">UL+UB - UL at UB 11<Algorithm>(U) M U2 M U M' U2 M' U M' U M</Algorithm>
+</Case>
+<Case Index="42">UL+UB - UL at UB 12<Algorithm>M' U M U M' U2 M</Algorithm>
+</Case>
+<Case Index="43">UL+UB - UL at UB 13<Algorithm>(U2) M' U2 M U' M' U' M</Algorithm>
+</Case>
+<Case Index="44">UL+UB - UL at UB 14<Algorithm>(U2) M' U' M U' M U2 M U' M' U2 M'</Algorithm>
+</Case>
+<Case Index="45">UL+UB - UL at UB 15<Algorithm>(U) M U M2 U M' U2 M2</Algorithm><Algorithm>(U') M2 U2 M U' M2 U' M'</Algorithm>
+</Case>
+<Case Index="46">UR+UB - DF Permuted 1<Algorithm>M U' M U2 M U M' U' M U2 M' U M2</Algorithm><Algorithm>M U' M' U M' U M' U' M' U' M U M2</Algorithm>
+</Case>
+<Case Index="47">UR+UB - DF Permuted 2<Algorithm>M' U M U2 M' U M</Algorithm>
+</Case>
+<Case Index="48">UR+UB - DF Permuted 3<Algorithm>(U) r U R' U' M U R U' R'</Algorithm><Algorithm>(U') M' U M' U M U' M' U' M' U M'</Algorithm>
+</Case>
+<Case Index="49">UR+UB - DF Permuted 4<Algorithm>(U) M U' M U2 M' U' M2 U' M</Algorithm><Algorithm>M' U' M2 U' M U2 M' U' M'</Algorithm>
+</Case>
+<Case Index="50">UR+UB - DF Permuted 5<Algorithm>(U) R' U' R U M U' R' U r</Algorithm><Algorithm>M U M' U M U M' U' M U' M'</Algorithm>
+</Case>
+<Case Index="51">UR+UB - DF Permuted 6<Algorithm>M2 U M U2 M' U' M U M' U2 M' U' M'</Algorithm><Algorithm>M2 U M' U' M U' M U M U M U' M'</Algorithm>
+</Case>
+<Case Index="52">UR+UB - DF Permuted 7<Algorithm>M' U2 M' U M' U M' U2 M U' M U' M2</Algorithm><Algorithm>M2 U' M' U' M' U2 M U M U M U2 M</Algorithm>
+</Case>
+<Case Index="53">UR+UB - DF Permuted 8<Algorithm>(U') M' U2 M U2 M' U' M U' M' U' M</Algorithm><Algorithm>(U) M' U2 M U2 M' U M U' M' U' M</Algorithm>
+</Case>
+<Case Index="54">UR+UB - DF Permuted 9<Algorithm>M' U' M U' M' U' M U2 M' U2 M</Algorithm><Algorithm>M' U' M U' M' U M U2 M' U2 M</Algorithm>
+</Case>
+<Case Index="55">UR+UB - DF Permuted 10<Algorithm>M' U2 M U' M U M U2 M' U M2 U' M</Algorithm><Algorithm>M' U' M2 U M U2 M' U M' U' M' U2 M</Algorithm>
+</Case>
+<Case Index="56">UR+UB - DF Permuted 11<Algorithm>M' U M' U M' U M U M' U' M U2 M' U2 M'</Algorithm>
+</Case>
+<Case Index="57">UR+UB - DF Permuted 12<Algorithm>M' U' M U M' U2 M</Algorithm>
+</Case>
+<Case Index="58">UR+UB - DF Permuted 13<Algorithm>(U') M' U M' U M2 U M U2 M'</Algorithm>
+</Case>
+<Case Index="59">UR+UB - DF Permuted 14<Algorithm>(U) M' U M' U M' U' M' U M U' M'</Algorithm><Algorithm>(U') M2 U2 M' U2 M' U M' U M2 U M'</Algorithm>
+</Case>
+<Case Index="60">UR+UB - DF Permuted 15<Algorithm>(U2) M' U2 M U M' U' M</Algorithm>
+</Case>
+<Case Index="61">UR+UB - UR Permuted 1<Algorithm>(U2) M' U2 M' U M' U M U M' U M'</Algorithm>
+</Case>
+<Case Index="62">UR+UB - UR Permuted 2<Algorithm>M' U M' U2 M' U M U2 M2</Algorithm>
+</Case>
+<Case Index="63">UR+UB - UR Permuted 3<Algorithm>M2 U M' U' M U' M' U M U' M2</Algorithm>
+</Case>
+<Case Index="64">UR+UB - UR Permuted 4<Algorithm>(U) M' U' M2 U M' U2 M U M'</Algorithm>
+</Case>
+<Case Index="65">UR+UB - UR Permuted 5<Algorithm>(U) M' U2 M U' M U M U2 M' U M'</Algorithm>
+</Case>
+<Case Index="66">UR+UB - UR Permuted 6<Algorithm>(U2) M' U M U' M' U' M</Algorithm>
+</Case>
+<Case Index="67">UR+UB - UR Permuted 7<Algorithm>M2 U2 M' U M' U M' U' M2 U' M'</Algorithm>
+</Case>
+<Case Index="68">UR+UB - UR Permuted 8<Algorithm>M' U M' U2 M' U M U2 M2</Algorithm>
+</Case>
+<Case Index="69">UR+UB - UR Permuted 9<Algorithm>(U') M' U2 M U' M' U' M U2 M' U M</Algorithm>
+</Case>
+<Case Index="70">UR+UB - UR Permuted 10<Algorithm>M U' M' U2 M U' M2 U M</Algorithm>
+</Case>
+<Case Index="71">UR+UB - UR Permuted 11<Algorithm>(U') M' U2 M U M' U2 M U' M' U' M</Algorithm>
+</Case>
+<Case Index="72">UR+UB - UR Permuted 12<Algorithm>M' U M2 U2 M U M' U2 M'</Algorithm>
+</Case>
+<Case Index="73">UR+UB - UR Permuted 13<Algorithm>M2 U' M U M' U' M' U M'</Algorithm>
+</Case>
+<Case Index="74">UR+UB - UR Permuted 14<Algorithm>(U2) M' U M U M' U2 M U' M' U2 M</Algorithm>
+</Case>
+<Case Index="75">UR+UB - UR Permuted 15<Algorithm>(U) M' U' M' U' M U2 M' U' M2</Algorithm>
+</Case>
+<Case Index="76">UR+UB UR at UB 1<Algorithm>(U') M' U M2 U' M' U' M U2 M' U M U M'</Algorithm>
+</Case>
+<Case Index="77">UR+UB UR at UB 2<Algorithm>M' U M U2 M' U' M</Algorithm>
+</Case>
+<Case Index="78">UR+UB UR at UB 3<Algorithm>(U) M2 U M' U' M' U' M U M'</Algorithm>
+</Case>
+<Case Index="79">UR+UB UR at UB 4<Algorithm>(U) M U' M U2 M' U' M2 U M</Algorithm>
+</Case>
+<Case Index="80">UR+UB UR at UB 5<Algorithm>(U') M U' M' U M U M U' M2</Algorithm>
+</Case>
+<Case Index="81">UR+UB UR at UB 6<Algorithm>(U') M' U' M U M' U M U' M' U M</Algorithm><Algorithm>M2 U M' U M2 U' M' U M' U M'</Algorithm>
+</Case>
+<Case Index="82">UR+UB UR at UB 7<Algorithm>M2 U' M' U' M U2 M U' M' U M2</Algorithm><Algorithm>(U2) R' F R U R' F2 R U' R' F' R</Algorithm>
+</Case>
+<Case Index="83">UR+UB UR at UB 8<Algorithm>(U) M U2 M2 U M' U' M U' M2 U2 M'</Algorithm><Algorithm>(U') M2 U2 M' U' M U2 M2 U' M' U' M</Algorithm>
+</Case>
+<Case Index="84">UR+UB UR at UB 9<Algorithm>M' U M' U M U2 M' U M2 U2 M' U M</Algorithm>
+</Case>
+<Case Index="85">UR+UB UR at UB 10<Algorithm>M' U' M2 U M U2 M' U M'</Algorithm>
+</Case>
+<Case Index="86">UR+UB UR at UB 11<Algorithm>(U') M U2 M U' M' U2 M' U' M' U' M</Algorithm>
+</Case>
+<Case Index="87">UR+UB UR at UB 12<Algorithm>M' U' M U' M' U2 M</Algorithm>
+</Case>
+<Case Index="88">UR+UB UR at UB 13<Algorithm>(U) M2 U2 M U M2 U M'</Algorithm><Algorithm>(U') M U' M2 U' M' U2 M2</Algorithm>
+</Case>
+<Case Index="89">UR+UB UR at UB 14<Algorithm>(U2) M' U M U M U2 M U M' U2 M'</Algorithm>
+</Case>
+<Case Index="90">UR+UB UR at UB 15<Algorithm>(U2) M' U2 M U M' U M</Algorithm>
+</Case>
+<Case Index="91">UL+UR at UL/UR 1<Algorithm>M' U M U M' U M U M' U M</Algorithm>
+</Case>
+<Case Index="92">UL+UR at UL/UR 2<Algorithm>M' U M' U M U' M' U M' U' M2 U' M</Algorithm><Algorithm>M U' M2 U' M' U M' U' M U M' U M'</Algorithm>
+</Case>
+<Case Index="93">UL+UR at UL/UR 3<Algorithm>M' U2 M U' M U' M' U2 M' U M' U2 M2</Algorithm><Algorithm>(U') M' U M' U M U M' U M U M' U M2</Algorithm>
+</Case>
+<Case Index="94">UL+UR at UL/UR 4<Algorithm>M' U2 M' U2 M' U M U2 M U2 M</Algorithm>
+</Case>
+<Case Index="95">UL+UR at UL/UR 5<Algorithm>(U) M2 U M' U' M' U M2 U2 M' U M'</Algorithm><Algorithm>M' U M U2 M U2 M U M' U2 M'</Algorithm>
+</Case>
+<Case Index="96">UL+UR at UL/UR 6<Algorithm>r U R' U' r' U2 R U R U' R2 U2 R</Algorithm>
+</Case>
+<Case Index="97">UL+UR at UL/UR 7<Algorithm>M' U M' U M' U M' U2 M' U M' U M' U M'</Algorithm><Algorithm>M' U M' U M' U2 M U M U M</Algorithm>
+</Case>
+<Case Index="98">UL+UR at UL/UR 8<Algorithm>M' U2 M U2 M' U M U2 M' U2 M</Algorithm>
+</Case>
+<Case Index="99">UL+UR at UL/UR 9<Algorithm>M2 U M' U M' U M' U2 M' U M' U M'</Algorithm><Algorithm>M' U2 M U M U M U2 M' U M'</Algorithm>
+</Case>
+<Case Index="100">UL+UR at UL/UR 10<Algorithm>(U) M U M' U M' U M' U M2</Algorithm>
+</Case>
+<Case Index="101">UL+UR at UF/UB 1<Algorithm>(U) M' U M U M' U2 M U' M' U' M</Algorithm>
+</Case>
+<Case Index="102">UL+UR at UF/UB 2<Algorithm>(U) M U' M' U2 M U' M U' M' U2 M U' M2</Algorithm>
+</Case>
+<Case Index="103">UL+UR at UF/UB 3<Algorithm>(U) M' U M U' M' U M U M' U2 M</Algorithm>
+</Case>
+<Case Index="104">UL+UR at UF/UB 4<Algorithm>M' U' M U M' U' M U' M' U2 M</Algorithm>
+</Case>
+<Case Index="105">UL+UR at UF/UB 5<Algorithm>M' U M U2 M' U' M U' M' U M</Algorithm>
+</Case>
+<Case Index="106">UL+UR at UF/UB 6<Algorithm>M' U' M U M' U M U2 M' U' M</Algorithm>
+</Case>
+<Case Index="107">UL+UR at UF/UB 7<Algorithm>M' U2 M' U2 M U' M2 U M U2 M' U2 M'</Algorithm><Algorithm>M' U M' U2 M' U' M2 U M' U2 M' U' M'</Algorithm>
+</Case>
+<Case Index="108">UL+UR at UF/UB 8<Algorithm>(U2) M2 U M U M2 U2 M' U M U M'</Algorithm><Algorithm>(U2) M2 U' M U M' U M U2 M2 U M'</Algorithm>
+</Case>
+<Case Index="109">UL+UR at UF/UB 9<Algorithm>M U M' U M' U' M2 U2 M U M2</Algorithm><Algorithm>M U' M2 U2 M' U' M U' M' U M2</Algorithm>
+</Case>
+<Case Index="110">UL+UR Permuted - DF on U 1<Algorithm>(U2) M' U M U M' U2 M U2 M' U M</Algorithm>
+</Case>
+<Case Index="111">UL+UR Permuted - DF on U 2<Algorithm>M2 U M' U' M U2 M U2 M U M U' M'</Algorithm><Algorithm>M2 U M' U M U2 M U2 M U' M U' M'</Algorithm>
+</Case>
+<Case Index="112">UL+UR Permuted - DF on U 3<Algorithm>M2 U' M' U' M U2 M U2 M U M U M'</Algorithm><Algorithm>M2 U' M' U M U2 M U2 M U' M U M'</Algorithm>
+</Case>
+<Case Index="113">UL+UR Permuted - DF on U 4<Algorithm>(U2) M' U' M U M' U2 M U2 M' U M</Algorithm>
+</Case>
+<Case Index="114">UL+UR Permuted - DF on U 5<Algorithm>M2 U M' U M' U M2 U M' U M'</Algorithm><Algorithm>M2 U' M' U' M' U' M2 U' M' U' M'</Algorithm>
+</Case>
+<Case Index="115">UL+UR Permuted - DF on U 6<Algorithm>(U2) M' U M' U M' U2 M U M U' M</Algorithm><Algorithm>(U2) M U' M U' M' U2 M' U M U' M'</Algorithm>
+</Case>
+<Case Index="116">UL+UR Permuted - DF on U 7<Algorithm>(U) M U M U2 M' U M'</Algorithm><Algorithm>(U') M U' M U2 M' U' M'</Algorithm><Algorithm>(U') S' U' M' U2 M U S</Algorithm>
+</Case>
+<Case Index="117">UL+UR Permuted - DF on U 8<Algorithm>(U) M' U M U2 M' U2 M U M' U M</Algorithm><Algorithm>(U) M' U' M U2 M' U2 M U' M' U M</Algorithm>
+</Case>
+<Case Index="118">UL+UR Permuted - DF on U 9<Algorithm>M U M' U' M U2 M U M' U M'</Algorithm><Algorithm>M' U M' U' M' U2 M U' M U' M</Algorithm>
+</Case>
+<Case Index="119">UL+UR Permuted - DF on U 10<Algorithm>(U') M' U M U2 M' U2 M U M' U' M</Algorithm>
+</Case>
+<Case Index="120">UL+UR Permuted - DF on U 11<Algorithm>(U') M' U2 M U2 M' U M</Algorithm><Algorithm>(U) M' U2 M U2 M' U' M</Algorithm>
+</Case>
+<Case Index="121">UL+UR Permuted - DF on U 12<Algorithm>M' U M U2 M' U2 M U M' U2 M</Algorithm>
+</Case>
+<Case Index="122">UL+UR Permuted - DF on U 13<Algorithm>(U') M' U M' U' M' U2 M U' M2</Algorithm>
+</Case>
+<Case Index="123">UL+UR Permuted - DF on U 14<Algorithm>(U2) M' U M U2 M' U2 M</Algorithm>
+</Case>
+<Case Index="124">UL+UR Permuted - DF on U 15<Algorithm>(U) M' U' M' U M' U2 M U M2</Algorithm>
+</Case>
+<Case Index="125">UL+UR Swapped - DF on U 1<Algorithm>(U') r U R' U M U' R U' R'</Algorithm><Algorithm>(U') M' U' M U' M' U' M U' M' U M</Algorithm>
+</Case>
+<Case Index="126">UL+UR Swapped - DF on U 2<Algorithm>(U) M' U' M' U2 M' U' M U M2 U' M U2 M'</Algorithm>
+</Case>
+<Case Index="127">UL+UR Swapped - DF on U 3<Algorithm>(U') M' U M U2 M' U' M' U' M2 U' M U2 M'</Algorithm>
+</Case>
+<Case Index="128">UL+UR Swapped - DF on U 4<Algorithm>(U) M' U M U M' U M U M' U' M</Algorithm>
+</Case>
+<Case Index="129">UL+UR Swapped - DF on U 5<Algorithm>(U) M2 U M' U' M' U M U' M'</Algorithm>
+</Case>
+<Case Index="130">UL+UR Swapped - DF on U 6<Algorithm>M' U M U' M' U' M U M' U2 M U' M' U2 M</Algorithm>
+</Case>
+<Case Index="131">UL+UR Swapped - DF on U 7<Algorithm>(U') M U' M' U2 M' U M' U2 M2</Algorithm>
+</Case>
+<Case Index="132">UL+UR Swapped - DF on U 8<Algorithm>(U') M U2 M U M' U M' U2 M U' M'</Algorithm>
+</Case>
+<Case Index="133">UL+UR Swapped - DF on U 9<Algorithm>M' U M U M' U' M' U M2 U M U2 M'</Algorithm>
+</Case>
+<Case Index="134">UL+UR Swapped - DF on U 10<Algorithm>(U') R U R' U M' U' R U' r'</Algorithm><Algorithm>(U) M U2 M U' M' U' M' U2 M U M'</Algorithm>
+</Case>
+<Case Index="135">UL+UR Swapped - DF on U 11<Algorithm>(U) M' U2 M' U2 M' U M U2 M2</Algorithm>
+</Case>
+<Case Index="136">UL+UR Swapped - DF on U 12<Algorithm>M' U M U2 M U2 M U' M' U2 M'</Algorithm><Algorithm>(U) R U R' U' M2 U R U' r' U' M</Algorithm>
+</Case>
+<Case Index="137">UL+UR Swapped - DF on U 13<Algorithm>M' U M2 U M U M' U M U M2</Algorithm>
+</Case>
+<Case Index="138">UL+UR Swapped - DF on U 14<Algorithm>M2 U2 M' U' M U2 M U2 M</Algorithm>
+</Case>
+<Case Index="139">UL+UR Swapped - DF on U 15<Algorithm>M2 U M U2 M' U' M' U M U2 M2</Algorithm>
+</Case>
+<Case Index="140">UL Permuted 1<Algorithm>(U') M' U2 M U M' U M U M' U M</Algorithm>
+</Case>
+<Case Index="141">UL Permuted 2<Algorithm>M' U M' U2 M U' M2 U' M'</Algorithm>
+</Case>
+<Case Index="142">UL Permuted 3<Algorithm>(U2) M' U2 M U' M' U M U M' U' M</Algorithm><Algorithm>M' U' M' U M U' M' U' M' U M'</Algorithm>
+</Case>
+<Case Index="143">UL Permuted 4<Algorithm>(U2) M2 U M' U M U M' U M'</Algorithm><Algorithm>(U') r U R' U M U2 M' U R U' r'</Algorithm>
+</Case>
+<Case Index="144">UL Permuted 5<Algorithm>(U') M U2 M U M' U' M' U2 M U M'</Algorithm>
+</Case>
+<Case Index="145">UL Permuted 6<Algorithm>M2 U2 M' U' M' U M' U' M2 U' M'</Algorithm>
+</Case>
+<Case Index="146">UL Permuted 7<Algorithm>(U2) M' U' M U' M' U' M</Algorithm><Algorithm>R U' R' U M' U' R U r'</Algorithm>
+</Case>
+<Case Index="147">UL Permuted 8<Algorithm>(U) M' U2 M' U' M' U M' U' M U M'</Algorithm>
+</Case>
+<Case Index="148">UL Permuted 9<Algorithm>M' U M U M' U M U M' U2 M</Algorithm>
+</Case>
+<Case Index="149">UL Permuted 10<Algorithm>M U' M U2 M U2 M2 U M'</Algorithm><Algorithm>R F' R2 E R2 E' F R'</Algorithm>
+</Case>
+<Case Index="150">UL Permuted 11<Algorithm>M' U M U M' U' M U2 M' U M</Algorithm>
+</Case>
+<Case Index="151">UL Permuted 12<Algorithm>M' U' M' U M2 U M U2 M'</Algorithm>
+</Case>
+<Case Index="152">UL Permuted 13<Algorithm>(U) M2 U2 M' U' M U2 M2</Algorithm><Algorithm>(U') M U2 M2 U' M2 U2 M'</Algorithm>
+</Case>
+<Case Index="153">UL Permuted 14<Algorithm>(U) M' U M U2 M' U' M U M' U M</Algorithm><Algorithm>(U2) M' U' M U M' U2 M U' M' U2 M</Algorithm>
+</Case>
+<Case Index="154">UL Permuted 15<Algorithm>(U2) M U2 M' U M2 U M U' M</Algorithm>
+</Case>
+<Case Index="155">UL at UR 1<Algorithm>(U') M' U2 M2 U M U2 M' U M'</Algorithm>
+</Case>
+<Case Index="156">UL at UR 2<Algorithm>M2 U M U2 M2 U M' U' M U M'</Algorithm><Algorithm>M2 U M' U M U M U2 M2 U' M'</Algorithm>
+</Case>
+<Case Index="157">UL at UR 3<Algorithm>M' U M2 U2 M' U2 M' U M2 U' M'</Algorithm>
+</Case>
+<Case Index="158">UL at UR 4<Algorithm>(U2) M' U M' U2 M' U M U M2 U' M U2 M'</Algorithm>
+</Case>
+<Case Index="159">UL at UR 5<Algorithm>(U') M' U M U2 M' U2 M U' M' U M</Algorithm>
+</Case>
+<Case Index="160">UL at UR 6<Algorithm>M U' M U2 M' U' M' U' M' U M</Algorithm>
+</Case>
+<Case Index="161">UL at UR 7<Algorithm>M2 U2 M' U' M U2 M2 U' M' U M</Algorithm>
+</Case>
+<Case Index="162">UL at UR 8<Algorithm>M' U2 M2 U M' U2 M U M'</Algorithm>
+</Case>
+<Case Index="163">UL at UR 9<Algorithm>M' U' M U' M' U M2 U2 M U M' U2 M'</Algorithm>
+</Case>
+<Case Index="164">UL at UR 10<Algorithm>(U') M U M U M U M2 U M U M2</Algorithm>
+</Case>
+<Case Index="165">UL at UR 11<Algorithm>M' U2 M U2 M' U' M U M' U2 M</Algorithm>
+</Case>
+<Case Index="166">UL at UR 12<Algorithm>(U) M2 U M' U2 M U M U M</Algorithm>
+</Case>
+<Case Index="167">UL at UR 13<Algorithm>(U') M' U M' U M' U2 M U M2</Algorithm>
+</Case>
+<Case Index="168">UL at UR 14<Algorithm>(U') M' U2 M U M' U M U2 M' U2 M</Algorithm>
+</Case>
+<Case Index="169">UL at UR 15<Algorithm>(U) M' U' M</Algorithm>
+</Case>
+<Case Index="170">UL at UB 1<Algorithm>M' U' M U' M' U' M U2 M' U M</Algorithm>
+</Case>
+<Case Index="171">UL at UB 2<Algorithm>(U) M' U2 M U M' U' M U2 M' U M</Algorithm>
+</Case>
+<Case Index="172">UL at UB 3<Algorithm>M' U' M U M' U2 M U' M' U' M</Algorithm>
+</Case>
+<Case Index="173">UL at UB 4<Algorithm>(U) M U' M' U' M' U2 M' U' M' U M'</Algorithm>
+</Case>
+<Case Index="174">UL at UB 5<Algorithm>(U') M' U' M U M' U' M</Algorithm>
+</Case>
+<Case Index="175">UL at UB 6<Algorithm>(U2) M U' M' U M U M U' M U2 M</Algorithm>
+</Case>
+<Case Index="176">UL at UB 7<Algorithm>(U') M' U M2 U M' U2 M U M'</Algorithm>
+</Case>
+<Case Index="177">UL at UB 8<Algorithm>M U M U' M U2 M U' M U' M'</Algorithm>
+</Case>
+<Case Index="178">UL at UB 9<Algorithm>M' U' M U' M' U M U M' U2 M</Algorithm>
+</Case>
+<Case Index="179">UL at UB 10<Algorithm>(U) M' U M U2 M' U' M U' M' U' M</Algorithm>
+</Case>
+<Case Index="180">UL at UB 11<Algorithm>(U') M U2 M' U2 M' U M2 U' M'</Algorithm><Algorithm>(U) M' U2 M' U2 M U' M2 U' M'</Algorithm>
+</Case>
+<Case Index="181">UL at UB 12<Algorithm>(U) M' U2 M U M' U M U M' U2 M</Algorithm>
+</Case>
+<Case Index="182">UL at UB 13<Algorithm>(U') M' U M' U' M U2 M' U' M2</Algorithm>
+</Case>
+<Case Index="183">UL at UB 14<Algorithm>(U2) M U' M2 U' M' U2 M U2 M</Algorithm>
+</Case>
+<Case Index="184">UL at UB 15<Algorithm>M U M U' M U' M' U M2</Algorithm>
+</Case>
+<Case Index="185">UR Permuted 1<Algorithm>(U') M U M' U2 M' U2 M2 U' M'</Algorithm><Algorithm>(U2) M2 U' M' U' M U' M' U' M'</Algorithm>
+</Case>
+<Case Index="186">UR Permuted 2<Algorithm>(U2) M' U2 M U M' U' M U' M' U M</Algorithm><Algorithm>M2 U M' U M U M' U M2 U2 M</Algorithm>
+</Case>
+<Case Index="187">UR Permuted 3<Algorithm>M U M2 U M' U2 M U' M</Algorithm><Algorithm>M' U' M' U2 M U M2 U M'</Algorithm>
+</Case>
+<Case Index="188">UR Permuted 4<Algorithm>(U) M' U2 M U' M' U' M U' M' U' M</Algorithm>
+</Case>
+<Case Index="189">UR Permuted 5<Algorithm>(U) M U2 M U' M' U M' U2 M U' M'</Algorithm>
+</Case>
+<Case Index="190">UR Permuted 6<Algorithm>M2 U2 M' U M' U' M' U M2 U M'</Algorithm>
+</Case>
+<Case Index="191">UR Permuted 7<Algorithm>(U2) M' U M U M' U M</Algorithm>
+</Case>
+<Case Index="192">UR Permuted 8<Algorithm>M U M U2 M U2 M2 U' M'</Algorithm><Algorithm>(U2) r U R' U' M U2 M' U' R U' r'</Algorithm>
+</Case>
+<Case Index="193">UR Permuted 9<Algorithm>M' U' M U' M' U' M U' M' U2 M</Algorithm>
+</Case>
+<Case Index="194">UR Permuted 10<Algorithm>(U') M' U2 M' U M' U' M' U M U' M'</Algorithm><Algorithm>(U') M' U' M' U2 M2 U' M' U M2 U M'</Algorithm>
+</Case>
+<Case Index="195">UR Permuted 11<Algorithm>M' U' M U' M' U M U2 M' U' M</Algorithm>
+</Case>
+<Case Index="196">UR Permuted 12<Algorithm>M' U M' U' M2 U' M U2 M'</Algorithm>
+</Case>
+<Case Index="197">UR Permuted 13<Algorithm>(U2) M U2 M' U' M2 U' M U M</Algorithm>
+</Case>
+<Case Index="198">UR Permuted 14<Algorithm>(U2) M' U M U' M' U2 M U M' U2 M</Algorithm><Algorithm>(U') M' U' M U2 M' U M U' M' U' M</Algorithm>
+</Case>
+<Case Index="199">UR Permuted 15<Algorithm>(U') M2 U2 M' U M U2 M2</Algorithm>
+</Case>
+<Case Index="200">UR at UL 1<Algorithm>(U) M2 U M U M' U M' U2 M' U M U M'</Algorithm><Algorithm>(U2) M' U2 M' U M2 U M U' M U2 M' U M'</Algorithm>
+</Case>
+<Case Index="201">UR at UL 2<Algorithm>M' U M' U2 M' U2 M2 U M2 U M'</Algorithm>
+</Case>
+<Case Index="202">UR at UL 3<Algorithm>M2 U' M' U' M U' M U2 M2 U M'</Algorithm><Algorithm>M2 U' M U2 M2 U' M' U M U' M'</Algorithm>
+</Case>
+<Case Index="203">UR at UL 4<Algorithm>(U) M' U2 M2 U' M U2 M' U' M'</Algorithm>
+</Case>
+<Case Index="204">UR at UL 5<Algorithm>(U') M' U M2 U M' U M' U M' U M2</Algorithm>
+</Case>
+<Case Index="205">UR at UL 6<Algorithm>M U M U2 M' U M' U M' U' M</Algorithm>
+</Case>
+<Case Index="206">UR at UL 7<Algorithm>M2 U2 M' U M' U M U M U2 M2</Algorithm><Algorithm>M2 U2 M' U M U2 M2 U M' U' M</Algorithm>
+</Case>
+<Case Index="207">UR at UL 8<Algorithm>(U) M U' M U' M U' M2 U' M U' M2</Algorithm>
+</Case>
+<Case Index="208">UR at UL 9<Algorithm>M' U M U M' U' M2 U2 M U' M' U2 M'</Algorithm>
+</Case>
+<Case Index="209">UR at UL 10<Algorithm>M' U2 M2 U' M' U2 M U' M'</Algorithm>
+</Case>
+<Case Index="210">UR at UL 11<Algorithm>M' U2 M U2 M' U M U' M' U2 M</Algorithm><Algorithm>M U2 M U2 M U' M' U M' U2 M'</Algorithm>
+</Case>
+<Case Index="211">UR at UL 12<Algorithm>(U') M2 U' M' U2 M U' M U' M</Algorithm>
+</Case>
+<Case Index="212">UR at UL 13<Algorithm>(U') M' U M</Algorithm>
+</Case>
+<Case Index="213">UR at UL 14<Algorithm>(U) M' U2 M U' M' U M U2 M' U2 M</Algorithm>
+</Case>
+<Case Index="214">UR at UL 15<Algorithm>(U) M' U' M' U' M' U2 M U' M2</Algorithm>
+</Case>
+<Case Index="215">UR at UB 1<Algorithm>(U') M U M' U M' U2 M' U M' U' M'</Algorithm>
+</Case>
+<Case Index="216">UR at UB 2<Algorithm>M' U M U' M' U2 M U M' U M</Algorithm>
+</Case>
+<Case Index="217">UR at UB 3<Algorithm>(U') M' U M U M' U2 M U' M' U M</Algorithm>
+</Case>
+<Case Index="218">UR at UB 4<Algorithm>M' U M U M' U M U2 M' U' M</Algorithm>
+</Case>
+<Case Index="219">UR at UB 5<Algorithm>(U) M' U M U' M' U M</Algorithm>
+</Case>
+<Case Index="220">UR at UB 6<Algorithm>(U2) M U M' U' M U' M U M U2 M</Algorithm>
+</Case>
+<Case Index="221">UR at UB 7<Algorithm>(U) M' U' M2 U' M' U2 M U' M'</Algorithm>
+</Case>
+<Case Index="222">UR at UB 8<Algorithm>(U') M' U' M U2 M' U M U M' U M</Algorithm>
+</Case>
+<Case Index="223">UR at UB 9<Algorithm>M' U M U M' U' M U' M' U2 M</Algorithm>
+</Case>
+<Case Index="224">UR at UB 10<Algorithm>M U' M U M U2 M U M U M'</Algorithm>
+</Case>
+<Case Index="225">UR at UB 11<Algorithm>(U') M' U2 M' U2 M U M2 U M'</Algorithm><Algorithm>(U) M U2 M' U2 M' U' M2 U M'</Algorithm>
+</Case>
+<Case Index="226">UR at UB 12<Algorithm>(U') M' U2 M U' M' U' M U' M' U2 M</Algorithm>
+</Case>
+<Case Index="227">UR at UB 13<Algorithm>M U' M U M U M' U' M2</Algorithm>
+</Case>
+<Case Index="228">UR at UB 14<Algorithm>(U2) M U M2 U M' U2 M U2 M</Algorithm>
+</Case>
+<Case Index="229">UR at UB 15<Algorithm>(U) M' U' M' U M U2 M' U M2</Algorithm>
+</Case>
+<Case Index="230">L5EP 1<Algorithm>M2 U M' U2 M U M2</Algorithm>
+</Case>
+<Case Index="231">L5EP 2<Algorithm>M2 U' M' U2 M U' M2</Algorithm>
+</Case>
+<Case Index="232">L5EP 3<Algorithm>M2 U M2 U2 M2 U M2</Algorithm>
+</Case>
+<Case Index="233">L5EP 4<Algorithm>M2 U M2 U M' U2 M2 U2 M'</Algorithm><Algorithm>M2 U' M' U2 M2 U2 M' U M2</Algorithm>
+</Case>
+<Case Index="234">L5EP 5<Algorithm>M' U2 M</Algorithm>
+</Case>
+<Case Index="235">L5EP 6<Algorithm>(U) M U2 M U' M' U2 M'</Algorithm>
+</Case>
+<Case Index="236">L5EP 7<Algorithm>(U') M U2 M U M' U2 M'</Algorithm>
+</Case>
+<Case Index="237">L5EP 8<Algorithm>M U M2 U2 M2 U M'</Algorithm>
+</Case>
+<Case Index="238">L5EP 9<Algorithm>M U2 M' U M' U2 M' U' M2</Algorithm><Algorithm>M2 U M U2 M U' M U2 M'</Algorithm>
+</Case>
+<Case Index="239">L5EP 10<Algorithm>M U2 M' U' M' U2 M' U M2</Algorithm><Algorithm>M2 U' M U2 M U M U2 M'</Algorithm>
+</Case>
+<Case Index="240">L5EP 11<Algorithm>M U2 M' U' M2 U' M2</Algorithm>
+</Case>
+<Case Index="241">L5EP 12<Algorithm>(U) M2 U M2 U M U2 M'</Algorithm><Algorithm>M U2 M' U M2 U M2</Algorithm>
+</Case>
+<Case Index="242">L5EP 13<Algorithm>(U') M' U2 M' U M2 U M U2 M'</Algorithm><Algorithm>M' U2 M' U' M' U2 M U' M2</Algorithm>
+</Case>
+<Case Index="243">L5EP 14<Algorithm>M' U2 M' U M' U2 M U M2</Algorithm><Algorithm>(U) M' U2 M' U' M2 U' M U2 M'</Algorithm>
+</Case>
+<Case Index="244">L5EP 15<Algorithm>(U') M' U2 M U' M' U2 M</Algorithm>
+</Case>
+<Case Index="245">L5EP 16<Algorithm>(U) M' U2 M U M' U2 M</Algorithm>
+</Case>
+<Case Index="246">UL+UR Adjacent 1<Algorithm>M' U M2 U M U2 M' U M'</Algorithm>
+</Case>
+<Case Index="247">UL+UR Adjacent 2<Algorithm>M U' M U2 M U M' U' M U2 M' U M2</Algorithm><Algorithm>M U' M' U M' U M' U' M' U' M U M2</Algorithm>
+</Case>
+<Case Index="248">UL+UR Adjacent 3<Algorithm>(U) r' U' R U M' U' R' U R</Algorithm><Algorithm>(U) M' U' M' U' M U M' U M' U' M'</Algorithm>
+</Case>
+<Case Index="249">UL+UR Adjacent 4<Algorithm>M' U M U2 M' U M</Algorithm>
+</Case>
+<Case Index="250">UL+UR Adjacent 5<Algorithm>(U) r U R' U' M U R U' R'</Algorithm><Algorithm>(U') M' U M' U M U' M' U' M' U M'</Algorithm>
+</Case>
+<Case Index="251">UL+UR Adjacent 6<Algorithm>M' U' M U2 M' U' M</Algorithm>
+</Case>
+<Case Index="252">UL+UR Adjacent 7<Algorithm>M U M' U2 M2 U M' U2 M U M' U' M'</Algorithm>
+</Case>
+<Case Index="253">UL+UR Adjacent 8<Algorithm>(U) M U' M U2 M' U' M2 U' M</Algorithm><Algorithm>M' U' M2 U' M U2 M' U' M'</Algorithm>
+</Case>
+<Case Index="254">UL+UR Adjacent 9<Algorithm>(U) R U R' U' M' U R U' r'</Algorithm><Algorithm>M U' M' U' M U' M' U M U M'</Algorithm>
+</Case>
+<Case Index="255">UL+UR Adjacent 10<Algorithm>(U) R' U' R U M U' R' U r</Algorithm><Algorithm>M U M' U M U M' U' M U' M'</Algorithm>
+</Case>
+<Case Index="256">UL+UR Adjacent 11<Algorithm>M2 U' M U2 M' U M U' M' U2 M' U M'</Algorithm><Algorithm>M2 U' M' U M U M U' M U' M U M'</Algorithm>
+</Case>
+<Case Index="257">UL+UR Adjacent 12<Algorithm>M2 U M U2 M' U' M U M' U2 M' U' M'</Algorithm><Algorithm>M2 U M' U' M U' M U M U M U' M'</Algorithm>
+</Case>
+<Case Index="258">UL+UR Adjacent 13<Algorithm>M' U M' U M' U M U M' U' M U2 M' U2 M'</Algorithm>
+</Case>
+<Case Index="259">UL+UR Adjacent 14<Algorithm>M' U M' U M' U2 M U2 M' U M U' M' U' M'</Algorithm><Algorithm>(U2) R U R' S U' R' U' R' U R U2 S'</Algorithm>
+</Case>
+<Case Index="260">UL+UR Opposite 1<Algorithm>M2 U M' U2 M U M2</Algorithm>
+</Case>
+<Case Index="261">UL+UR Opposite 2<Algorithm>M2 U' M' U2 M U' M2</Algorithm>
+</Case>
+<Case Index="262">UL+UR Opposite 3<Algorithm>M2 U M2 U2 M2 U M2</Algorithm>
+</Case>
+<Case Index="263">UL+UR Opposite 4<Algorithm>M2 U M2 U M' U2 M2 U2 M'</Algorithm>
+</Case>
+<Case Index="264">UL+UR Opposite 5<Algorithm>r U R' U' r' U2 R U R U' R2 U2 R</Algorithm><Algorithm>M2 U' M U2 M' U' M' U' M' U2 M U' M'</Algorithm>
+</Case>
+<Case Index="265">UL+UR Opposite 6<Algorithm>(U) M U' M' U2 M U' M U' M' U2 M U' M2</Algorithm>
+</Case>
+<Case Index="266">UL+UR Opposite 7<Algorithm>M' U M U M' U M U M' U M</Algorithm>
+</Case>
+<Case Index="267">UL+UR Opposite 8<Algorithm>(U) M' U M U M' U2 M U' M' U' M</Algorithm>
+</Case>
+<Case Index="268">UL+UR Opposite 9<Algorithm>M' U M' U M' U M' U2 M' U M' U M' U M'</Algorithm><Algorithm>M' U M' U M' U2 M U M U M</Algorithm>
+</Case>
+<Case Index="269">UL+UR Opposite 10<Algorithm>M' U M' U M U' M' U M' U' M2 U' M</Algorithm><Algorithm>M U' M2 U' M' U M' U' M U M' U M'</Algorithm>
+</Case>
+<Case Index="270">UL+UR Opposite 11<Algorithm>(U) M' U M U' M' U M U M' U2 M</Algorithm>
+</Case>
+<Case Index="271">UL+UR Opposite 12<Algorithm>M' U' M U M' U' M U' M' U2 M</Algorithm>
+</Case>
+<Case Index="272">UL+UR Opposite 13<Algorithm>M' U2 M U2 M' U M U2 M' U2 M</Algorithm>
+</Case>
+<Case Index="273">UL+UR Opposite 14<Algorithm>M' U2 M' U2 M' U M U2 M U2 M</Algorithm>
+</Case>
+<Case Index="274">UL+UR Opposite 15<Algorithm>M' U2 M' U2 M U' M2 U M U2 M' U2 M'</Algorithm><Algorithm>M' U M' U2 M' U' M2 U M' U2 M' U' M'</Algorithm>
+</Case>
+</Collection>

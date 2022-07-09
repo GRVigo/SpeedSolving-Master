@@ -419,12 +419,18 @@ namespace grcube3
 		YRURU_urUR, // YruRU movements for CP-Line
 		YRURU_rUR, // YruRU movements for pEO Extension
 		YRURU_UR, // YruRU movements for  EOBF / F2L
+		NAUTILUS_rRUM, // Moveset for Nautilus dFR
 	};
 	
 	// Search evaluation policies
 	enum class Plc
 	{
-		BEST_SOLVES, // Maximum amount of pieces solved
-		SHORT // Minimum amount of steps
+		BEST, // Maximum amount of pieces solved / best score
+		SHORT, // Minimum amount of steps
+		FIRST, // First solve / algorithm
+		RANDOM, // Random algorithm
 	};
+
+    // Supported metrics
+    enum class Metrics { Movements, HTM, QTM, STM, QSTM, ETM, ATM, PTM, HTM15, OBTM };
 }
